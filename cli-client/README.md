@@ -9,3 +9,11 @@
     
 ```
 
+# Environment Variables Setup
+
+'''sh
+    cp .env.sample .env #create .env file
+
+'''
+Edit .env file accordingly
+
