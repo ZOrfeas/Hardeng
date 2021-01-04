@@ -66,7 +66,8 @@ public class ChargingPoint {
         this.condition = condition; this.isOccupied = isOccupied;
     }
     /** 
-     * Overload of the {@link #Point(Double, Double, Integer, Integer, Integer, Boolean)} method with default {@code condition=0}(OPERATIONAL)
+     * Overload of the {@link #Point(Double, Double, Integer, Integer, Integer, Boolean)} 
+     * method with default {@code condition=0}(OPERATIONAL)
      * and {@code isOccupied=false}
      */
     ChargingPoint(Double longitude, Double latitude, Integer operatorId, Integer maxOutput) {
