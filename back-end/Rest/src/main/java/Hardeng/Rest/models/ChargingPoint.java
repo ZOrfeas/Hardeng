@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import org.springframework.data.geo.Point;
+
 
 @Entity
 public class ChargingPoint {
@@ -83,6 +85,8 @@ public class ChargingPoint {
     public Boolean isOccupied() {return this.isOccupied;}
     public Condition getCondition() {return Condition.meaningOfCode(this.condition);}
     public ChargingStation getCStation() {return this.cStation;}
+    /** @return Point where X is latitude and Y is longitude */
+    public Point getCoordinates() {return (new Point(this.latitude, this.longitude));}
 
     public void setLatitude(Double newLatitude) {this.latitude = newLatitude;}
     public void setLongitude(Double newLongitude) {this.longitude = newLongitude;}
@@ -91,4 +95,6 @@ public class ChargingPoint {
     public void resetIsOccupied() {this.isOccupied = false;}
     public void setCondition(Condition status) {this.condition = status.value;}
     public void setCStation(ChargingStation cStation) {this.cStation = cStation;}
+    /** @param newCoordinates contains latitude as its X(first) value and longitude as its Y(second) value */
+    public void setCoordinates(Point newCoordinates) {this.latitude = newCoordinates.getX(); this.longitude = newCoordinates.getY();}
 }
