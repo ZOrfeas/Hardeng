@@ -8,7 +8,7 @@ exports.desc = 'Charging sessions of a vehicle in a specific time period'
 exports.builder ={
     ev: {
         describe: "Electric vehicle's id",
-        demand: "true"
+        demand: true
     },
     datefrom: {
         describe:"Starting date",
