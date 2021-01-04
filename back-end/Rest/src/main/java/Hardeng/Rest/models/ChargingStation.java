@@ -1,11 +1,15 @@
 package Hardeng.Rest.models;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+
+import org.springframework.data.geo.Point;
 
 @Entity
 public class ChargingStation {
@@ -40,10 +44,26 @@ public class ChargingStation {
     public Double getLatitude() {return this.latitude;}
     public Admin getAdmin() {return this.admin;}
     public EnergyProvider getEnergyProvider() {return this.eProvider;}
+    /** @return Point where X is latitude and Y is longitude */
+    public Point getCoordinates() {return (new Point(this.latitude, this.longitude));}
 
     public void setNrOfChargingPoints(Integer amount) {this.nrOfChargingPoints = amount;}
     public void setLatitude(Double newLatitude) {this.latitude = newLatitude;}
     public void setLongitude(Double newLongitude) {this.longitude = newLongitude;}
     public void setAdmin(Admin newAdmin) {this.admin = newAdmin;}
     public void setEnergyProvider(EnergyProvider newEProvider) {this.eProvider = newEProvider;}
+    /** @param newCoordinates contains latitude as its X(first) value and longitude as its Y(second) value */
+    public void setCoordinates(Point newCoordinates) {this.latitude = newCoordinates.getX(); this.longitude = newCoordinates.getY();}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ChargingStation)) return false;
+        ChargingStation c = (ChargingStation) o;
+        return Objects.equals(this.id, c.id);
+    }
+    @Override
+    public int hashCode() {return Objects.hash(this.id);}
+    @Override
+    public String toString() {return "Station{" + "id=" + this.id + ", coordinates=[" + this.latitude + ", " + this.longitude + "]}";}
 }

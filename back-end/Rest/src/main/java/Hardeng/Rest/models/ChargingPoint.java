@@ -2,6 +2,7 @@ package Hardeng.Rest.models;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -97,4 +98,16 @@ public class ChargingPoint {
     public void setCStation(ChargingStation cStation) {this.cStation = cStation;}
     /** @param newCoordinates contains latitude as its X(first) value and longitude as its Y(second) value */
     public void setCoordinates(Point newCoordinates) {this.latitude = newCoordinates.getX(); this.longitude = newCoordinates.getY();}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ChargingPoint)) return false;
+        ChargingPoint c = (ChargingPoint) o;
+        return Objects.equals(this.id, c.id);
+    }
+    @Override
+    public int hashCode() {return Objects.hash(this.id);}
+    @Override
+    public String toString() {return "Point{" + "id=" + this.id + ", coordinates=[" + this.latitude + ", " + this.longitude + "]}";}
 }
