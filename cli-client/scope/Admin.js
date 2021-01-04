@@ -1,4 +1,4 @@
-const axios = require("axios");
+/*const axios = require("axios");
 const yargs = require("yargs");
 //const argv = yargs
 var argv = require('yargs/yargs')(process.argv.slice(2))
@@ -41,5 +41,4 @@ var argv = require('yargs/yargs')(process.argv.slice(2))
 .demandOption(['sessionsupd', 'source'])
 .help()
 .alias('help', 'h')
-.argv;
-
+.argv;*/
