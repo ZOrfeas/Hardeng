@@ -36,7 +36,7 @@ public class ChargingPoint {
     private Boolean isOccupied;
     
     @Column(nullable = false, length = 8)
-    private Integer condition; 
+    private Integer currentCondition; 
     
     public enum Condition {
         Operational(0), Down(-1), UnderRepairs(1), NeedsCheck(2), UnderConstruction(3);
@@ -66,7 +66,7 @@ public class ChargingPoint {
      */
     ChargingPoint(Double longitude, Double latitude, ChargingStation cStation , Integer maxOutput, Integer condition,  Boolean isOccupied) {
         this.longitude = longitude; this.latitude = latitude; this.cStation = cStation; this.maxEnergyOutput = maxOutput;
-        this.condition = condition; this.isOccupied = isOccupied;
+        this.currentCondition = condition; this.isOccupied = isOccupied;
     }
     /** 
      * Overload of the {@link #Point(Double, Double, Integer, Integer, Integer, Boolean)} 
@@ -75,7 +75,7 @@ public class ChargingPoint {
      */
     ChargingPoint(Double longitude, Double latitude, ChargingStation cStation, Integer maxOutput) {
         this.longitude = longitude; this.latitude = latitude; this.cStation = cStation; this.maxEnergyOutput = maxOutput;
-        this.condition = 0; this.isOccupied = false;
+        this.currentCondition = 0; this.isOccupied = false;
     }
 
 
@@ -84,7 +84,7 @@ public class ChargingPoint {
     public Double getLongitude() {return this.longitude;}
     public Integer getMaxOutput() {return this.maxEnergyOutput;}
     public Boolean isOccupied() {return this.isOccupied;}
-    public Condition getCondition() {return Condition.meaningOfCode(this.condition);}
+    public Condition getCondition() {return Condition.meaningOfCode(this.currentCondition);}
     public ChargingStation getCStation() {return this.cStation;}
     /** @return Point where X is latitude and Y is longitude */
     public Point getCoordinates() {return (new Point(this.latitude, this.longitude));}
@@ -94,7 +94,7 @@ public class ChargingPoint {
     public void setMaxOutput(Integer newMaxOutput) {this.maxEnergyOutput = newMaxOutput;}
     public void setIsOccupied() {this.isOccupied = true;}
     public void resetIsOccupied() {this.isOccupied = false;}
-    public void setCondition(Condition status) {this.condition = status.value;}
+    public void setCondition(Condition status) {this.currentCondition = status.value;}
     public void setCStation(ChargingStation cStation) {this.cStation = cStation;}
     /** @param newCoordinates contains latitude as its X(first) value and longitude as its Y(second) value */
     public void setCoordinates(Point newCoordinates) {this.latitude = newCoordinates.getX(); this.longitude = newCoordinates.getY();}
