@@ -37,7 +37,7 @@ public class Admin {
      * @param companyPhone self-explanatory
      * @param companyLocation The address of the company
     */
-     Admin(String username, String password, String email, String companyName, Integer companyPhone, String companyLocation) {
+    public Admin(String username, String password, String email, String companyName, Integer companyPhone, String companyLocation) {
          this.username = username;
          this.password = password;
          this.email = email;
@@ -50,7 +50,7 @@ public class Admin {
      * {@code email='undefined-username'}, {@code companyName='undefined'}, 
      * {@code companyPhone=0} and {@code companyLocation='undefined'}
      */
-     Admin(String username, String password) {
+    public Admin(String username, String password) {
          this.username = username;
          this.password = password;
          this.email = "undefined-"+ this.username;

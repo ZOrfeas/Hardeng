@@ -28,7 +28,7 @@ public class PricePolicy {
 
     PricePolicy(){}
 
-    PricePolicy(Integer kWh, Integer costPerKWh){
+    public PricePolicy(Integer kWh, Integer costPerKWh){
         this.kWh = kWh; this.costPerKWh = costPerKWh;
     }
 

@@ -54,12 +54,12 @@ public class Driver {
     
     Driver(){}
 
-    Driver(String driverName, String username, String password, String email, Integer bonusPoints, Integer cardID, Integer walletID){
+    public Driver(String driverName, String username, String password, String email, Integer bonusPoints, Integer cardID, Integer walletID){
         this.driverName = driverName; this.username = username; this.password = Objects.hash(password); this.email = email; 
         this.bonusPoints = bonusPoints; this.cardID = cardID; this.walletID = walletID;
     }
 
-    Driver(String driverName, String username, String password, String email, Integer cardID, Integer walletID){
+    public Driver(String driverName, String username, String password, String email, Integer cardID, Integer walletID){
         this.driverName = driverName; this.username = username; this.password = Objects.hash(password); this.email = email; 
         this.bonusPoints = 0; this.cardID = cardID; this.walletID = walletID;
     } //maybe walletID = null

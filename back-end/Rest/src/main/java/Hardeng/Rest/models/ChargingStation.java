@@ -33,7 +33,7 @@ public class ChargingStation {
     private EnergyProvider eProvider;
 
     ChargingStation() {}
-    ChargingStation(Integer nrOfChargingPoints, Double longitude, Double latitude, Admin admin, EnergyProvider eProvider) {
+    public ChargingStation(Integer nrOfChargingPoints, Double longitude, Double latitude, Admin admin, EnergyProvider eProvider) {
         this.nrOfChargingPoints = nrOfChargingPoints; this.longitude = longitude; this.latitude = latitude;
         this.admin = admin; this.eProvider = eProvider;
     }

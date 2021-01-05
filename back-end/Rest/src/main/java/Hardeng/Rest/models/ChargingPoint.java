@@ -64,7 +64,7 @@ public class ChargingPoint {
      * @param condition The current operational condition/status of the point
      * @param isOccupied Stores whether it's being used at the moment.
      */
-    ChargingPoint(Double longitude, Double latitude, ChargingStation cStation , Integer maxOutput, Integer condition,  Boolean isOccupied) {
+    public ChargingPoint(Double longitude, Double latitude, ChargingStation cStation , Integer maxOutput, Integer condition,  Boolean isOccupied) {
         this.longitude = longitude; this.latitude = latitude; this.cStation = cStation; this.maxEnergyOutput = maxOutput;
         this.currentCondition = condition; this.isOccupied = isOccupied;
     }
@@ -73,7 +73,7 @@ public class ChargingPoint {
      * method with default {@code condition=0}(OPERATIONAL)
      * and {@code isOccupied=false}
      */
-    ChargingPoint(Double longitude, Double latitude, ChargingStation cStation, Integer maxOutput) {
+    public ChargingPoint(Double longitude, Double latitude, ChargingStation cStation, Integer maxOutput) {
         this.longitude = longitude; this.latitude = latitude; this.cStation = cStation; this.maxEnergyOutput = maxOutput;
         this.currentCondition = 0; this.isOccupied = false;
     }

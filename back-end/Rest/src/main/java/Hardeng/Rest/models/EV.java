@@ -27,7 +27,7 @@ public class EV {
 
     EV(){}
     
-    EV(String brandName,Integer batteryCapacity,String vehicleType,Driver driver){
+    public EV(String brandName,Integer batteryCapacity,String vehicleType,Driver driver){
         this.brandName = brandName; this.batteryCapacity = batteryCapacity; 
         this.vehicleType = vehicleType; this.driver = driver;
     }

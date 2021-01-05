@@ -52,7 +52,7 @@ public class ChargingSession {
      * Note: @param startedOn and @param finishedOn should be first parsed by {@link #parseTimestamp(String)}
      * e.x. ChargingSession(parseTimestamp("2020-05-01 12:30:00"), parseTimestamp("2020-05-01 13:30:00"), ...)
     */
-     ChargingSession(java.sql.Timestamp startedOn, java.sql.Timestamp finishedOn, Integer energyDelivered, String protocol, String payment, EV ev, ChargingPoint chargingPoint, PricePolicy pricePolicy) {
+    public ChargingSession(java.sql.Timestamp startedOn, java.sql.Timestamp finishedOn, Integer energyDelivered, String protocol, String payment, EV ev, ChargingPoint chargingPoint, PricePolicy pricePolicy) {
          this.startedOn = startedOn;
          this.finishedOn = finishedOn;
          this.energyDelivered = energyDelivered;

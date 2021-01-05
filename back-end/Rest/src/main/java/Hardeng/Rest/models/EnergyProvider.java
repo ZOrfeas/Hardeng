@@ -21,7 +21,7 @@ public class EnergyProvider {
     private Double pricePerKwh;
 
     EnergyProvider() {}
-    EnergyProvider(String name, Double pricePerKwh) {
+    public EnergyProvider(String name, Double pricePerKwh) {
         this.name = name; this.pricePerKwh = pricePerKwh;
     }
     
