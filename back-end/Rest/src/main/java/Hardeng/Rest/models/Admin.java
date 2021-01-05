@@ -9,13 +9,13 @@ public class Admin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer adminId;
 
-    @Column(unique = true, length = 10, nullable = false)
+    @Column(unique = true, length = 20, nullable = false)
     private String username;
-
+    
     @Column(length = 50, nullable = false)
     private String password;
 
-    @Column(unique = true, length = 20, nullable = false)
+    @Column(unique = true, length = 40, nullable = false)
     private String email;
 
     @Column(length = 20, nullable = false)
