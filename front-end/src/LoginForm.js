@@ -1,5 +1,4 @@
-import React from "react"
-import 'materialize-css/dist/css/materialize.min.css';
+import React from "react";
 
 class LoginForm extends React.Component{
     constructor(){
