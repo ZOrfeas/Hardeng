@@ -1,9 +1,11 @@
-package Hardeng.Rest.models;
+package Hardeng.Rest.repositories;
 
 import java.util.Collection;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import Hardeng.Rest.models.Admin;
 
 public interface AdminRepository extends JpaRepository<Admin, Integer> {
     

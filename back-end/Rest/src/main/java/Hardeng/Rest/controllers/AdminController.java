@@ -1,8 +1,8 @@
 package Hardeng.Rest.controllers;
 
 import Hardeng.Rest.Constants;
-import Hardeng.Rest.models.AdminRepository;
-import Hardeng.Rest.models.ChargingSessionRepository;
+import Hardeng.Rest.repositories.AdminRepository;
+import Hardeng.Rest.repositories.ChargingSessionRepository;
 import Hardeng.Rest.models.Admin;
 
 // import java.util.Collection;
