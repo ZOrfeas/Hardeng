@@ -5,7 +5,7 @@ import Hardeng.Rest.models.AdminRepository;
 import Hardeng.Rest.models.ChargingSessionRepository;
 import Hardeng.Rest.models.Admin;
 
-import java.util.Collection;
+// import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +30,7 @@ public class AdminController {
     public String doHealthCheck() {
         String response = "OK";
         log.info("Beginning healthcheck...");
+        // can be probably accomplished with Connection.isValid(), just need to make the Connection part work first
         if(adRepository.doAPing().isEmpty()) {    // most likely needs a try catch statement to catch the possibility of no connection
             response = "failed";                // but could not find what exception to catch. Testing or any exception possibly solutions
         }
