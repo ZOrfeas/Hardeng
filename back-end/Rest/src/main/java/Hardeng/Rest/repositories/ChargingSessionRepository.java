@@ -10,6 +10,6 @@ import Hardeng.Rest.models.ChargingSession;
 
 public interface ChargingSessionRepository extends JpaRepository<ChargingSession, Integer> {
     
-    List<ChargingSession> findAllChargingPointAndByStartedOnBetween(
+    List<ChargingSession> findAllByChargingPointAndByStartedOnBetween(
         ChargingPoint cPoint, Timestamp dateFrom, Timestamp dateTo);
 }
