@@ -1,6 +1,6 @@
 package Hardeng.Rest.controllers;
 
-import Hardeng.Rest.Constants;
+import Hardeng.Rest.Utilities;
 import Hardeng.Rest.repositories.AdminRepository;
 import Hardeng.Rest.repositories.ChargingSessionRepository;
 import Hardeng.Rest.models.Admin;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AdminController {
     private static final Logger log = LoggerFactory.getLogger(AdminController.class);
-    private static final String endpointUrl = Constants.BASEURL + "/admin";
+    private static final String endpointUrl = Utilities.BASEURL + "/admin";
     private final AdminRepository adRepository;
     private final ChargingSessionRepository sessRepository;
 
