@@ -8,6 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.FetchType;
 import javax.persistence.CascadeType;
+
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -24,7 +27,7 @@ public class PricePolicy {
 
     //mappedBy references the pricePolicies, which we define with the corresponding JoinTable
     @ManyToMany(mappedBy = "pricePolicies", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    private Set<Driver> drivers; //= new HashSet<>();
+    private Set<Driver> drivers = new HashSet<>();
 
     PricePolicy(){}
 
@@ -39,5 +42,23 @@ public class PricePolicy {
 
     public void setkWh(Integer newKWh){this.kWh = newKWh;}
     public void setCostPerKWh(Integer newCostPerKWh){this.costPerKWh = newCostPerKWh;}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PricePolicy)) return false;
+        PricePolicy u = (PricePolicy) o;
+        return Objects.equals(this.id, u.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id);
+    }
+
+    @Override
+    public String toString() {
+        return "PricePolicy{" + "id=" + this.id + ", kWh=" + this.kWh + ", costPerKWh=" + this.costPerKWh+ "}";
+    }
 
 }

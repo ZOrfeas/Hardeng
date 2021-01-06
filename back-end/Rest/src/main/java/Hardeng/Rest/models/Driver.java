@@ -1,5 +1,6 @@
 package Hardeng.Rest.models;
 
+import java.util.HashSet;
 import java.util.Objects;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
@@ -49,7 +50,7 @@ public class Driver {
             joinColumns = {@JoinColumn(name = "driverID")},
             inverseJoinColumns = {@JoinColumn(name = "pricePolicyID")}
     )
-    private Set<PricePolicy> pricePolicies; //= new HashSet<>();;
+    private Set<PricePolicy> pricePolicies = new HashSet<>();
 
     
     Driver(){}
@@ -73,7 +74,7 @@ public class Driver {
     public Integer getCardID(){return this.cardID;}
     public Integer getWalletID(){return this.walletID;}
     public Integer getBonusPoints(){return this.bonusPoints;}
-    public Set<PricePolicy> getPricePolicy(){return pricePolicies;}
+    public Set<PricePolicy> getPricePolicies(){return pricePolicies;}
 
 
     public void setDriverName(String newDriverName){this.driverName = newDriverName;}
@@ -83,6 +84,25 @@ public class Driver {
     public void setCardID(Integer newCardID){this.cardID = newCardID;}
     public void setWalletID(Integer newWalletID){this.walletID = newWalletID;}
     public void setBonusPoints(Integer newBonusPoints){this.bonusPoints = newBonusPoints;}
+
+    /**
+     * Handles the addition of a PricePolicy to a Driver
+     * @param newPricePolicy PricePolicy to be added
+     */
+    public void addPricePolicy(PricePolicy newPricePolicy) {
+        this.pricePolicies.add(newPricePolicy);
+        newPricePolicy.getDrivers().add(this);
+    }
+
+    /**
+     * Handles the removal of a PricePolicy from a Driver
+     * @param rmPricePolicy PricePolicy to be removed
+     */
+    public void removePricePolicy(PricePolicy rmPricePolicy) {
+        this.pricePolicies.remove(rmPricePolicy);
+        rmPricePolicy.getDrivers().remove(this);
+    }
+    
 
     @Override
     public boolean equals(Object o) {
