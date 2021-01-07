@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import java.util.Set;
-import java.util.HashSet;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.FetchType;
