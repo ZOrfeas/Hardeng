@@ -10,12 +10,13 @@ import Hardeng.Rest.models.Admin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping(Utilities.BASEURL + "/admin")
 public class AdminController {
     private static final Logger log = LoggerFactory.getLogger(AdminController.class);
-    private static final String endpointUrl = Utilities.BASEURL + "/admin";
     private final AdminRepository adRepository;
     private final ChargingSessionRepository sessRepository;
 
@@ -26,7 +27,7 @@ public class AdminController {
 
     // this can probably not be made to work but would be nice :D
     // @GetMapping(value = endpointUrl + "/healthcheck", produces = Constants.FORMATS)
-    @GetMapping(value = endpointUrl + "/healthcheck", produces = {"application/json", "text/csv"})
+    @GetMapping(value = "/healthcheck", produces = {"application/json", "text/csv"})
     public String doHealthCheck() {
         String response = "OK";
         log.info("Beginning healthcheck...");
@@ -39,7 +40,7 @@ public class AdminController {
         return "{\"status\":\"" + response +"\"}";
     }
 
-    @GetMapping(value = endpointUrl + "/resetsessions", produces = {"application/json", "text/csv"})
+    @GetMapping(value = "/resetsessions", produces = {"application/json", "text/csv"})
     public String resetSessions() {
         String response = "OK";
         Admin defaultAdmin;
