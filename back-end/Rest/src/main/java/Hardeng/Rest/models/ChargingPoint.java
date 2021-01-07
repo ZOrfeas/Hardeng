@@ -1,6 +1,8 @@
 package Hardeng.Rest.models;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -10,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.springframework.data.geo.Point;
 
@@ -37,6 +40,9 @@ public class ChargingPoint {
     
     @Column(nullable = false, length = 8)
     private Integer currentCondition; 
+
+    @OneToMany(mappedBy = "chargingPoint")
+    private List<ChargingSession> cSessions = new ArrayList<>();
     
     public enum Condition {
         Operational(0), Down(-1), UnderRepairs(1), NeedsCheck(2), UnderConstruction(3);
@@ -64,9 +70,9 @@ public class ChargingPoint {
      * @param condition The current operational condition/status of the point
      * @param isOccupied Stores whether it's being used at the moment.
      */
-    public ChargingPoint(Double longitude, Double latitude, ChargingStation cStation , Integer maxOutput, Integer condition,  Boolean isOccupied) {
+    public ChargingPoint(Double longitude, Double latitude, ChargingStation cStation , Integer maxOutput, Condition condition,  Boolean isOccupied) {
         this.longitude = longitude; this.latitude = latitude; this.cStation = cStation; this.maxEnergyOutput = maxOutput;
-        this.currentCondition = condition; this.isOccupied = isOccupied;
+        this.currentCondition = condition.value; this.isOccupied = isOccupied;
     }
     /** 
      * Overload of the {@link #Point(Double, Double, Integer, Integer, Integer, Boolean)} 
@@ -88,6 +94,7 @@ public class ChargingPoint {
     public ChargingStation getCStation() {return this.cStation;}
     /** @return Point where X is latitude and Y is longitude */
     public Point getCoordinates() {return (new Point(this.latitude, this.longitude));}
+    public List<ChargingSession> getCSessions() {return this.cSessions;}
 
     public void setLatitude(Double newLatitude) {this.latitude = newLatitude;}
     public void setLongitude(Double newLongitude) {this.longitude = newLongitude;}
@@ -98,7 +105,11 @@ public class ChargingPoint {
     public void setCStation(ChargingStation cStation) {this.cStation = cStation;}
     /** @param newCoordinates contains latitude as its X(first) value and longitude as its Y(second) value */
     public void setCoordinates(Point newCoordinates) {this.latitude = newCoordinates.getX(); this.longitude = newCoordinates.getY();}
-
+    public void addCSession(ChargingSession newCSession) {
+        this.cSessions.add(newCSession);
+        newCSession.setChargingPoint(this);
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -4,10 +4,12 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import Hardeng.Rest.models.ChargingPoint;
 import Hardeng.Rest.models.ChargingSession;
 
+@Repository
 public interface ChargingSessionRepository extends JpaRepository<ChargingSession, Integer> {
     
     /**

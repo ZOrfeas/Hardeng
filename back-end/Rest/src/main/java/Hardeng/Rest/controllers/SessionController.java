@@ -20,31 +20,24 @@ import Hardeng.Rest.exceptions.ChargingPointNotFoundException;
 public class SessionController {
     private static final Logger log = LoggerFactory.getLogger(SessionController.class);
     private static final String endpointUrl = Utilities.BASEURL;
-    private final ChargingSessionRepository sessRepository;
-    private final ChargingPointRepository pointRepository;
 
-    SessionController(ChargingSessionRepository sessRepository, ChargingPointRepository pointRepository) {
-        this.sessRepository = sessRepository;
-        this.pointRepository = pointRepository;
-    }
-
-    @GetMapping(value = endpointUrl + "/SessionsPerPoint/{pointId}/{dateFrom}/{dateTo}",
-     produces = {"application/json", "text/csv"})
-    public List<ChargingSession> sessionsPerPoint(@PathVariable Integer pointId,
-     @PathVariable String dateFrom, @PathVariable String dateTo) {
+    // @GetMapping(value = endpointUrl + "/SessionsPerPoint/{pointId}/{dateFrom}/{dateTo}",
+    //  produces = {"application/json", "text/csv"})
+    // public List<ChargingSession> sessionsPerPoint(@PathVariable Integer pointId,
+    //  @PathVariable String dateFrom, @PathVariable String dateTo) {
         
-        log.info("Read request for all ChargingSessions in"+ 
-         "{" + dateFrom + ", " + dateTo + "} for ChargingPoint with id {"+
-         pointId + "}");
-        Timestamp queryDateFrom = Utilities.timestampFromString(dateFrom,
-         Utilities.DATE_FORMAT);
-        Timestamp queryDateTo = Utilities.timestampFromString(dateTo,
-         Utilities.DATE_FORMAT);
-        log.info("Fetching ChargingPoint entry...");
-        ChargingPoint queryPoint = pointRepository.findById(pointId)
-         .orElseThrow(() -> new ChargingPointNotFoundException(pointId));
-        log.info("Fetching ChargingSessions...");
-        return sessRepository.findByChargingPointIdAndByStartedOnBetween(//note: might need to findBy ChargingPointId
-         queryPoint, queryDateFrom, queryDateTo);
-    }
+    //     log.info("Read request for all ChargingSessions in"+ 
+    //      "{" + dateFrom + ", " + dateTo + "} for ChargingPoint with id {"+
+    //      pointId + "}");
+    //     Timestamp queryDateFrom = Utilities.timestampFromString(dateFrom,
+    //      Utilities.DATE_FORMAT);
+    //     Timestamp queryDateTo = Utilities.timestampFromString(dateTo,
+    //      Utilities.DATE_FORMAT);
+    //     log.info("Fetching ChargingPoint entry...");
+    //     ChargingPoint queryPoint = pointRepository.findById(pointId)
+    //      .orElseThrow(() -> new ChargingPointNotFoundException(pointId));
+    //     log.info("Fetching ChargingSessions...");
+    //     return sessRepository.findByChargingPointIdAndByStartedOnBetween(//note: might need to findBy ChargingPointId
+    //      queryPoint, queryDateFrom, queryDateTo);
+    // }
 }
