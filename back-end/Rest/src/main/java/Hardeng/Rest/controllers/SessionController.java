@@ -40,11 +40,11 @@ public class SessionController {
          Utilities.DATE_FORMAT);
         Timestamp queryDateTo = Utilities.timestampFromString(dateTo,
          Utilities.DATE_FORMAT);
-        log.info("Fetching ChargingPoint entity...");
-        ChargingPoint queryPoint = pointRepository.findById(pointId)
+        log.info("Validating ChargingPoint entity existence...");
+        pointRepository.findById(pointId)
          .orElseThrow(() -> new ChargingPointNotFoundException(pointId));
         log.info("Fetching ChargingSessions...");
-        return sessRepository.findAllChargingPointAndByStartedOnBetween(queryPoint,
-         queryDateFrom, queryDateTo);
+        return sessRepository.findByChargingPointIdAndByStartedOnBetween(//note: might need to findBy ChargingPoint Object instance
+         pointId, queryDateFrom, queryDateTo);
     }
 }

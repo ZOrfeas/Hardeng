@@ -5,11 +5,10 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import Hardeng.Rest.models.ChargingPoint;
 import Hardeng.Rest.models.ChargingSession;
 
 public interface ChargingSessionRepository extends JpaRepository<ChargingSession, Integer> {
     
-    List<ChargingSession> findAllByChargingPointAndByStartedOnBetween(
-        ChargingPoint cPoint, Timestamp dateFrom, Timestamp dateTo);
+    List<ChargingSession> findByChargingPointIdAndByStartedOnBetween(
+        Integer cPointId, Timestamp dateFrom, Timestamp dateTo);
 }
