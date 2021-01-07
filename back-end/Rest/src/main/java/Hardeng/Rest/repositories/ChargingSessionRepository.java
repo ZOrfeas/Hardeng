@@ -5,10 +5,20 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import Hardeng.Rest.models.ChargingPoint;
 import Hardeng.Rest.models.ChargingSession;
 
 public interface ChargingSessionRepository extends JpaRepository<ChargingSession, Integer> {
     
+    /**
+     * Fetches ChargingSessions that took place from
+     * {@code dateFrom} to {@code dateTo} at Charging Point
+     * {@code cPoint}
+     * @param cPoint ChargingPoint in question
+     * @param dateFrom start date
+     * @param dateTo end date
+     * @return List with charging points fulfilling query parameters
+     */
     List<ChargingSession> findByChargingPointIdAndByStartedOnBetween(
-        Integer cPointId, Timestamp dateFrom, Timestamp dateTo);
+        ChargingPoint cPoint, Timestamp dateFrom, Timestamp dateTo);
 }
