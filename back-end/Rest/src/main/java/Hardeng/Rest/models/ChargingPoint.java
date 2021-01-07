@@ -20,23 +20,20 @@ public class ChargingPoint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
-    private Double longitude;
-
-    @Column(nullable = false)
-    private Double latitude;
-
-    @ManyToOne
-    private ChargingStation cStation;
+    @Column(nullable = false, length = 8)
+    private Integer currentCondition; 
 
     @Column(nullable = false)
     private Integer maxEnergyOutput;
 
     @Column(nullable = false)
     private Boolean isOccupied;
-    
-    @Column(nullable = false, length = 8)
-    private Integer currentCondition; 
+
+    @Column(nullable = false)
+    private Integer chargerType;
+
+    @ManyToOne
+    private ChargingStation cStation;
     
     public enum Condition {
         Operational(0), Down(-1), UnderRepairs(1), NeedsCheck(2), UnderConstruction(3);
@@ -57,47 +54,41 @@ public class ChargingPoint {
     ChargingPoint() {}
     /**
      * Point entity constructor.
-     * @param longitude self-explanatory
-     * @param latitude self-explanatory
-     * @param operatorId The Id of the Corresponding Point operator
-     * @param maxOutput The max power output this point is capable of
      * @param condition The current operational condition/status of the point
+     * @param maxOutput The max power output this point is capable of
      * @param isOccupied Stores whether it's being used at the moment.
+     * @param chargerType The type of charger offered (1,2 or 3)
+     * @param cStation The corresponding charging station containing this charging point
      */
-    public ChargingPoint(Double longitude, Double latitude, ChargingStation cStation , Integer maxOutput, Integer condition,  Boolean isOccupied) {
-        this.longitude = longitude; this.latitude = latitude; this.cStation = cStation; this.maxEnergyOutput = maxOutput;
-        this.currentCondition = condition; this.isOccupied = isOccupied;
+    public ChargingPoint(Integer condition, Integer maxOutput, Boolean isOccupied, Integer chargerType, ChargingStation cStation) {
+        this.currentCondition = condition; this.maxEnergyOutput = maxOutput;
+        this.isOccupied = isOccupied; this.chargerType = chargerType;
+        this.cStation = cStation;
     }
     /** 
-     * Overload of the {@link #Point(Double, Double, Integer, Integer, Integer, Boolean)} 
+     * Overload of the {@link #ChargingPoint(Integer, Integer, ChargingStation)} 
      * method with default {@code condition=0}(OPERATIONAL)
      * and {@code isOccupied=false}
      */
-    public ChargingPoint(Double longitude, Double latitude, ChargingStation cStation, Integer maxOutput) {
-        this.longitude = longitude; this.latitude = latitude; this.cStation = cStation; this.maxEnergyOutput = maxOutput;
+    public ChargingPoint(Integer maxOutput, Integer chargerType, ChargingStation cStation) {
+         this.maxEnergyOutput = maxOutput; this.chargerType = chargerType; this.cStation = cStation;
         this.currentCondition = 0; this.isOccupied = false;
     }
 
 
     public Integer getId() {return this.id;}
-    public Double getLatitude() {return this.latitude;}
-    public Double getLongitude() {return this.longitude;}
+    public Condition getCondition() {return Condition.meaningOfCode(this.currentCondition);}
     public Integer getMaxOutput() {return this.maxEnergyOutput;}
     public Boolean isOccupied() {return this.isOccupied;}
-    public Condition getCondition() {return Condition.meaningOfCode(this.currentCondition);}
+    public Integer getChargerType() {return this.chargerType;}
     public ChargingStation getCStation() {return this.cStation;}
-    /** @return Point where X is latitude and Y is longitude */
-    public Point getCoordinates() {return (new Point(this.latitude, this.longitude));}
 
-    public void setLatitude(Double newLatitude) {this.latitude = newLatitude;}
-    public void setLongitude(Double newLongitude) {this.longitude = newLongitude;}
+    public void setCondition(Condition status) {this.currentCondition = status.value;}
     public void setMaxOutput(Integer newMaxOutput) {this.maxEnergyOutput = newMaxOutput;}
     public void setIsOccupied() {this.isOccupied = true;}
     public void resetIsOccupied() {this.isOccupied = false;}
-    public void setCondition(Condition status) {this.currentCondition = status.value;}
+    public void setChargerType(Integer chargerType) {this.chargerType = chargerType;}
     public void setCStation(ChargingStation cStation) {this.cStation = cStation;}
-    /** @param newCoordinates contains latitude as its X(first) value and longitude as its Y(second) value */
-    public void setCoordinates(Point newCoordinates) {this.latitude = newCoordinates.getX(); this.longitude = newCoordinates.getY();}
 
     @Override
     public boolean equals(Object o) {
@@ -109,5 +100,6 @@ public class ChargingPoint {
     @Override
     public int hashCode() {return Objects.hash(this.id);}
     @Override
-    public String toString() {return "Point{" + "id=" + this.id + ", coordinates=[" + this.latitude + ", " + this.longitude + "]}";}
+    public String toString() {return "Point{" + "id=" + this.id + ", chargingStationID=" + this.cStation.getId() + ", Type=" 
+                                + this.chargerType + "}";}
 }

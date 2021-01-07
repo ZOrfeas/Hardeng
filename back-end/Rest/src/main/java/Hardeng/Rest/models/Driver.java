@@ -8,7 +8,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import java.util.Set;
+import java.util.HashSet;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.FetchType;
@@ -28,19 +30,19 @@ public class Driver {
     private String username;
     
     @Column(length = 64, nullable = false)
-    private Integer password;
+    private String password;
     
     @Column(unique = true, length = 32, nullable = false)
     private String email;
 
-    @Column
+    @Column(nullable = true)
     private Integer bonusPoints;
 
     @Column(unique = false, length = 32, nullable = true)
-    private Integer cardID;
+    private Long cardID;
 
     @Column(unique = false, length = 32, nullable = true)
-    private Integer walletID;
+    private Long walletID;
 
 
     //we use FetchType.EAGER (instead of lazy) to load all pricePolicies together
@@ -52,37 +54,45 @@ public class Driver {
     )
     private Set<PricePolicy> pricePolicies = new HashSet<>();
 
-    
+    //Cars belonging to Driver
+    @OneToMany(
+        mappedBy = "driver",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    private Set<CarDriver> driverCars = new HashSet<>();
+
     Driver(){}
 
-    public Driver(String driverName, String username, String password, String email, Integer bonusPoints, Integer cardID, Integer walletID){
-        this.driverName = driverName; this.username = username; this.password = Objects.hash(password); this.email = email; 
+    public Driver(String driverName, String username, String password, String email, Integer bonusPoints, Long cardID, Long walletID){
+        this.driverName = driverName; this.username = username; this.password = password; this.email = email; 
         this.bonusPoints = bonusPoints; this.cardID = cardID; this.walletID = walletID;
     }
 
-    public Driver(String driverName, String username, String password, String email, Integer cardID, Integer walletID){
-        this.driverName = driverName; this.username = username; this.password = Objects.hash(password); this.email = email; 
-        this.bonusPoints = 0; this.cardID = cardID; this.walletID = walletID;
-    } //maybe walletID = null
+    public Driver(String driverName, String username, String password, String email, Long cardID, Long walletID){
+        this.driverName = driverName; this.username = username; this.password = password; this.email = email; 
+        this.bonusPoints = 0; this.cardID = cardID; this.walletID = null; //maybe walletID = null
+    }
     
 
     public Integer getID() {return this.id;}
     public String getDriverName(){return this.driverName;}
     public String getUsername(){return this.username;}
     public String getEmail(){return this.email;}
-    public Integer getPassword(){return this.password;}
-    public Integer getCardID(){return this.cardID;}
-    public Integer getWalletID(){return this.walletID;}
+    public String getPassword(){return this.password;}
+    public Long getCardID(){return this.cardID;}
+    public Long getWalletID(){return this.walletID;}
     public Integer getBonusPoints(){return this.bonusPoints;}
     public Set<PricePolicy> getPricePolicies(){return pricePolicies;}
+    public Set<CarDriver> getCars() {return driverCars;} 
 
 
     public void setDriverName(String newDriverName){this.driverName = newDriverName;}
     public void setUsername(String newUsername){this.username = newUsername;}
     public void setEmail(String newEmail){this.email = newEmail;}
-    public void setPassword(String newPassword){this.password = Objects.hash(newPassword);}
-    public void setCardID(Integer newCardID){this.cardID = newCardID;}
-    public void setWalletID(Integer newWalletID){this.walletID = newWalletID;}
+    public void setPassword(String newPassword){this.password = newPassword;}
+    public void setCardID(Long newCardID){this.cardID = newCardID;}
+    public void setWalletID(Long newWalletID){this.walletID = newWalletID;}
     public void setBonusPoints(Integer newBonusPoints){this.bonusPoints = newBonusPoints;}
 
     /**
@@ -103,6 +113,25 @@ public class Driver {
         rmPricePolicy.getDrivers().remove(this);
     }
     
+    /**
+     * Handles the addition of a Car to a Driver
+     * @param car Car to be added
+     * @param currentCap CurrentCapacity of vehicle
+     */
+    public void addCar(Car car, Double currentCap) {
+        CarDriver carDriver = new CarDriver(this, car, currentCap);
+        driverCars.add(carDriver);
+        car.getDrivers().add(carDriver);
+    }
+
+    /**
+     * Handles the removal of a Car from a Driver
+     * @param rmCar Car to be removed
+     */
+     public void removeCar(Car rmCar) {
+        this.driverCars.remove(rmCar);
+        rmCar.getDrivers().remove(this);
+    }
 
     @Override
     public boolean equals(Object o) {

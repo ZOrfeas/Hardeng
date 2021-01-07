@@ -30,14 +30,15 @@ public class ChargingSession {
     private String payment;
 
     @ManyToOne
-    private EV ev;
-
-    @ManyToOne
     private ChargingPoint chargingPoint;
 
     @ManyToOne
     private PricePolicy pricePolicy;
     
+    
+    @ManyToOne
+    private CarDriver carDriver;
+
     ChargingSession() {}
     /**
      * ChargingSession entity constructor.
@@ -46,19 +47,19 @@ public class ChargingSession {
      * @param energyDelivered Total energy offered
      * @param protocol Charging protocol
      * @param payment Method of payment
-     * @param ev Electric vehicle being charged
      * @param chargingPoint Charging point being used
      * @param pricePolicy Price policy selected by the driver
+     * @param carDriver Electric vehicle being charged
      * Note: @param startedOn and @param finishedOn should be first parsed by {@link #parseTimestamp(String)}
      * e.x. ChargingSession(parseTimestamp("2020-05-01 12:30:00"), parseTimestamp("2020-05-01 13:30:00"), ...)
     */
-    public ChargingSession(java.sql.Timestamp startedOn, java.sql.Timestamp finishedOn, Integer energyDelivered, String protocol, String payment, EV ev, ChargingPoint chargingPoint, PricePolicy pricePolicy) {
+    public ChargingSession(java.sql.Timestamp startedOn, java.sql.Timestamp finishedOn, Integer energyDelivered, String protocol, String payment, ChargingPoint chargingPoint, PricePolicy pricePolicy, CarDriver carDriver) {
          this.startedOn = startedOn;
          this.finishedOn = finishedOn;
          this.energyDelivered = energyDelivered;
          this.protocol = protocol;
          this.payment = payment;
-         this.ev = ev;
+         this.carDriver = carDriver;
          this.chargingPoint = chargingPoint;
          this.pricePolicy = pricePolicy;
      }
@@ -88,8 +89,8 @@ public class ChargingSession {
         return this.payment;
     }
 
-    public EV getEv () {
-        return this.ev;
+    public CarDriver getCarDriver () {
+        return this.carDriver;
     }
 
     public ChargingPoint getChargingPoint () {
@@ -121,8 +122,8 @@ public class ChargingSession {
         this.payment = payment;
     }
 
-    public void setEv (EV ev) {
-        this.ev = ev;
+    public void setCarDriver (CarDriver carDriver) {
+        this.carDriver = carDriver;
     }
 
     public void setChargingPoint (ChargingPoint chargingPoint) {
@@ -147,16 +148,16 @@ public class ChargingSession {
         if (this == o) return true;
         if (!(o instanceof ChargingSession)) return false;
         ChargingSession s = (ChargingSession) o;
-        return Objects.equals(this.sessionId, s.sessionId) && Objects.equals(this.ev, s.ev);
+        return Objects.equals(this.sessionId, s.sessionId) && Objects.equals(this.carDriver, s.carDriver);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.sessionId, this.ev);
+        return Objects.hash(this.sessionId, this.carDriver);
     }
 
     @Override
     public String toString() {
-        return "ChargingSession{" + "sessionId:" + this.sessionId + ", electricVehicle:\"" + this.ev + "\"}";
+        return "ChargingSession{" + "sessionId:" + this.sessionId + ", electricVehicle:\"" + this.carDriver.getCar() + "\"}";
     }
 }
