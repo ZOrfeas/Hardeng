@@ -7,24 +7,24 @@ import javax.persistence.*;
 public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer adminId;
+    private Integer id;
 
-    @Column(unique = true, length = 20, nullable = false)
+    @Column(unique = true, length = 32, nullable = false)
     private String username;
     
-    @Column(length = 50, nullable = false)
+    @Column(length = 64, nullable = false)
     private String password;
 
-    @Column(unique = true, length = 40, nullable = false)
+    @Column(unique = true, length = 32, nullable = true)
     private String email;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 50, nullable = false)
     private String companyName;
     
-    @Column(length = 10, nullable = false)
-    private Integer companyPhone;
+    @Column(length = 20, nullable = true)
+    private String companyPhone;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 50, nullable = true)
     private String companyLocation;
 
     Admin() {}
@@ -37,7 +37,7 @@ public class Admin {
      * @param companyPhone self-explanatory
      * @param companyLocation The address of the company
     */
-    public Admin(String username, String password, String email, String companyName, Integer companyPhone, String companyLocation) {
+    public Admin(String username, String password, String email, String companyName, String companyPhone, String companyLocation) {
          this.username = username;
          this.password = password;
          this.email = email;
@@ -47,21 +47,21 @@ public class Admin {
      }
      /** 
      * Overload of the {@link #Admin(String, String, String, String, Integer, String)} method with undefined
-     * {@code email='undefined-username'}, {@code companyName='undefined'}, 
-     * {@code companyPhone=0} and {@code companyLocation='undefined'}
+     * {@code email=null}, {@code companyName='undefined'}, 
+     * {@code companyPhone=null} and {@code companyLocation=null}
      */
     public Admin(String username, String password) {
          this.username = username;
          this.password = password;
-         this.email = "undefined-"+ this.username;
+         this.email = null;
          this.companyName = "undefined";
-         this.companyPhone = 0;
-         this.companyLocation = "undefined";
+         this.companyPhone = null;
+         this.companyLocation = null;
      }
 
     /* Getter methods */
-    public Integer getAdminId () {
-        return this.adminId;
+    public Integer getId () {
+        return this.id;
     }
 
     public String getUsername () {
@@ -80,7 +80,7 @@ public class Admin {
         return this.companyName;
     }
 
-    public Integer getCompanyPhone () {
+    public String getCompanyPhone () {
         return this.companyPhone;
     }
 
@@ -105,7 +105,7 @@ public class Admin {
         this.companyName = companyName;
     }
 
-    public void setCompanyPhone (Integer companyPhone) {
+    public void setCompanyPhone (String companyPhone) {
         this.companyPhone = companyPhone;
     }
 
@@ -118,16 +118,16 @@ public class Admin {
         if (this == o) return true;
         if (!(o instanceof Admin)) return false;
         Admin a = (Admin) o;
-        return Objects.equals(this.adminId, a.adminId) && Objects.equals(this.username, a.username);
+        return Objects.equals(this.id, a.id) && Objects.equals(this.username, a.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.adminId, this.username);
+        return Objects.hash(this.id, this.username);
     }
 
     @Override
     public String toString() {
-        return "Admin{" + "adminId:" + this.adminId + ", username:\"" + this.username + "\"}";
+        return "Admin{" + "adminId:" + this.id + ", username:\"" + this.username + "\"}";
     }
 }

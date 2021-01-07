@@ -26,6 +26,9 @@ public class ChargingStation {
     @Column(nullable = false)
     private Double latitude;
 
+    @Column(nullable = true, length = 50)
+    private String addressLine;
+
     @ManyToOne
     private Admin admin;
 
@@ -33,8 +36,8 @@ public class ChargingStation {
     private EnergyProvider eProvider;
 
     ChargingStation() {}
-    public ChargingStation(Integer nrOfChargingPoints, Double longitude, Double latitude, Admin admin, EnergyProvider eProvider) {
-        this.nrOfChargingPoints = nrOfChargingPoints; this.longitude = longitude; this.latitude = latitude;
+    public ChargingStation(Integer nrOfChargingPoints, Double longitude, Double latitude, String addressLine, Admin admin, EnergyProvider eProvider) {
+        this.nrOfChargingPoints = nrOfChargingPoints; this.longitude = longitude; this.latitude = latitude; this.addressLine = addressLine;
         this.admin = admin; this.eProvider = eProvider;
     }
 
@@ -42,6 +45,7 @@ public class ChargingStation {
     public Integer getNrOfChargingPoints() {return this.nrOfChargingPoints;}
     public Double getLongitude() {return this.longitude;}
     public Double getLatitude() {return this.latitude;}
+    public String getAddressLine() {return this.addressLine;}
     public Admin getAdmin() {return this.admin;}
     public EnergyProvider getEnergyProvider() {return this.eProvider;}
     /** @return Point where X is latitude and Y is longitude */
@@ -50,6 +54,7 @@ public class ChargingStation {
     public void setNrOfChargingPoints(Integer amount) {this.nrOfChargingPoints = amount;}
     public void setLatitude(Double newLatitude) {this.latitude = newLatitude;}
     public void setLongitude(Double newLongitude) {this.longitude = newLongitude;}
+    public void setAddressLine(String newAddressLine) {this.addressLine = newAddressLine;}
     public void setAdmin(Admin newAdmin) {this.admin = newAdmin;}
     public void setEnergyProvider(EnergyProvider newEProvider) {this.eProvider = newEProvider;}
     /** @param newCoordinates contains latitude as its X(first) value and longitude as its Y(second) value */

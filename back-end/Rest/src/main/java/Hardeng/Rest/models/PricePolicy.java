@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.FetchType;
 import javax.persistence.CascadeType;
 
@@ -24,6 +25,9 @@ public class PricePolicy {
 
     @Column(nullable = false)
     private Integer costPerKWh;
+    
+    @ManyToOne
+    private Admin admin;
 
     //mappedBy references the pricePolicies, which we define with the corresponding JoinTable
     @ManyToMany(mappedBy = "pricePolicies", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
@@ -31,17 +35,20 @@ public class PricePolicy {
 
     PricePolicy(){}
 
-    public PricePolicy(Integer kWh, Integer costPerKWh){
+    public PricePolicy(Integer kWh, Integer costPerKWh, Admin admin){
         this.kWh = kWh; this.costPerKWh = costPerKWh;
+        this.admin = admin;
     }
 
     public Integer getID(){return this.id;}
     public Integer getKWh(){return this.kWh;}
     public Integer getCostPerKWh(){return this.costPerKWh;}
+    public Admin getAdmin() {return this.admin;}
     public Set<Driver> getDrivers(){return drivers;}
 
     public void setkWh(Integer newKWh){this.kWh = newKWh;}
     public void setCostPerKWh(Integer newCostPerKWh){this.costPerKWh = newCostPerKWh;}
+    public void setAdmin(Admin newAdmin) {this.admin = newAdmin;}
 
     @Override
     public boolean equals(Object o) {
