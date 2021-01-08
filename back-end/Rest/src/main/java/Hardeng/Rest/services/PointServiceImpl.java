@@ -74,7 +74,7 @@ public class PointServiceImpl implements PointService {
         SessPointObject(Timestamp from, Timestamp to,
          ChargingPoint cPoint, List<ChargingSession> cSessions){
             this.point = cPoint.getId().toString();
-            this.pointOperator = cPoint.getCStation().getAdmin().toString();
+            this.pointOperator = cPoint.getCStation().getAdmin().getId().toString();
             this.requestTimeStamp = Utilities.TIMESTAMP_FORMAT.format(new Date());
             this.periodFrom = Utilities.TIMESTAMP_FORMAT.format(from);
             this.periodTo = Utilities.TIMESTAMP_FORMAT.format(to);
