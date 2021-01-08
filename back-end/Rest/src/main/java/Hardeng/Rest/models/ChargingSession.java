@@ -42,7 +42,6 @@ public class ChargingSession {
      * @param startedOn Τimestamp of the begining of the charging session
      * @param finishedOn Τimestamp of the ending of the charging session
      * @param energyDelivered Total energy offered
-     * @param protocol Charging protocol
      * @param payment Method of payment
      * @param chargingPoint Charging point being used
      * @param pricePolicy Price policy selected by the driver
@@ -50,11 +49,10 @@ public class ChargingSession {
      * Note: @param startedOn and @param finishedOn should be first parsed by {@link #parseTimestamp(String)}
      * e.x. ChargingSession(parseTimestamp("2020-05-01 12:30:00"), parseTimestamp("2020-05-01 13:30:00"), ...)
     */
-    public ChargingSession(java.sql.Timestamp startedOn, java.sql.Timestamp finishedOn, Integer energyDelivered, String protocol, String payment, ChargingPoint chargingPoint, PricePolicy pricePolicy, CarDriver carDriver) {
+    public ChargingSession(java.sql.Timestamp startedOn, java.sql.Timestamp finishedOn, Integer energyDelivered, String payment, ChargingPoint chargingPoint, PricePolicy pricePolicy, CarDriver carDriver) {
          this.startedOn = startedOn;
          this.finishedOn = finishedOn;
          this.energyDelivered = energyDelivered;
-         this.protocol = protocol;
          this.payment = payment;
          this.carDriver = carDriver;
          this.chargingPoint = chargingPoint;
@@ -76,10 +74,6 @@ public class ChargingSession {
 
     public Integer getEnergyDelivered () {
         return this.energyDelivered;
-    }
-
-    public String getProtocol () {
-        return this.protocol;
     }
 
     public String getPayment () {
@@ -109,10 +103,6 @@ public class ChargingSession {
 
     public void setEnergyDelivered (Integer energyDelivered) {
         this.energyDelivered = energyDelivered;
-    }
-
-    public void setProtocol (String protocol) {
-        this.protocol = protocol;
     }
 
     public void setPayment (String payment) {
