@@ -16,11 +16,11 @@ public interface ChargingSessionRepository extends JpaRepository<ChargingSession
      * Fetches ChargingSessions that took place from
      * {@code dateFrom} to {@code dateTo} at Charging Point
      * {@code cPoint}
-     * @param cPoint ChargingPoint in question
      * @param dateFrom start date
      * @param dateTo end date
+     * @param cPoint ChargingPoint in question
      * @return List with charging points fulfilling query parameters
      */
-    List<ChargingSession> findByChargingPointIdAndByStartedOnBetween(
-        ChargingPoint cPoint, Timestamp dateFrom, Timestamp dateTo);
+    List<ChargingSession> findByStartedOnBetweenAndChargingPoint(
+        Timestamp dateFrom, Timestamp dateTo, ChargingPoint cPoint);
 }
