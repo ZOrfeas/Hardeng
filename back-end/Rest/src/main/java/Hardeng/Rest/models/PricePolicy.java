@@ -44,7 +44,7 @@ public class PricePolicy {
     public Integer getKWh(){return this.kWh;}
     public Integer getCostPerKWh(){return this.costPerKWh;}
     public Admin getAdmin() {return this.admin;}
-    public Set<Driver> getDrivers(){return drivers;}
+    public Set<Driver> getDrivers(){return this.drivers;}
 
     public void setkWh(Integer newKWh){this.kWh = newKWh;}
     public void setCostPerKWh(Integer newCostPerKWh){this.costPerKWh = newCostPerKWh;}
