@@ -12,7 +12,7 @@ import Hardeng.Rest.models.Admin;
 @Repository
 public interface AdminRepository extends JpaRepository<Admin, Integer> {
     
-    @Query(value = "SELECT 1", nativeQuery = true)
+    @Query(value = "/* ping */ SELECT 1", nativeQuery = true)
     Collection<Object> doAPing();
 
     Optional<Admin> findByUsername(String username);
