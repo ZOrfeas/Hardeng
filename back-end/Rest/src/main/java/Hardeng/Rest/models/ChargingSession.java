@@ -23,9 +23,6 @@ public class ChargingSession {
     @Column(length = 10, nullable = false)
     private Integer energyDelivered;
 
-    @Column(length = 20, nullable = false)
-    private String protocol;
-
     @Column(length = 10, nullable = false)
     private String payment;
 
