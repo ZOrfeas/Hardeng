@@ -48,7 +48,7 @@ public class PointServiceImpl implements PointService {
             this.sessionIndex = index;
             this.startedOn = Utilities.TIMESTAMP_FORMAT.format(cSession.getStartedOn());
             this.finishedOn = Utilities.TIMESTAMP_FORMAT.format(cSession.getFinishedOn());
-            this.protocol = cSession.getPricePolicy().toString();
+            this.protocol = cSession.getPricePolicy().toString(); // note to self. Check this more !!!
             this.energyDelivered =  cSession.getEnergyDelivered().floatValue();
             this.payment = cSession.getPayment();
 
@@ -74,7 +74,7 @@ public class PointServiceImpl implements PointService {
         SessPointObject(Timestamp from, Timestamp to,
          ChargingPoint cPoint, List<ChargingSession> cSessions){
             this.point = cPoint.getId().toString();
-            this.pointOperator = cPoint.getCStation().getAdmin().getId().toString();
+            this.pointOperator = cPoint.getCStation().getAdmin().getCompanyName();
             this.requestTimeStamp = Utilities.TIMESTAMP_FORMAT.format(new Date());
             this.periodFrom = Utilities.TIMESTAMP_FORMAT.format(from);
             this.periodTo = Utilities.TIMESTAMP_FORMAT.format(to);
