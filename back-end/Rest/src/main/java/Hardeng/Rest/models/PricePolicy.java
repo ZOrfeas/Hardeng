@@ -24,7 +24,7 @@ public class PricePolicy {
     private Integer kWh;
 
     @Column(nullable = false)
-    private Integer costPerKWh;
+    private Float costPerKWh;
     
     @ManyToOne
     private Admin admin;
@@ -35,19 +35,19 @@ public class PricePolicy {
 
     PricePolicy(){}
 
-    public PricePolicy(Integer kWh, Integer costPerKWh, Admin admin){
+    public PricePolicy(Integer kWh, Float costPerKWh, Admin admin){
         this.kWh = kWh; this.costPerKWh = costPerKWh;
         this.admin = admin;
     }
 
     public Integer getID(){return this.id;}
     public Integer getKWh(){return this.kWh;}
-    public Integer getCostPerKWh(){return this.costPerKWh;}
+    public Float getCostPerKWh(){return this.costPerKWh;}
     public Admin getAdmin() {return this.admin;}
     public Set<Driver> getDrivers(){return this.drivers;}
 
     public void setkWh(Integer newKWh){this.kWh = newKWh;}
-    public void setCostPerKWh(Integer newCostPerKWh){this.costPerKWh = newCostPerKWh;}
+    public void setCostPerKWh(Float newCostPerKWh){this.costPerKWh = newCostPerKWh;}
     public void setAdmin(Admin newAdmin) {this.admin = newAdmin;}
 
     @Override
