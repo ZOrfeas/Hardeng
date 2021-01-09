@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.opencsv.bean.CsvBindByName;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +29,10 @@ public class PointServiceImpl implements PointService {
     @Autowired
     private ChargingSessionRepository cSessRepo;
 
+
     public static class SessionObject {
         @JsonProperty("SessionIndex")
+        // @CsvBindByName()
         private Integer sessionIndex;
         @JsonProperty("StartedOn")
         private String startedOn;
