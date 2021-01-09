@@ -27,6 +27,6 @@ public class ResponseConfig implements WebMvcConfigurer{
 
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-
+        converters.add(new CsvHttpMessageConverter());
     }
 }

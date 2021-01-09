@@ -17,6 +17,7 @@ import Hardeng.Rest.Utilities;
 import Hardeng.Rest.exceptions.ChargingPointNotFoundException;
 import Hardeng.Rest.models.ChargingPoint;
 import Hardeng.Rest.models.ChargingSession;
+import Hardeng.Rest.models.PricePolicy;
 import Hardeng.Rest.repositories.ChargingPointRepository;
 import Hardeng.Rest.repositories.ChargingSessionRepository;
 
@@ -29,50 +30,80 @@ public class PointServiceImpl implements PointService {
     @Autowired
     private ChargingSessionRepository cSessRepo;
 
+    public static class ProtocolObject {
+        @JsonProperty("ProtocolID")
+        @CsvBindByName
+        private Integer protocolId;
+        @JsonProperty("CostPerKWh")
+        @CsvBindByName
+        private Float costPerKWh;
+
+        ProtocolObject(PricePolicy pPolicy) {
+            this.protocolId = pPolicy.getID();
+            this.costPerKWh = pPolicy.getCostPerKWh().floatValue();
+        }
+    }
 
     public static class SessionObject {
         @JsonProperty("SessionIndex")
-        // @CsvBindByName()
+        @CsvBindByName
         private Integer sessionIndex;
+        @JsonProperty("SessionID")
+        @CsvBindByName
+        private Integer sessionId;
         @JsonProperty("StartedOn")
+        @CsvBindByName
         private String startedOn;
         @JsonProperty("FinishedOn")
+        @CsvBindByName
         private String finishedOn;
         @JsonProperty("Protocol")
-        private String protocol;
+        @CsvBindByName
+        private ProtocolObject protocol;
         @JsonProperty("EnergyDelivered")
+        @CsvBindByName
         private Float energyDelivered;
         @JsonProperty("Payment")
+        @CsvBindByName
         private String payment;
         @JsonProperty("VehicleType")
+        @CsvBindByName
         private String vehicleType;
 
         SessionObject(Integer index, ChargingSession cSession) {
             this.sessionIndex = index;
+            this.sessionId = cSession.getSessionId();
             this.startedOn = Utilities.TIMESTAMP_FORMAT.format(cSession.getStartedOn());
             this.finishedOn = Utilities.TIMESTAMP_FORMAT.format(cSession.getFinishedOn());
-            this.protocol = cSession.getPricePolicy().toString(); // note to self. Check this more !!!
+            this.protocol = new ProtocolObject(cSession.getPricePolicy()); // note to self. Check this more !!!
             this.energyDelivered =  cSession.getEnergyDelivered().floatValue();
             this.payment = cSession.getPayment();
-
+            this.vehicleType = cSession.getCarDriver().getCar().getModel();
         }
     }
-
+    
     public static class SessPointObject {
         @JsonProperty("Point")
+        @CsvBindByName
         private String point;
         @JsonProperty("PointOperator")
+        @CsvBindByName
         private String pointOperator;
         @JsonProperty("RequestTimeStamp")
+        @CsvBindByName
         private String requestTimeStamp;
         @JsonProperty("PeriodFrom")
+        @CsvBindByName
         private String periodFrom;
         @JsonProperty("PeriodTo")
+        @CsvBindByName
         private String periodTo;
         @JsonProperty("NumberOfChargingSessions")
+        @CsvBindByName
         private Integer numberOfChargingSessions;
         @JsonProperty("ChargingSessionsList")
-        List<SessionObject> chargingSessionsList = new ArrayList<>();
+        @CsvBindByName
+        private List<SessionObject> chargingSessionsList = new ArrayList<>();
 
         SessPointObject(Timestamp from, Timestamp to,
          ChargingPoint cPoint, List<ChargingSession> cSessions){
