@@ -40,7 +40,7 @@ public class PointServiceImpl implements PointService {
 
         ProtocolObject(PricePolicy pPolicy) {
             this.protocolId = pPolicy.getID();
-            this.costPerKWh = pPolicy.getCostPerKWh().floatValue();
+            this.costPerKWh = pPolicy.getCostPerKWh();
         }
     }
 
@@ -76,7 +76,7 @@ public class PointServiceImpl implements PointService {
             this.startedOn = Utilities.TIMESTAMP_FORMAT.format(cSession.getStartedOn());
             this.finishedOn = Utilities.TIMESTAMP_FORMAT.format(cSession.getFinishedOn());
             this.protocol = new ProtocolObject(cSession.getPricePolicy()); // note to self. Check this more !!!
-            this.energyDelivered =  cSession.getEnergyDelivered().floatValue();
+            this.energyDelivered =  cSession.getEnergyDelivered();
             this.payment = cSession.getPayment();
             this.vehicleType = cSession.getCarDriver().getCar().getModel();
         }

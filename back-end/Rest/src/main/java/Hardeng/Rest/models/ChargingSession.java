@@ -21,7 +21,7 @@ public class ChargingSession {
     private java.sql.Timestamp finishedOn;
 
     @Column(length = 10, nullable = false)
-    private Integer energyDelivered;
+    private Float energyDelivered;
 
     @Column(length = 10, nullable = false)
     private String payment;
@@ -49,7 +49,7 @@ public class ChargingSession {
      * Note: @param startedOn and @param finishedOn should be first parsed by {@link #parseTimestamp(String)}
      * e.x. ChargingSession(parseTimestamp("2020-05-01 12:30:00"), parseTimestamp("2020-05-01 13:30:00"), ...)
     */
-    public ChargingSession(java.sql.Timestamp startedOn, java.sql.Timestamp finishedOn, Integer energyDelivered, String payment, ChargingPoint chargingPoint, PricePolicy pricePolicy, CarDriver carDriver) {
+    public ChargingSession(java.sql.Timestamp startedOn, java.sql.Timestamp finishedOn, Float energyDelivered, String payment, ChargingPoint chargingPoint, PricePolicy pricePolicy, CarDriver carDriver) {
          this.startedOn = startedOn;
          this.finishedOn = finishedOn;
          this.energyDelivered = energyDelivered;
@@ -72,7 +72,7 @@ public class ChargingSession {
         return this.finishedOn;
     }
 
-    public Integer getEnergyDelivered () {
+    public Float getEnergyDelivered () {
         return this.energyDelivered;
     }
 
@@ -101,7 +101,7 @@ public class ChargingSession {
         this.finishedOn = finishedOn;
     }
 
-    public void setEnergyDelivered (Integer energyDelivered) {
+    public void setEnergyDelivered (Float energyDelivered) {
         this.energyDelivered = energyDelivered;
     }
 
