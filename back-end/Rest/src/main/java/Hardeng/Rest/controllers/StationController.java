@@ -9,22 +9,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import Hardeng.Rest.Utilities;
-import Hardeng.Rest.services.PointService;
-import Hardeng.Rest.services.PointServiceImpl.SessPointObject;
+import Hardeng.Rest.services.StationService;
+import Hardeng.Rest.services.StationServiceImpl.SessStationObject;
 
 @RestController
-public class PointController {
-    private static final Logger log = LoggerFactory.getLogger(PointController.class);
+public class StationController {
+    private static final Logger log = LoggerFactory.getLogger(StationController.class);
     
     @Autowired
-    PointService pointService;
+    StationService stationService;
 
-    @GetMapping(value = "/SessionsPerPoint/{pointId}/{dateFrom}/{dateTo}",
+    @GetMapping(value = "/SessionsPerStation/{stationId}/{dateFrom}/{dateTo}",
      produces = {"application/json", "text/csv"})
-    public SessPointObject sessionsPerPointC(@PathVariable Integer pointId,
+    public SessStationObject sessionsPerStationC(@PathVariable Integer stationId,
      @PathVariable String dateFrom, @PathVariable String dateTo) {
-        log.info("Sessions per Charging Point requested...");
-        return pointService.sessionsPerPoint(pointId, dateFrom, dateTo);
+        log.info("Sessions per Charging Station requested...");
+        return stationService.sessionsPerStation(stationId, dateFrom, dateTo);
    }
 
 }
