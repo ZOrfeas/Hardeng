@@ -1,4 +1,5 @@
 import React from 'react';
+import UserInfo from './UserInfo';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css';
@@ -62,8 +63,11 @@ class ChargingExperience extends React.Component {
 
   render() {
     return (
-      <div>
-        <div className="container">
+      <div className="row">
+        <div className="col s2">
+          <UserInfo/>
+        </div>
+        <div className="col s10">
           <div className="card">
             <MapContainer
               className="map"
