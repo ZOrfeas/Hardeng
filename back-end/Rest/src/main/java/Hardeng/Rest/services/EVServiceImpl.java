@@ -58,7 +58,7 @@ public class EVServiceImpl implements EVService {
         @Override
         public String toString() {
             return this.companyName + " [" + this.kWh.toString() + " kWh, " + 
-                    this.costPerKWh.toString() + " € per kWh]";
+                    this.costPerKWh.toString() + "€ per kWh]";
         }
     }
 

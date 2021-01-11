@@ -23,7 +23,7 @@ public class ChargingSession {
     @Column(length = 10, nullable = false)
     private Float energyDelivered;
 
-    @Column(length = 10, nullable = false)
+    @Column(length = 20, nullable = false)
     private String payment;
 
     @ManyToOne
