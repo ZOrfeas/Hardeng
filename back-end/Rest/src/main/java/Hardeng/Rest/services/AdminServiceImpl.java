@@ -1,17 +1,25 @@
 package Hardeng.Rest.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.opencsv.bean.CsvBindByName;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.models.Admin;
+import Hardeng.Rest.models.Car;
+import Hardeng.Rest.models.CarDriver;
+import Hardeng.Rest.models.Driver;
 import Hardeng.Rest.repositories.AdminRepository;
 import Hardeng.Rest.repositories.ChargingSessionRepository;
+import Hardeng.Rest.repositories.DriverRepository;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -21,13 +29,15 @@ public class AdminServiceImpl implements AdminService {
     private AdminRepository adminRepo;
     @Autowired
     private ChargingSessionRepository sessionRepo;
-    
+    @Autowired
+    private DriverRepository driverRepo;
     /** 
      * Deemed necessary to help with outputing
      * CSV and JSON types of this code. 
      */
     public static class StatusObject {
         @JsonProperty("status")
+        @CsvBindByName
         private String status;
         StatusObject(String status) {
             this.status = status;
@@ -63,6 +73,40 @@ public class AdminServiceImpl implements AdminService {
         log.info("Creating default admin...");
         adminRepo.save(defaultAdmin);
         return new StatusObject("OK");
+    }
+
+    public static class UserObject {
+        @JsonProperty("Username")
+        @CsvBindByName
+        private String username;
+        @JsonProperty("DriverName")
+        @CsvBindByName
+        private String driverName;
+        @JsonProperty("Email")
+        @CsvBindByName
+        private String email;
+        @JsonProperty("BonusPoints")
+        @CsvBindByName
+        private Integer bonusPoints;
+        @JsonProperty("CarsOwnedList")
+        @CsvBindByName
+        private List<Car> carsOwnedList = new ArrayList<>();
+
+        UserObject(Driver driver) {
+            this.username = driver.getUsername();
+            this.driverName = driver.getDriverName();
+            this.email = driver.getEmail();
+            this.bonusPoints = driver.getBonusPoints();
+            for (CarDriver cd : driver.getCars()) 
+                carsOwnedList.add(cd.getCar());
+        }
+    }
+
+    @Override
+    public UserObject getUserInfo(String username) throws NoDataException{
+        Driver driver = driverRepo.findByUsername(username);
+        if (driver == null) throw new NoDataException();
+        return new UserObject(driver);
     }
 }
 

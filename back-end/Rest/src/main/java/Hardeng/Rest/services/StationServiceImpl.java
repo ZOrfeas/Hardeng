@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 
 import Hardeng.Rest.Utilities;
 import Hardeng.Rest.exceptions.ChargingStationNotFoundException;
+import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.models.ChargingStation;
 import Hardeng.Rest.models.ChargingPoint;
-import Hardeng.Rest.models.ChargingSession;
 import Hardeng.Rest.repositories.ChargingStationRepository;
 import Hardeng.Rest.repositories.ChargingPointRepository;
 import Hardeng.Rest.repositories.ChargingSessionRepository;
@@ -103,7 +103,7 @@ public class StationServiceImpl implements StationService {
     
     @Override
     public SessStationObject sessionsPerStation(
-     Integer stationId, String dateFrom, String dateTo) {
+     Integer stationId, String dateFrom, String dateTo) throws NoDataException {
         Timestamp queryDateFrom = Utilities.timestampFromString(
          dateFrom, Utilities.DATE_FORMAT);
         Timestamp queryDateTo = Utilities.timestampFromString(
@@ -114,6 +114,7 @@ public class StationServiceImpl implements StationService {
         log.info("Fetching ChargingData");
         List<ChargingPoint> cPoints =  cPointRepo
          .findBycStation(queryStation);
+        if (cPoints.isEmpty()) throw new NoDataException();
         return new SessStationObject(queryDateFrom, queryDateTo,
         queryStation, cPoints);
     }
