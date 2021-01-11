@@ -22,56 +22,62 @@ class LoginForm extends React.Component {
     this.setState({ [name]: value });
   }
 
-  handleSubmit(e) {
+  handleSubmit(e, close) {
     e.preventDefault();
-  }
-
-  getName() {
-    return this.state.username;
+    localStorage.setItem('username', this.state.username);
+    
+    if(true) {
+      close();
+      window.location.reload();
+    }
+    else this.setState({error: 'error'});
   }
 
   render() {
     return (
       <div>
         <Popup
-          trigger={<button className="btn right waves-effect waves-light"> Login </button>}
+          trigger={open => <button open={open} className="btn right waves-effect waves-light"> Login </button>}
           modal
         >
-          <diV className="center-align">
-            <h5 > Use your information </h5>
-          </diV>
-          <div className="container">
-            <form className="addSpace" onSubmit={this.handleSubmit}>
-              <div className="input-field browser-default">
-                <input
-                  name="username"
-                  placeholder="Username"
-                  value={this.state.username}
-                  onChange={this.handleInput}
-                />
+          {close => (
+            <div>
+              <diV className="center-align">
+                <h5 > Use your information </h5>
+              </diV>
+              <div className="container">
+                <form className="addSpace" onSubmit={(e) => this.handleSubmit(e, close)}>
+                  <div className="input-field">
+                    <input
+                      name="username"
+                      placeholder="Username"
+                      value={this.state.username}
+                      onChange={this.handleInput}
+                    />
+                  </div>
+                  <div className="input-field">
+                    <input
+                      name="password"
+                      type="password"
+                      placeholder="Password"
+                      onChange={this.handleInput}
+                    />
+                  </div>
+                  <div className="right-align addSpace">
+                    <button
+                      //onClick={close}
+                      className="btn waves-effect waves-light"
+                    >
+                      Sign In
+                  </button>
+                  </div>
+                </form>
               </div>
-              <div className="input-field input-outlined">
-                <input
-                  name="password"
-                  type="password"
-                  placeholder="Password"
-                  onChange={this.handleInput}
-                />
-              </div>
-              <div className="right-align addSpace">
-                <button
-                  className="btn waves-effect waves-light"
-                >
-                  Sign In
-              </button>
-              </div>
-            </form>
-          </div>
+            </div>
+          )}
         </Popup>
       </div>
     )
   }
 }
-
-
 export default LoginForm;

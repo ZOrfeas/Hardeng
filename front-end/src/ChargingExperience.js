@@ -1,15 +1,8 @@
 import React from 'react';
-import 'leaflet/dist/leaflet.css';
-import { MapContainer, TileLayer, Marker} from 'react-leaflet'
+import { MapContainer, TileLayer, Marker } from 'react-leaflet'
 import L from 'leaflet'
+import 'leaflet/dist/leaflet.css';
 import "./ChargingExperience.css"
-
-//delete L.Icon.Default.prototype._getIconUrl;
-//L.Icon.Default.mergeOptions({
-//    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-//    iconUrl: require('leaflet/dist/images/marker-icon.png'),
-//    shadowUrl: require('leaflet/dist/images/marker-shadow.png')
-//});
 
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
@@ -19,20 +12,20 @@ let DefaultIcon = L.icon({
   iconUrl: icon,
   iconRetinaUrl: iconRetina,
   shadowUrl: iconShadow,
-  iconSize: [24,36],
-  iconAnchor: [12,36]
+  iconSize: [24, 36],
+  iconAnchor: [12, 36]
 })
 L.Marker.prototype.options.icon = DefaultIcon;
 
 const centerPosition = [37.983810, 23.727539];
 
 const stationsHardcoded = [
-  {position: [37.983810, 23.727539], label: "Athens", time: "10 minutes", condition: "Available"},
-  {position: [40.629269, 22.947412], label: "Thessaloniki", time: "5 minutes", condition: "Maintenance"}
+  { position: [37.983810, 23.727539], label: "Athens", time: "10 minutes", condition: "Available" },
+  { position: [40.629269, 22.947412], label: "Thessaloniki", time: "5 minutes", condition: "Maintenance" }
 ];
 
-export class ChargingExperience extends React.Component {
-  constructor(props){
+class ChargingExperience extends React.Component {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -44,77 +37,78 @@ export class ChargingExperience extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
   }
 
-  showMarkers(){
+  showMarkers() {
     var i = this.state.chosenIndex;
-  
-    if(i === null) {
-      return(this.state.stations.map(({position, label}, index) => <Marker key={index} value={label} position={position}></Marker>));
+
+    if (i === null) {
+      return (this.state.stations.map(({ position, label }, index) => <Marker key={index} value={label} position={position}></Marker>));
     }
 
     else {
       var station = this.state.stations[i];
-      return(<Marker key={i} value={station.label} position={station.position}></Marker>);
+      return (<Marker key={i} value={station.label} position={station.position}></Marker>);
     }
   }
 
-  showOptions(){
-    return(
+  showOptions() {
+    return (
       this.state.stations.map(({ position, label }, index) => <option value={index}> {label} </option>)
-      );
+    );
   }
 
-  handleSelect(e){
-    e.target.value == -1 ? this.setState({chosenIndex: null}) : this.setState({chosenIndex: e.target.value});
+  handleSelect(e) {
+    e.target.value == -1 ? this.setState({ chosenIndex: null }) : this.setState({ chosenIndex: e.target.value });
   }
 
-  render(){
-    return(
-      <div className="container">
-        <div className="card">
-          <MapContainer 
-            className="map" 
-            center={centerPosition} 
-            zoom={this.state.zoom} 
-          >
-            <TileLayer
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
+  render() {
+    return (
+      <div>
+        <div className="container">
+          <div className="card">
+            <MapContainer
+              className="map"
+              center={centerPosition}
+              zoom={this.state.zoom}
+            >
+              <TileLayer
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
 
-            {this.showMarkers()}
+              {this.showMarkers()}
 
-          </MapContainer>
+            </MapContainer>
 
-          <form>
-            <select className="browser-default" onChange={this.handleSelect}>
-              <option value="" disabled selected>Choose station ...</option>
-              <option value={-1}>Show all stations</option>
-              {this.showOptions()}
-            </select>
-          </form>
+            <form>
+              <select className="browser-default" onChange={this.handleSelect}>
+                <option value="" disabled selected>Choose station ...</option>
+                <option value={-1}>Show all stations</option>
+                {this.showOptions()}
+              </select>
+            </form>
           </div>
 
           {this.state.chosenIndex !== null && (
             <table className="centered white">
-            <thead>
-              <tr>
+              <thead>
+                <tr>
                   <th>Location</th>
                   <th>Condition</th>
                   <th>Required Time</th>
-              </tr>
-            </thead>
-    
-            <tbody>
-              <tr>
-                <td>{this.state.stations[this.state.chosenIndex].label}</td>
-                <td>{this.state.stations[this.state.chosenIndex].condition}</td>
-                <td>{this.state.stations[this.state.chosenIndex].time}</td>
-              </tr>
-            </tbody>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>{this.state.stations[this.state.chosenIndex].label}</td>
+                  <td>{this.state.stations[this.state.chosenIndex].condition}</td>
+                  <td>{this.state.stations[this.state.chosenIndex].time}</td>
+                </tr>
+              </tbody>
             </table>
-            )
+          )
           }
-        
+        </div>
       </div>
     )
   }
