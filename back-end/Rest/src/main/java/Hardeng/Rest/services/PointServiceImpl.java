@@ -58,7 +58,7 @@ public class PointServiceImpl implements PointService {
         private Integer sessionIndex;
         @JsonProperty("SessionID")
         @CsvBindByName
-        private Integer sessionId;
+        private String sessionId;
         @JsonProperty("StartedOn")
         @CsvBindByName
         private String startedOn;
@@ -80,7 +80,7 @@ public class PointServiceImpl implements PointService {
 
         SessionObject(Integer index, ChargingSession cSession) {
             this.sessionIndex = index;
-            this.sessionId = cSession.getSessionId();
+            this.sessionId = cSession.getSessionId().toString();
             this.startedOn = Utilities.TIMESTAMP_FORMAT.format(cSession.getStartedOn());
             this.finishedOn = Utilities.TIMESTAMP_FORMAT.format(cSession.getFinishedOn());
             this.protocol = new ProtocolObject(cSession.getPricePolicy()); // note to self. Check this more !!!

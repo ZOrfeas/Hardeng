@@ -1,17 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import 'materialize-css/dist/css/materialize.min.css';
 import ChargingExperience from './ChargingExperience';
-import LoginForm from './LoginForm';
+import Header from './Header';
+import 'materialize-css/dist/css/materialize.min.css';
 /* Imports */
 
 
 ReactDOM.render(
   <React.StrictMode>
-    <div className="row">
-      <LoginForm/>
-      <div> {'Hello' + localStorage.getItem('username')} </div>
-    </div>
+    <Header />
 
     <ChargingExperience />
     {/*<StationMonitoring />*/}

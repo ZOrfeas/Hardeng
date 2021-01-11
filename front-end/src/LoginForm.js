@@ -9,11 +9,12 @@ class LoginForm extends React.Component {
     this.state = {
       username: '',
       password: '',
-      other: {},
-      error: null
+      info: {},
+      error: ''
     };
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
   handleInput(e) {
@@ -33,17 +34,29 @@ class LoginForm extends React.Component {
     else this.setState({error: 'error'});
   }
 
+  handleLogout(){
+    this.setState({username: ''});
+    this.setState({password: ''});
+    for(const key in this.state.info) {
+      this.setState({[key]: ''});
+    }
+
+    localStorage.clear();
+    window.location.reload();
+  }
+
   render() {
     return (
       <div>
+        <button onClick={this.handleLogout} className="btn-flat waves-effect waves-light yellow-text"> Logout </button>
         <Popup
-          trigger={open => <button open={open} className="btn right waves-effect waves-light"> Login </button>}
+          trigger={open => <button open={open} className="btn-flat yellow waves-effect waves-light"> Login </button>}
           modal
         >
           {close => (
             <div>
               <diV className="center-align">
-                <h5 > Use your information </h5>
+                <h5 > Enter your information </h5>
               </diV>
               <div className="container">
                 <form className="addSpace" onSubmit={(e) => this.handleSubmit(e, close)}>
@@ -67,6 +80,7 @@ class LoginForm extends React.Component {
                     <button
                       //onClick={close}
                       className="btn waves-effect waves-light"
+                      type="submit"
                     >
                       Sign In
                   </button>
