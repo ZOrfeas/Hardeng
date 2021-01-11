@@ -8,10 +8,14 @@ import LoginForm from './LoginForm';
 
 ReactDOM.render(
   <React.StrictMode>
-    {/*<ChargingExperience />*/}
+    <div className="row">
+      <LoginForm/>
+      <div> {'Hello' + localStorage.getItem('username')} </div>
+    </div>
+
+    <ChargingExperience />
     {/*<StationMonitoring />*/}
     {/*<>*/}
-    <LoginForm />
   </React.StrictMode>,
   document.getElementById('root')
 );
