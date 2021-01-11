@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import Hardeng.Rest.exceptions.DriverNotFoundException;
 import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.models.Admin;
 import Hardeng.Rest.models.Car;
@@ -105,8 +106,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public UserObject getUserInfo(String username) throws NoDataException{
-        Driver driver = driverRepo.findByUsername(username);
-        if (driver == null) throw new NoDataException();
+        Driver driver = driverRepo.findByUsername(username)
+        .orElseThrow(()-> new DriverNotFoundException(username));
         return new UserObject(driver);
     }
 }

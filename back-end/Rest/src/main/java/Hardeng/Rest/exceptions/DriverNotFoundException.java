@@ -9,4 +9,7 @@ public class DriverNotFoundException extends RuntimeException{
     public DriverNotFoundException(Integer driverId) {
         super("Could not find driver " + driverId);
     }
+    public DriverNotFoundException(String username) {
+        super("Could not find driver " + username);
+    }
 }

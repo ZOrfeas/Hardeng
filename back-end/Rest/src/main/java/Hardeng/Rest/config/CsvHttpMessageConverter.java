@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import com.opencsv.bean.StatefulBeanToCsv;

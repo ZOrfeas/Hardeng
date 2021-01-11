@@ -1,5 +1,7 @@
 package Hardeng.Rest.repositories;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +15,5 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
      * 
      * @return Driver object or null
      */
-    Driver findByUsername(String username);
+    Optional<Driver> findByUsername(String username);
 }

@@ -122,7 +122,7 @@ public class ChargingSession {
     }
 
     /* String to Timestap parser */
-    private java.sql.Timestamp parseTimestamp(String timestamp) {
+    public java.sql.Timestamp parseTimestamp(String timestamp) {
         try {
             return new java.sql.Timestamp(TIMESTAMP_FORMAT.parse(timestamp).getTime());
         } catch (ParseException e) {

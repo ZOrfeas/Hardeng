@@ -5,6 +5,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Embeddable
+@SuppressWarnings("serial")
 public class CarDriverId implements Serializable {
 
     @Column
