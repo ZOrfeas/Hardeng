@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import Hardeng.Rest.models.ChargingPoint;
 import Hardeng.Rest.models.ChargingSession;
+import Hardeng.Rest.models.CarDriver;
 
 @Repository
 public interface ChargingSessionRepository extends JpaRepository<ChargingSession, Integer> {
@@ -49,4 +50,6 @@ public interface ChargingSessionRepository extends JpaRepository<ChargingSession
     @Query("SELECT SUM(s.energyDelivered) FROM ChargingSession s " + 
             "WHERE s.startedOn >= :dateFrom AND s.finishedOn <= :dateTo AND s.chargingPoint = :cPoint")
     Float totalEnergyDelivered(Timestamp dateFrom, Timestamp dateTo, ChargingPoint cPoint);
+
+    List<ChargingSession> findByStartedOnBetweenAndCarDriver(Timestamp dateFrom, Timestamp dateTo, CarDriver carDriver);
 }
