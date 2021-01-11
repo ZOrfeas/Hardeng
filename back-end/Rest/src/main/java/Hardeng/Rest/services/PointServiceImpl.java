@@ -19,9 +19,9 @@ import Hardeng.Rest.exceptions.ChargingPointNotFoundException;
 import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.models.ChargingPoint;
 import Hardeng.Rest.models.ChargingSession;
-import Hardeng.Rest.models.PricePolicy;
 import Hardeng.Rest.repositories.ChargingPointRepository;
 import Hardeng.Rest.repositories.ChargingSessionRepository;
+import Hardeng.Rest.services.EVServiceImpl.PricePolicyRef;
 
 @Service
 public class PointServiceImpl implements PointService {
@@ -31,26 +31,6 @@ public class PointServiceImpl implements PointService {
     private ChargingPointRepository cPointRepo;
     @Autowired
     private ChargingSessionRepository cSessRepo;
-
-    public static class ProtocolObject {
-        @JsonProperty("ProtocolID")
-        @CsvBindByName
-        private Integer protocolId;
-        @JsonProperty("CostPerKWh")
-        @CsvBindByName
-        private Float costPerKWh;
-
-        ProtocolObject(PricePolicy pPolicy) {
-            this.protocolId = pPolicy.getID();
-            this.costPerKWh = pPolicy.getCostPerKWh();
-        }
-        public Integer getProtocolId() {return this.protocolId;}
-        public Float getCostPerKWh() {return this.costPerKWh;}
-        @Override
-        public String toString() {
-            return '|'+this.protocolId.toString() +'|'+ this.costPerKWh.toString()+'|';
-        }
-    }
 
     public static class SessionObject {
         @JsonProperty("SessionIndex")
@@ -67,7 +47,7 @@ public class PointServiceImpl implements PointService {
         private String finishedOn;
         @JsonProperty("Protocol")
         @CsvBindByName
-        private ProtocolObject protocol;
+        private String protocol;
         @JsonProperty("EnergyDelivered")
         @CsvBindByName
         private Float energyDelivered;
@@ -83,23 +63,23 @@ public class PointServiceImpl implements PointService {
             this.sessionId = cSession.getSessionId().toString();
             this.startedOn = Utilities.TIMESTAMP_FORMAT.format(cSession.getStartedOn());
             this.finishedOn = Utilities.TIMESTAMP_FORMAT.format(cSession.getFinishedOn());
-            this.protocol = new ProtocolObject(cSession.getPricePolicy()); // note to self. Check this more !!!
+            this.protocol = new PricePolicyRef(cSession.getPricePolicy()).toString(); // note to self. Check this more !!!
             this.energyDelivered =  cSession.getEnergyDelivered();
             this.payment = cSession.getPayment();
             this.vehicleType = cSession.getCarDriver().getCar().getModel();
         }
         public Integer getSessionIndex() {return this.sessionIndex;}
-        public Integer getSessionId() {return this.sessionId;}
+        public String getSessionId() {return this.sessionId;}
         public String getStartedOn() {return this.startedOn;}
         public String getFinishedOn() {return this.finishedOn;}
-        public ProtocolObject getProtocol() {return this.protocol;}
+        public String getProtocol() {return this.protocol;}
         public Float getEnergyDelivered() {return this.energyDelivered;}
         public String getPayment() {return this.payment;}
         public String getVehicleType() {return this.vehicleType;}
         @Override
         public String toString() {
             return this.sessionIndex.toString() +'|'+ this.sessionId.toString() +'|'+
-             this.startedOn +'|'+ this.finishedOn +'|'+ this.protocol.toString() +'|'+ this.energyDelivered.toString() +'|'+
+             this.startedOn +'|'+ this.finishedOn +'|'+ this.protocol +'|'+ this.energyDelivered.toString() +'|'+
              this.payment +'|'+ this.vehicleType;
         }
 

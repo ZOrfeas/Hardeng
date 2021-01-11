@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.opencsv.bean.CsvBindByName;
 
@@ -101,6 +102,12 @@ public class EVServiceImpl implements EVService {
             this.costPerKWh = cSession.getPricePolicy().getCostPerKWh();
             this.sessionCost = this.costPerKWh * this.energyDelivered;
         }
+        @Override
+        public String toString() {
+            return this.sessionIndex.toString() +'|'+ this.sessionId.toString() +'|'+ this.energyProvider +'|'+
+            this.startedOn +'|'+ this.finishedOn +'|'+ this.pricePolicyRef +'|'+ this.energyDelivered.toString() +'|'+
+            + '|' + this.costPerKWh +'|'+ this.sessionCost;
+        }
     }
 
     public class SessEVObject {
@@ -126,7 +133,7 @@ public class EVServiceImpl implements EVService {
         @CsvBindByName
         private Integer nrOfVehicleChargingSessions;
         @JsonProperty("VehicleChargingSessionsList")
-        @CsvBindByName
+        @CsvBindByName(column = "SESSIONINDEX|SESSIONID|ENERGYPROVIDER|STARTEDON|FINISHEDON|PRICEPOLICYREF|ENERGYDELIVERED|COSTPERKWH|SESSIONCOST")
         private List<SessionObject> sessionsSummaryList = new ArrayList<>();
 
         SessEVObject(Timestamp from, Timestamp to,
@@ -147,6 +154,15 @@ public class EVServiceImpl implements EVService {
             }
             this.nrOfVisitedPoints = points.size();
         }
+        public String getVehicleId() {return this.vehicleID;}
+        public String getRequestTimeStamp() {return this.requestTimeStamp;}
+        public String getPeriodFrom() {return this.periodFrom;}
+        public String getPeriodTo() {return this.periodTo;}
+        public Float getTotalEnergyConsumed() {return this.totalEnergyConsumed;}
+        public Integer getNrOfVisitedPoints() {return this.nrOfVisitedPoints;}
+        public Integer getNrOfVehicleChargingSessions() {return this.nrOfVehicleChargingSessions;}
+        @JsonIgnore
+        public String getSessionsSummuryList() {return this.sessionsSummaryList.toString();}
     }
     
     @Override
