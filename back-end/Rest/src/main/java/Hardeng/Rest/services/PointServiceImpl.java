@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.opencsv.bean.CsvBindByName;
 
@@ -42,6 +43,12 @@ public class PointServiceImpl implements PointService {
         ProtocolObject(PricePolicy pPolicy) {
             this.protocolId = pPolicy.getID();
             this.costPerKWh = pPolicy.getCostPerKWh();
+        }
+        public Integer getProtocolId() {return this.protocolId;}
+        public Float getCostPerKWh() {return this.costPerKWh;}
+        @Override
+        public String toString() {
+            return '|'+this.protocolId.toString() +'|'+ this.costPerKWh.toString()+'|';
         }
     }
 
@@ -81,6 +88,21 @@ public class PointServiceImpl implements PointService {
             this.payment = cSession.getPayment();
             this.vehicleType = cSession.getCarDriver().getCar().getModel();
         }
+        public Integer getSessionIndex() {return this.sessionIndex;}
+        public Integer getSessionId() {return this.sessionId;}
+        public String getStartedOn() {return this.startedOn;}
+        public String getFinishedOn() {return this.finishedOn;}
+        public ProtocolObject getProtocol() {return this.protocol;}
+        public Float getEnergyDelivered() {return this.energyDelivered;}
+        public String getPayment() {return this.payment;}
+        public String getVehicleType() {return this.vehicleType;}
+        @Override
+        public String toString() {
+            return this.sessionIndex.toString() +'|'+ this.sessionId.toString() +'|'+
+             this.startedOn +'|'+ this.finishedOn +'|'+ this.protocol.toString() +'|'+ this.energyDelivered.toString() +'|'+
+             this.payment +'|'+ this.vehicleType;
+        }
+
     }
     
     public static class SessPointObject {
@@ -103,7 +125,7 @@ public class PointServiceImpl implements PointService {
         @CsvBindByName
         private Integer numberOfChargingSessions;
         @JsonProperty("ChargingSessionsList")
-        @CsvBindByName
+        @CsvBindByName(column = "SESSIONINDEX|SESSIONID|STARTEDON|FINISHEDON||PROTOCOLID|COSTPERKWH||PAYMENT|VEHICLETYPE")
         private List<SessionObject> chargingSessionsList = new ArrayList<>();
 
         SessPointObject(Timestamp from, Timestamp to,
@@ -118,6 +140,14 @@ public class PointServiceImpl implements PointService {
                 this.chargingSessionsList.add(new SessionObject(i+1, cSessions.get(i)));
             }
         }
+        public String getPoint() {return this.point;}
+        public String getPointOperator() {return this.pointOperator;}
+        public String getRequestTimeStamp() {return this.requestTimeStamp;}
+        public String getPeriodFrom() {return this.periodFrom;}
+        public String getPeriodTo() {return this.periodTo;}
+        public Integer getNumberOfChargingSessions() {return this.numberOfChargingSessions;}
+        @JsonIgnore
+        public String getChargingSessionsList() {return this.chargingSessionsList.toString();}
     }
     
     @Override

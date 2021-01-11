@@ -42,6 +42,7 @@ public class AdminServiceImpl implements AdminService {
         StatusObject(String status) {
             this.status = status;
         }
+        public void setStatus(String status) {this.status = status;}
     }
     
     @Override
