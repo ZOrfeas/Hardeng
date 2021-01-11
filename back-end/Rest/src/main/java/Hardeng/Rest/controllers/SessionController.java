@@ -10,7 +10,6 @@ import Hardeng.Rest.Utilities;
 import Hardeng.Rest.services.PointService;
 
 @RestController
-@RequestMapping(Utilities.BASEURL)
 public class SessionController {
     private static final Logger log = LoggerFactory.getLogger(SessionController.class);
 
