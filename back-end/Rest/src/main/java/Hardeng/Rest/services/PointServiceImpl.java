@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import Hardeng.Rest.Utilities;
 import Hardeng.Rest.exceptions.ChargingPointNotFoundException;
+import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.models.ChargingPoint;
 import Hardeng.Rest.models.ChargingSession;
 import Hardeng.Rest.models.PricePolicy;
@@ -50,7 +51,7 @@ public class PointServiceImpl implements PointService {
         private Integer sessionIndex;
         @JsonProperty("SessionID")
         @CsvBindByName
-        private Integer sessionId;
+        private String sessionId;
         @JsonProperty("StartedOn")
         @CsvBindByName
         private String startedOn;
@@ -72,7 +73,7 @@ public class PointServiceImpl implements PointService {
 
         SessionObject(Integer index, ChargingSession cSession) {
             this.sessionIndex = index;
-            this.sessionId = cSession.getSessionId();
+            this.sessionId = cSession.getSessionId().toString();
             this.startedOn = Utilities.TIMESTAMP_FORMAT.format(cSession.getStartedOn());
             this.finishedOn = Utilities.TIMESTAMP_FORMAT.format(cSession.getFinishedOn());
             this.protocol = new ProtocolObject(cSession.getPricePolicy()); // note to self. Check this more !!!
@@ -120,8 +121,8 @@ public class PointServiceImpl implements PointService {
     }
     
     @Override
-    public SessPointObject sessionsPerPoint(
-     Integer pointId, String dateFrom, String dateTo) {
+    public SessPointObject sessionsPerPoint (
+     Integer pointId, String dateFrom, String dateTo) throws NoDataException{
         Timestamp queryDateFrom = Utilities.timestampFromString(
          dateFrom, Utilities.DATE_FORMAT);
         Timestamp queryDateTo = Utilities.timestampFromString(
@@ -133,6 +134,7 @@ public class PointServiceImpl implements PointService {
         List<ChargingSession> cSessions =  cSessRepo
          .findByStartedOnBetweenAndChargingPoint(queryDateFrom,
           queryDateTo, queryPoint);
+        if (cSessions.isEmpty()) throw new NoDataException();
         return new SessPointObject(queryDateFrom, queryDateTo,
          queryPoint, cSessions);
     }

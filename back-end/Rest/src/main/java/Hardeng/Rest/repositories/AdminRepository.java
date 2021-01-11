@@ -12,8 +12,17 @@ import Hardeng.Rest.models.Admin;
 @Repository
 public interface AdminRepository extends JpaRepository<Admin, Integer> {
     
+    /**
+     * Pings backend database system
+     * @return Non-Empty Collection on success, empty on failure
+     */
     @Query(value = "/* ping */ SELECT 1", nativeQuery = true)
     Collection<Object> doAPing();
 
+    /**
+     * finds an admin by username
+     * @param username username of admin requested
+     * @return Optional<Admin> Object with Admin in it if it exists
+     */
     Optional<Admin> findByUsername(String username);
 }

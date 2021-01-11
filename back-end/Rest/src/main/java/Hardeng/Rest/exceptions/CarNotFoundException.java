@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 
 @SuppressWarnings("serial")
 @ResponseStatus(HttpStatus.PAYMENT_REQUIRED)
-public class ChargingPointNotFoundException extends RuntimeException{
-    public ChargingPointNotFoundException(Integer id) {
-        super("Could not find charging point " + id);
+public class CarNotFoundException extends RuntimeException{
+    public CarNotFoundException(Integer carId) {
+        super("Could not find car " + carId);
     }
 }

@@ -1,8 +1,10 @@
 package Hardeng.Rest.controllers;
 
-import Hardeng.Rest.Utilities;
+import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.services.AdminService;
 import Hardeng.Rest.services.AdminServiceImpl.StatusObject;
+import Hardeng.Rest.services.AdminServiceImpl.UserObject;
+
 
 // import java.util.Collection;
 
@@ -10,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,5 +36,12 @@ public class AdminController {
     public StatusObject resetSessions() {
         log.info("Session reset requested...");
         return adminService.resetSessions();
+    }
+
+    @GetMapping(value = "/users/{username}", produces = {"application/json", "text/csv"})
+    public UserObject getUserInfo(@PathVariable(required = false) String username) {
+        log.info("Info for user {" + username +"} requested...");
+        if (username == null) throw new BadRequestException();
+        return adminService.getUserInfo(username);
     }
 }
