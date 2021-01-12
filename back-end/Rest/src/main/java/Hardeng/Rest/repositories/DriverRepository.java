@@ -13,14 +13,14 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
     /**
      * Searches for a driver by username
      * 
-     * @return Driver object or null
+     * @return Driver object Optional or empty
      */
     Optional<Driver> findByUsername(String username);
 
     /**
      * Searches for a driver by username and password
      * 
-     * @return Driver object or null
+     * @return Driver object Optional or empty
      */
     Optional<Driver> findByUsernameAndPassword(String username, String password);
 }
