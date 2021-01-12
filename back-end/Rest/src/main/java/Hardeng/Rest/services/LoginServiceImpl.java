@@ -9,9 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import Hardeng.Rest.Utilities;
-import Hardeng.Rest.exceptions.DriverNotFoundException;
-import Hardeng.Rest.exceptions.AdminNotFoundException;
 import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.models.Driver;
 import Hardeng.Rest.models.Admin;

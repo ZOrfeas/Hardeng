@@ -180,7 +180,7 @@ public class EVServiceImpl implements EVService {
          .orElseThrow(()-> new CarNotFoundException(carId));
         log.info("Fetching CarDriver entry...");
         CarDriver queryCarDriver = cCarDriverRepo.findByDriverAndCar(queryDriver, queryCar)
-        .orElseThrow(()-> new CarDriverNotFoundException(queryDriver.getID(), queryCar.getId()));
+         .orElseThrow(()-> new CarDriverNotFoundException(queryDriver.getID(), queryCar.getId()));
         log.info("Fetching ChargingData");
         List<ChargingSession> cSessions =  cSessRepo
          .findByStartedOnBetweenAndCarDriver(queryDateFrom,

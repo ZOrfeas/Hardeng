@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 
-import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.services.LogoutService;
 
 @RestController
@@ -19,7 +18,7 @@ public class LogoutController {
     private LogoutService logoutService;
 
     @PostMapping(value = "/logout")
-    public ResponseEntity<Void> login(@RequestHeader("X-OBSERVATORY-AUTH") String token) {
+    public ResponseEntity<Void> logout(@RequestHeader("X-OBSERVATORY-AUTH") String token) {
         log.info("Logout requested...");
         return logoutService.logout(token);
     }
