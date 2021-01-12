@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.opencsv.bean.CsvBindByName;
 
@@ -51,6 +52,10 @@ public class StationServiceImpl implements StationService {
             Float eDeliv = cSessRepo.totalEnergyDelivered(dateFrom, dateTo, cPoint);
             this.energyDelivered =  eDeliv == null ? 0.0f : eDeliv;
         }
+        @Override
+        public String toString() {
+            return this.pointId +'|'+ this.pointSessions.toString() +'|'+ this.energyDelivered.toString();
+        }
     }
     
     public class SessStationObject {
@@ -79,7 +84,7 @@ public class StationServiceImpl implements StationService {
         @CsvBindByName
         private Integer nrOfActivePoints;
         @JsonProperty("SessionsSummaryList")
-        @CsvBindByName
+        @CsvBindByName(column = "POINTID|POINTSESSIONS|ENERGYDELIVERED")
         private List<PointObject> sessionsSummaryList = new ArrayList<>();
 
         SessStationObject(Timestamp from, Timestamp to,
@@ -99,6 +104,15 @@ public class StationServiceImpl implements StationService {
                 this.nrOfChargingSessions = this.nrOfChargingSessions + pointObject.pointSessions;
             }
         }
+        public String getStationId() {return this.stationId;}
+        public String getOperator() {return this.operator;}
+        public String getRequestTimeStamp() {return this.requestTimeStamp;}
+        public String getPeriodFrom() {return this.periodFrom;}
+        public String getPeriodTo() {return this.periodTo;}
+        public Float getTotalEnergyDelivered() {return this.totalEnergyDelivered;}
+        public Integer getNrOfActivePoints() {return this.nrOfActivePoints;}
+        @JsonIgnore
+        public String getSessionsSummaryList() {return this.sessionsSummaryList.toString();}
     }
     
     @Override

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.opencsv.bean.CsvBindByName;
 
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import Hardeng.Rest.exceptions.DriverNotFoundException;
 import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.models.Admin;
 import Hardeng.Rest.models.Car;
@@ -42,6 +44,7 @@ public class AdminServiceImpl implements AdminService {
         StatusObject(String status) {
             this.status = status;
         }
+        public String getStatus() {return this.status;}
     }
     
     @Override
@@ -75,6 +78,28 @@ public class AdminServiceImpl implements AdminService {
         return new StatusObject("OK");
     }
 
+    public static class CarObject {
+        @JsonProperty("CarId")
+        @CsvBindByName
+        private Integer id;
+        @JsonProperty("BrandName")
+        @CsvBindByName
+        private String brandName;
+        @JsonProperty("Model")
+        @CsvBindByName
+        private String model;
+
+        CarObject(Car car) {
+            this.id = car.getId();
+            this.brandName = car.getBrandName();
+            this.model = car.getModel();
+        }
+        @Override
+        public String toString() {
+            return this.id.toString() +'|'+ this.brandName +'|'+ this.model;
+        }
+    }
+
     public static class UserObject {
         @JsonProperty("Username")
         @CsvBindByName
@@ -89,8 +114,8 @@ public class AdminServiceImpl implements AdminService {
         @CsvBindByName
         private Integer bonusPoints;
         @JsonProperty("CarsOwnedList")
-        @CsvBindByName
-        private List<Car> carsOwnedList = new ArrayList<>();
+        @CsvBindByName(column = "ID|BRANDNAME|MODEL")
+        private List<CarObject> carsOwnedList = new ArrayList<>();
 
         UserObject(Driver driver) {
             this.username = driver.getUsername();
@@ -98,14 +123,20 @@ public class AdminServiceImpl implements AdminService {
             this.email = driver.getEmail();
             this.bonusPoints = driver.getBonusPoints();
             for (CarDriver cd : driver.getCars()) 
-                carsOwnedList.add(cd.getCar());
+                carsOwnedList.add(new CarObject(cd.getCar()));
         }
+        public String getUsername() {return this.username;}
+        public String getDriverName() {return this.driverName;}
+        public String getEmail() {return this.email;}
+        public Integer getBonusPoints() {return this.bonusPoints;}
+        @JsonIgnore
+        public String getCarsOwnedList() {return this.carsOwnedList.toString();}
     }
 
     @Override
     public UserObject getUserInfo(String username) throws NoDataException{
-        Driver driver = driverRepo.findByUsername(username);
-        if (driver == null) throw new NoDataException();
+        Driver driver = driverRepo.findByUsername(username)
+         .orElseThrow(()-> new DriverNotFoundException(username));
         return new UserObject(driver);
     }
 }

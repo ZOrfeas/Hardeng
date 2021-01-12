@@ -45,7 +45,7 @@ public class Driver {
 
 
     //we use FetchType.EAGER (instead of lazy) to load all pricePolicies together
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(     //Creates a table that stores both primary keys
             name = "PricePolicy_Driver",
             joinColumns = {@JoinColumn(name = "driverID")},
@@ -55,6 +55,7 @@ public class Driver {
 
     //Cars belonging to Driver
     @OneToMany(
+        fetch = FetchType.LAZY,
         mappedBy = "driver",
         cascade = CascadeType.ALL,
         orphanRemoval = true

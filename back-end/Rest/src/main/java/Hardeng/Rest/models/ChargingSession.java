@@ -23,7 +23,7 @@ public class ChargingSession {
     @Column(length = 10, nullable = false)
     private Float energyDelivered;
 
-    @Column(length = 10, nullable = false)
+    @Column(length = 20, nullable = false)
     private String payment;
 
     @ManyToOne
@@ -122,7 +122,7 @@ public class ChargingSession {
     }
 
     /* String to Timestap parser */
-    private java.sql.Timestamp parseTimestamp(String timestamp) {
+    public java.sql.Timestamp parseTimestamp(String timestamp) {
         try {
             return new java.sql.Timestamp(TIMESTAMP_FORMAT.parse(timestamp).getTime());
         } catch (ParseException e) {
