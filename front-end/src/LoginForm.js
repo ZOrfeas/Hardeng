@@ -1,5 +1,6 @@
 import React from "react";
 import Popup from "reactjs-popup";
+import { login } from './API'
 import 'reactjs-popup/dist/index.css';
 import './LoginForm.css';
 
@@ -9,8 +10,9 @@ class LoginForm extends React.Component {
     this.state = {
       username: '',
       password: '',
+      key: null,
       info: {},
-      error: ''
+      error: null
     };
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -25,20 +27,35 @@ class LoginForm extends React.Component {
 
   handleSubmit(e, close) {
     e.preventDefault();
-    localStorage.setItem('username', this.state.username);
-    
-    if(true) {
-      close();
-      window.location.reload();
+    const username = this.state.username;
+    const password = this.state.password;
+
+    this.setState({ error: null });
+
+    if (username === '' || password === '') {
+      this.setState({ error: 'Both fields required' });
     }
-    else this.setState({error: 'error'});
+    else {
+      login(username, password)
+        .then(res => {
+          this.setState({ key: res.data.key });
+          localStorage.setItem('key', res.data.key);
+          localStorage.setItem('username', username);
+          close();
+          window.location.reload();
+        })
+        .catch(err => {
+          console.log(err);
+          this.setState({ error: err.response.status });
+        });
+    }
   }
 
-  handleLogout(){
-    this.setState({username: ''});
-    this.setState({password: ''});
-    for(const key in this.state.info) {
-      this.setState({[key]: ''});
+  handleLogout() {
+    this.setState({ username: '' });
+    this.setState({ password: '' });
+    for (const key in this.state.info) {
+      this.setState({ [key]: '' });
     }
 
     localStorage.clear();
@@ -76,14 +93,18 @@ class LoginForm extends React.Component {
                       onChange={this.handleInput}
                     />
                   </div>
-                  <div className="right-align addSpace">
-                    <button
-                      //onClick={close}
-                      className="btn waves-effect waves-light"
-                      type="submit"
-                    >
-                      Sign In
-                  </button>
+                  <div className="row addSpace">
+                    <div className="red-text col s8">
+                      {this.state.error != null ? this.state.error : ''}
+                    </div>
+                    <div className="col s4">
+                      <button
+                        className="btn waves-effect waves-light"
+                        type="submit"
+                      >
+                        Sign In
+                      </button>
+                    </div>
                   </div>
                 </form>
               </div>

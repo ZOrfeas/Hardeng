@@ -1,23 +1,38 @@
 import React from 'react';
-import {BsPerson} from 'react-icons/bs';
+import { BsPersonFill as Person } from 'react-icons/bs';
+import M from 'materialize-css';
 
-class UserInfo extends React.Component{
-  constructor(props){
+class UserInfo extends React.Component {
+  constructor(props) {
     super(props);
     this.state = {
       username: localStorage.getItem('username'),
       info: {}
     }
   }
-  render(){
+
+  componentDidMount() {
+    M.AutoInit();
+  }
+
+  render() {
     const username = (this.state.username == null) ? '<anonymous>' : this.state.username;
-    return(
-      <div className="card"> 
-        <div className="card-content">
-          <div> <BsPerson/> </div>
-          <div className="purple-text text-darken-4"> {'Hello ' + username} </div>
-        </div>
-      </div>
+    return (
+      <ul className="collapsible">
+        <li className="active">
+          <div className="collapsible-header">
+            <h5 className="purple-text text-darken-4">
+              <Person style={{ verticalAlign: "bottom" }} /> &nbsp; User Info
+            </h5>
+          </div>
+          <div className="collapsible-body purple-text text-darken-4">
+            <div>{username}</div>
+            <div>Fullname</div>
+            <div>Email</div>
+            <div>Bonus Points</div>
+          </div>
+        </li>
+      </ul>
     )
   }
 }
