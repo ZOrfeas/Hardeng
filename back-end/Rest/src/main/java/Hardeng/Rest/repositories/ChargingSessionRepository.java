@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import Hardeng.Rest.models.ChargingPoint;
+import Hardeng.Rest.models.EnergyProvider;
 import Hardeng.Rest.models.ChargingSession;
 import Hardeng.Rest.models.CarDriver;
 
@@ -25,6 +26,17 @@ public interface ChargingSessionRepository extends JpaRepository<ChargingSession
      */
     List<ChargingSession> findByStartedOnBetweenAndChargingPoint(
         Timestamp dateFrom, Timestamp dateTo, ChargingPoint cPoint);
+ /**
+     * Fetches ChargingSessions that took place from
+     * {@code dateFrom} to {@code dateTo} and where provided by
+     * {@code EP}
+     * @param dateFrom start date
+     * @param dateTo end date
+     * @param EP ChargingPoint in question
+     * @return List with charging points fulfilling query parameters
+     */
+    List<ChargingSession> findByStartedOnBetweenAndEnergyProvider(
+    Timestamp dateFrom, Timestamp dateTo, EnergyProvider EP);
 
     /**
      * Returns number of charging sessions at a Charging Point
