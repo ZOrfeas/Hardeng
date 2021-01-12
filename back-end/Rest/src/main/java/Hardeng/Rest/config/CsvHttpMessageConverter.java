@@ -33,6 +33,7 @@ public class CsvHttpMessageConverter extends AbstractHttpMessageConverter<Object
     }
     
     private void writeList(List<Object> t, OutputStreamWriter stream) {
+        
         HeaderColumnNameMappingStrategy<Object> strategy = new HeaderColumnNameMappingStrategy<>();
         if (t.isEmpty()) throw new NoDataException();
         strategy.setType(t.get(0).getClass());
