@@ -25,4 +25,12 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
      * @return Optional<Admin> Object with Admin in it if it exists
      */
     Optional<Admin> findByUsername(String username);
+
+    /**
+     * finds an admin by username and password
+     * @param username username of admin requested
+     * @param password password of admin requested
+     * @return Optional<Admin> Object with Admin in it if it exists
+     */
+    Optional<Admin> findByUsernameAndPassword(String username, String password);
 }
