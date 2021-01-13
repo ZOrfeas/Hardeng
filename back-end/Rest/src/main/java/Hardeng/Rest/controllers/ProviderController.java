@@ -16,7 +16,7 @@ public class ProviderController{
     private static final Logger log = LoggerFactory.getLogger(StationController.class);
 
     @Autowired
-    ProviderService ProviderService;
+    ProviderService providerService;
 
     @GetMapping(value = "/SessionsPerProvider/{providerId}/{dateFrom}/{dateTo}",
     produces = {"application/json", "text/csv"})
@@ -25,7 +25,7 @@ public class ProviderController{
     {
         log.info("Sessions Per Provider Requested");
         if(providerId == null || dateFrom == null || dateTo == null)throw new BadRequestException();
-        return ProviderService.sessionsPerProvider(providerId, dateFrom, dateTo);
+        return providerService.sessionsPerProvider(providerId, dateFrom, dateTo);
     }
 
 
