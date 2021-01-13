@@ -22,7 +22,8 @@ public class ResponseConfig implements WebMvcConfigurer{
             .useRegisteredExtensionsOnly(true)
             .defaultContentType(MediaType.APPLICATION_JSON)
             .mediaType("json", MediaType.APPLICATION_JSON)
-            .mediaType("csv", new MediaType("text", "csv")); 
+            .mediaType("csv", new MediaType("text", "csv")) 
+            .mediaType("x-www-form-urlencoded", MediaType.APPLICATION_FORM_URLENCODED);
     }
 
     @Override

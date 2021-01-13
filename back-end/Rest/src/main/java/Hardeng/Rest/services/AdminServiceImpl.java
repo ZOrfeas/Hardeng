@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import Hardeng.Rest.Utilities.CsvObject;
+// import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.exceptions.DriverNotFoundException;
 import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.models.Admin;
@@ -166,5 +167,41 @@ public class AdminServiceImpl implements AdminService {
          .orElseThrow(()-> new DriverNotFoundException(username));
         return new UserObject(driver);
     }
+
+    // public static class AdminDriverWrapper {
+    //     @JsonProperty("id")
+    //     private Integer id;
+    //     @JsonProperty("driverName")
+    //     private String driverName;
+    //     @JsonProperty("username")
+    //     private String username;
+    //     @JsonProperty("password")
+    //     private String password;
+    //     @JsonProperty("email")
+    //     private String email;
+    //     @JsonProperty("companyName")
+    //     private String companyName;
+    //     public void setPassword(String pass) {this.password = pass;}
+    //     public void setUsername(String name) {this.username = name;}
+    //     public Admin toAdmin() {return new Admin(this.username, this.password, this.email, this.companyName, null, null);}
+    //     public Driver toDriver() {return new Driver(this.driverName, this.username, this.password, this.email, null, null);}
+    // }
+    // @Override
+    // public StatusObject userMod(String username, String password,
+    //                             AdminDriverWrapper paramDict) throws BadRequestException
+    // {
+    //     log.info("Checking if driver exists...");
+    //     Optional<Driver> optDriver =  driverRepo.findByUsernameAndPassword(username, password);
+    //     if (!optDriver.isPresent()) {
+    //         log.info("Driver not found, checking if admin exists...");
+    //         Optional<Admin> optAdmin = adminRepo.findByUsernameAndPassword(username, password);
+    //         if(!optAdmin.isPresent()) {
+    //             log.info("Admin not found, creating Admin/User...");
+    //             if (paramDict.companyName != null) attemptCreateAdmin(username, password, paramDict);
+    //             else if (paramDict.driverName != null) attemptCreateDriver(username, password, paramDict);
+    //             else throw new BadRequestException();                                           
+    //         }
+    //     }
+    // }
 }
 

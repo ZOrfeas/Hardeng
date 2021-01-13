@@ -25,7 +25,7 @@ public class ProviderController{
     public List<SessProvObject> sessionsPerProvider(@PathVariable(required = false) Integer providerId,
     @PathVariable(required = false) String dateFrom, @PathVariable(required = false) String dateTo)
     {
-        log.info("Sessions Per Provider Requested");
+        log.info("Sessions Per Provider Requested...");
         if(providerId == null || dateFrom == null || dateTo == null)throw new BadRequestException();
         return providerService.sessionsPerProvider(providerId, dateFrom, dateTo);
     }
