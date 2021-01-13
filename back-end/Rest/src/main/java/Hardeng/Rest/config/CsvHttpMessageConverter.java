@@ -3,7 +3,6 @@ package Hardeng.Rest.config;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.opencsv.CSVWriter;
@@ -12,8 +11,8 @@ import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -26,7 +25,7 @@ import Hardeng.Rest.exceptions.InternalServerErrorException;
 import Hardeng.Rest.exceptions.NoDataException;
 
 public class CsvHttpMessageConverter extends AbstractHttpMessageConverter<Object>{
-    private static final Logger log = LoggerFactory.getLogger(CsvHttpMessageConverter.class);
+    // private static final Logger log = LoggerFactory.getLogger(CsvHttpMessageConverter.class);
     public CsvHttpMessageConverter() {
         super(new MediaType("text", "csv"));
     }
