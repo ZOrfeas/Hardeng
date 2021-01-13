@@ -1,8 +1,8 @@
 import axios from 'axios';
 axios.defaults.baseURL = "";
 
-export function login(user, pass) {
-  const reqURL = "drivers";
+export function userLogin(user, pass, type) {
+  const reqURL = type;
   const obj = {
     username: user,
     password: pass,
@@ -11,5 +11,22 @@ export function login(user, pass) {
   return axios.post(reqURL, obj);
 }
 
+export function getDriverInfo(driverKey) {
+  const reqURL = "driver";
+  const obj = {
+    apiKey: driverKey,
+  };
+
+  return axios.post(reqURL, obj);
+}
+
+export function getAdminInfo(adminKey) {
+  const reqURL = "admin";
+  const obj = {
+    apiKey: adminKey,
+  };
+
+  return axios.post(reqURL, obj);
+}
 
 

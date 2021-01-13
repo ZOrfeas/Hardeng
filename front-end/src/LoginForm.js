@@ -1,6 +1,6 @@
 import React from "react";
 import Popup from "reactjs-popup";
-import { login } from './API'
+import {userLogin} from './API';
 import 'reactjs-popup/dist/index.css';
 import './LoginForm.css';
 
@@ -10,13 +10,21 @@ class LoginForm extends React.Component {
     this.state = {
       username: '',
       password: '',
-      key: null,
-      info: {},
-      error: null
+
+      // "adminKey" or "driverKey"
+      keyType: '',
+      error: null,
     };
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
+  }
+
+  handleSelect(e) {
+    const value = e.target.value;
+
+    this.setState({ keyType: value });
   }
 
   handleInput(e) {
@@ -29,17 +37,18 @@ class LoginForm extends React.Component {
     e.preventDefault();
     const username = this.state.username;
     const password = this.state.password;
+    const keyType = this.state.keyType;
 
     this.setState({ error: null });
 
-    if (username === '' || password === '') {
-      this.setState({ error: 'Both fields required' });
+    if (username === '' || password === '' || keyType === '') {
+      this.setState({ error: 'All fields required' });
     }
     else {
-      login(username, password)
+      userLogin(username, password, keyType)
         .then(res => {
-          this.setState({ key: res.data.key });
-          localStorage.setItem('key', res.data.key);
+          //this.setState({ [keyType]: res.data.key });
+          localStorage.setItem(keyType, res.data.key);
           localStorage.setItem('username', username);
           close();
           window.location.reload();
@@ -54,9 +63,6 @@ class LoginForm extends React.Component {
   handleLogout() {
     this.setState({ username: '' });
     this.setState({ password: '' });
-    for (const key in this.state.info) {
-      this.setState({ [key]: '' });
-    }
 
     localStorage.clear();
     window.location.reload();
@@ -93,11 +99,18 @@ class LoginForm extends React.Component {
                       onChange={this.handleInput}
                     />
                   </div>
-                  <div className="row addSpace">
-                    <div className="red-text col s8">
+                  <div className="input-field">
+                    <select className="browser-default" onChange={this.handleSelect}>
+                      <option value='' disabled selected>Choose account type</option>
+                      <option value="driverKey">Driver</option>
+                      <option value="adminKey">Admin</option>
+                    </select>
+                  </div>
+                  <div className="row">
+                    <div className="red-text col s7">
                       {this.state.error != null ? this.state.error : ''}
                     </div>
-                    <div className="col s4">
+                    <div className="col s5">
                       <button
                         className="btn waves-effect waves-light"
                         type="submit"
