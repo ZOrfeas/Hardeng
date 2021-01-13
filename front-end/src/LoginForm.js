@@ -1,6 +1,6 @@
 import React from "react";
 import Popup from "reactjs-popup";
-import {userLogin} from './API';
+import { userLogin } from './API';
 import 'reactjs-popup/dist/index.css';
 import './LoginForm.css';
 
@@ -10,21 +10,20 @@ class LoginForm extends React.Component {
     this.state = {
       username: '',
       password: '',
-
-      // "adminKey" or "driverKey"
-      keyType: '',
+      userType: '',    /* "admin" or "driver" */
       error: null,
     };
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
+    this.handlePopupClose = this.handlePopupClose.bind(this);
   }
 
   handleSelect(e) {
     const value = e.target.value;
 
-    this.setState({ keyType: value });
+    this.setState({ userType: value });
   }
 
   handleInput(e) {
@@ -37,19 +36,16 @@ class LoginForm extends React.Component {
     e.preventDefault();
     const username = this.state.username;
     const password = this.state.password;
-    const keyType = this.state.keyType;
+    const userType = this.state.userType;
 
-    this.setState({ error: null });
-
-    if (username === '' || password === '' || keyType === '') {
+    if (username === '' || password === '' || userType === '') {
       this.setState({ error: 'All fields required' });
     }
     else {
-      userLogin(username, password, keyType)
+      userLogin(username, password, userType)
         .then(res => {
-          //this.setState({ [keyType]: res.data.key });
-          localStorage.setItem(keyType, res.data.key);
-          localStorage.setItem('username', username);
+          localStorage.setItem(userType + 'Key', res.data.key);
+
           close();
           window.location.reload();
         })
@@ -68,11 +64,19 @@ class LoginForm extends React.Component {
     window.location.reload();
   }
 
+  handlePopupClose() {
+    this.setState({ username: '' });
+    this.setState({ password: '' });
+    this.setState({ userType: '' });
+    this.setState({ error: null });
+  }
+
   render() {
     return (
       <div>
         <button onClick={this.handleLogout} className="btn-flat waves-effect waves-light yellow-text"> Logout </button>
         <Popup
+          onClose={this.handlePopupClose}
           trigger={open => <button open={open} className="btn-flat yellow waves-effect waves-light"> Login </button>}
           modal
         >
@@ -102,8 +106,8 @@ class LoginForm extends React.Component {
                   <div className="input-field">
                     <select className="browser-default" onChange={this.handleSelect}>
                       <option value='' disabled selected>Choose account type</option>
-                      <option value="driverKey">Driver</option>
-                      <option value="adminKey">Admin</option>
+                      <option value="driver">Driver</option>
+                      <option value="admin">Admin</option>
                     </select>
                   </div>
                   <div className="row">

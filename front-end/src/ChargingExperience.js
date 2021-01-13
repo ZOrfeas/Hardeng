@@ -31,11 +31,15 @@ class ChargingExperience extends React.Component {
 
     this.state = {
       stations: stationsHardcoded,
+      chosenPos: null,
       chosenIndex: null,
-      zoom: 10
+      zoom: 10,
     };
 
     this.handleSelect = this.handleSelect.bind(this);
+    this.showMarkers = this.showMarkers.bind(this);
+    this.showOptions = this.showOptions.bind(this);
+    this.handleClick = this.handleClick(this);
   }
 
   showMarkers() {
@@ -61,15 +65,20 @@ class ChargingExperience extends React.Component {
     e.target.value === "all" ? this.setState({ chosenIndex: null }) : this.setState({ chosenIndex: e.target.value });
   }
 
+  handleClick(e) {
+    this.setState({ chosenPos: e.latlng });
+  }
+
   render() {
     return (
       <div className="row">
         <div className="col s2">
-          <UserInfo/>
+          <UserInfo />
         </div>
         <div className="col s10">
           <div className="card">
             <MapContainer
+              onClick={this.handleClick}
               className="map"
               center={centerPosition}
               zoom={this.state.zoom}
@@ -78,11 +87,12 @@ class ChargingExperience extends React.Component {
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-
+              
               {this.showMarkers()}
-
+              {this.state.chosenPos !== null && (
+                <Marker position={this.state.chosenPos}/>
+              )}
             </MapContainer>
-
             <form>
               <select className="browser-default" onChange={this.handleSelect}>
                 <option value="" disabled selected>Choose station ...</option>
@@ -91,7 +101,6 @@ class ChargingExperience extends React.Component {
               </select>
             </form>
           </div>
-
           {this.state.chosenIndex !== null && (
             <table className="centered white">
               <thead>
