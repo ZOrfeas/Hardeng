@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import Hardeng.Rest.Utilities.CsvObject;
 import Hardeng.Rest.exceptions.DriverNotFoundException;
 import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.models.Admin;
@@ -33,11 +34,9 @@ public class AdminServiceImpl implements AdminService {
     private ChargingSessionRepository sessionRepo;
     @Autowired
     private DriverRepository driverRepo;
-    /** 
-     * Deemed necessary to help with outputing
-     * CSV and JSON types of this code. 
-     */
-    public static class StatusObject {
+    
+
+    public static class StatusObject implements CsvObject{
         @JsonProperty("status")
         @CsvBindByName
         private String status;
@@ -45,6 +44,13 @@ public class AdminServiceImpl implements AdminService {
             this.status = status;
         }
         public String getStatus() {return this.status;}
+        @Override
+        @JsonIgnore
+        public List<Object> getList() {
+            List<Object> toRet = new ArrayList<>();
+            toRet.add(this);
+            return toRet;
+        }
     }
     
     @Override
@@ -80,13 +86,10 @@ public class AdminServiceImpl implements AdminService {
 
     public static class CarObject {
         @JsonProperty("CarId")
-        @CsvBindByName
         private Integer id;
         @JsonProperty("BrandName")
-        @CsvBindByName
         private String brandName;
         @JsonProperty("Model")
-        @CsvBindByName
         private String model;
 
         CarObject(Car car) {
@@ -94,27 +97,48 @@ public class AdminServiceImpl implements AdminService {
             this.brandName = car.getBrandName();
             this.model = car.getModel();
         }
-        @Override
-        public String toString() {
-            return this.id.toString() +'|'+ this.brandName +'|'+ this.model;
-        }
     }
 
-    public static class UserObject {
+    public static class CsvUserObject {
+        @CsvBindByName(column = "Username")
+        private String username;
+        public String getUsername() {return this.username;}
+        @CsvBindByName(column = "DriverName")
+        private String driverName;
+        public String getDriverName() {return this.driverName;}
+        @CsvBindByName(column = "Email")
+        private String email;
+        public String getEmail() {return this.email;}        
+        @CsvBindByName(column = "BonusPoints")
+        private Integer bonusPoints;
+        public Integer getBonusPoints() {return this.bonusPoints;}
+        @CsvBindByName(column = "CarId")
+        private Integer carId;
+        public Integer getCarId() {return this.carId;}
+        @CsvBindByName(column = "BrandName")
+        private String brandName;
+        public String getBrandName() {return this.brandName;}
+        @CsvBindByName(column = "Model")
+        private String model;
+        public String getModel() {return this.model;}
+        CsvUserObject(UserObject parent, CarObject co)
+        {
+            this.username = parent.username; this.driverName = parent.driverName;
+            this.email = parent.email; this.bonusPoints = parent.bonusPoints;
+            this.carId = co.id; this.brandName = co.brandName;
+            this.model = co.model;
+        }
+    }
+    public static class UserObject implements CsvObject{
         @JsonProperty("Username")
-        @CsvBindByName
         private String username;
         @JsonProperty("DriverName")
-        @CsvBindByName
         private String driverName;
         @JsonProperty("Email")
-        @CsvBindByName
         private String email;
         @JsonProperty("BonusPoints")
-        @CsvBindByName
         private Integer bonusPoints;
         @JsonProperty("CarsOwnedList")
-        @CsvBindByName(column = "ID|BRANDNAME|MODEL")
         private List<CarObject> carsOwnedList = new ArrayList<>();
 
         UserObject(Driver driver) {
@@ -125,12 +149,15 @@ public class AdminServiceImpl implements AdminService {
             for (CarDriver cd : driver.getCars()) 
                 carsOwnedList.add(new CarObject(cd.getCar()));
         }
-        public String getUsername() {return this.username;}
-        public String getDriverName() {return this.driverName;}
-        public String getEmail() {return this.email;}
-        public Integer getBonusPoints() {return this.bonusPoints;}
+        @Override
         @JsonIgnore
-        public String getCarsOwnedList() {return this.carsOwnedList.toString();}
+        public List<Object> getList() {
+            List<Object> toRet = new ArrayList<>();
+            for (CarObject co : this.carsOwnedList) {
+                toRet.add(new CsvUserObject(this, co));
+            }
+            return toRet;
+        }
     }
 
     @Override

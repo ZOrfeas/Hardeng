@@ -12,6 +12,8 @@ import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -19,10 +21,12 @@ import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 
+import Hardeng.Rest.Utilities.CsvObject;
+import Hardeng.Rest.exceptions.InternalServerErrorException;
 import Hardeng.Rest.exceptions.NoDataException;
 
 public class CsvHttpMessageConverter extends AbstractHttpMessageConverter<Object>{
-    
+    private static final Logger log = LoggerFactory.getLogger(CsvHttpMessageConverter.class);
     public CsvHttpMessageConverter() {
         super(new MediaType("text", "csv"));
     }
@@ -48,12 +52,6 @@ public class CsvHttpMessageConverter extends AbstractHttpMessageConverter<Object
         }
     }
 
-    private void writeSingleObject(Object t, OutputStreamWriter stream) {
-        List<Object> intermediary = new ArrayList<>();
-        intermediary.add(t);
-        writeList(intermediary, stream);
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     protected void writeInternal(Object t, HttpOutputMessage outputMessage) 
@@ -61,7 +59,8 @@ public class CsvHttpMessageConverter extends AbstractHttpMessageConverter<Object
 
         OutputStreamWriter outputStream = new OutputStreamWriter(outputMessage.getBody());
         if (t instanceof List) writeList((List<Object>)t, outputStream);
-        else writeSingleObject(t, outputStream);
+        else if(t instanceof CsvObject) writeList(((CsvObject)t).getList(), outputStream);
+        else throw new InternalServerErrorException();
         outputStream.close();
     }
 
