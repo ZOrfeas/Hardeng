@@ -58,7 +58,7 @@ class ChargingExperience extends React.Component {
   }
 
   handleSelect(e) {
-    e.target.value == -1 ? this.setState({ chosenIndex: null }) : this.setState({ chosenIndex: e.target.value });
+    e.target.value === "all" ? this.setState({ chosenIndex: null }) : this.setState({ chosenIndex: e.target.value });
   }
 
   render() {
@@ -86,7 +86,7 @@ class ChargingExperience extends React.Component {
             <form>
               <select className="browser-default" onChange={this.handleSelect}>
                 <option value="" disabled selected>Choose station ...</option>
-                <option value={-1}>Show all stations</option>
+                <option value="all">Show all stations</option>
                 {this.showOptions()}
               </select>
             </form>
