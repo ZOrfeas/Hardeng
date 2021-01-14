@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import Hardeng.Rest.models.ChargingPoint;
-import Hardeng.Rest.models.EnergyProvider;
 import Hardeng.Rest.models.ChargingSession;
 import Hardeng.Rest.models.CarDriver;
 

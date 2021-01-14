@@ -3,6 +3,7 @@ package Hardeng.Rest;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * This is probably the best way to group some globals to
@@ -20,5 +21,9 @@ public class Utilities {
         } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    public static interface CsvObject {
+        List<Object> getList();
     }
 }

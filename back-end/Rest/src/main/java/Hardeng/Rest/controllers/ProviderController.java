@@ -1,5 +1,7 @@
 package Hardeng.Rest.controllers;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +22,10 @@ public class ProviderController{
 
     @GetMapping(value = "/SessionsPerProvider/{providerId}/{dateFrom}/{dateTo}",
     produces = {"application/json", "text/csv"})
-    public SessProvObject sessionsPerProvider(@PathVariable(required = false) Integer providerId,
+    public List<SessProvObject> sessionsPerProvider(@PathVariable(required = false) Integer providerId,
     @PathVariable(required = false) String dateFrom, @PathVariable(required = false) String dateTo)
     {
-        log.info("Sessions Per Provider Requested");
+        log.info("Sessions Per Provider Requested...");
         if(providerId == null || dateFrom == null || dateTo == null)throw new BadRequestException();
         return providerService.sessionsPerProvider(providerId, dateFrom, dateTo);
     }
