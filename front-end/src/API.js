@@ -29,6 +29,14 @@ export function getAdminInfo(adminKey) {
   return axios.post(reqURL, obj);
 }
 
-//export function getSt
+export function getStations(latlng){
+  const reqURL = "station"
+  const obj = {
+    latitude: latlng[0],
+    longitude: latlng[1],
+  };
+
+  return axios.post(reqURL, obj);
+}
 
 

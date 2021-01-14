@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import UserInfo from './UserInfo';
-import { MapContainer, TileLayer, Marker } from 'react-leaflet'
+import M from 'materialize-css';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
+import { getStations } from './API';
 import 'leaflet/dist/leaflet.css';
-import "./ChargingExperience.css"
+import "./ChargingExperience.css";
 
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import person from './icons/black-marker.png';
+
+var locationIcon = L.icon({
+  iconUrl: person,
+  shadowUrl: iconShadow,
+  iconSize: [36, 36],
+  iconAnchor: [18, 36]
+});
 
 let DefaultIcon = L.icon({
   iconUrl: icon,
@@ -15,15 +25,36 @@ let DefaultIcon = L.icon({
   shadowUrl: iconShadow,
   iconSize: [24, 36],
   iconAnchor: [12, 36]
-})
+});
 L.Marker.prototype.options.icon = DefaultIcon;
 
-const centerPosition = [37.983810, 23.727539];
+const Athens = [37.983810, 23.727539];
 
 const stationsHardcoded = [
   { position: [37.983810, 23.727539], label: "Athens", time: "10 minutes", condition: "Available" },
   { position: [40.629269, 22.947412], label: "Thessaloniki", time: "5 minutes", condition: "Maintenance" }
 ];
+
+function LocationMarker(props) {
+  const [position, setPosition] = useState(null)
+  const map = useMapEvents({
+    click() {
+      map.locate();
+    },
+
+    locationfound(e) {
+      setPosition(e.latlng);
+      props.setter(e.latlng);
+      map.flyTo(e.latlng, map.getZoom());
+    },
+  })
+
+  return position === null ? null : (
+    <Marker position={position} icon={locationIcon}>
+      <Popup>You are here</Popup>
+    </Marker>
+  )
+}
 
 class ChargingExperience extends React.Component {
   constructor(props) {
@@ -31,15 +62,16 @@ class ChargingExperience extends React.Component {
 
     this.state = {
       stations: stationsHardcoded,
-      chosenPos: null,
+      currentPos: null,
       chosenIndex: null,
       zoom: 10,
+      error: null,
     };
 
     this.handleSelect = this.handleSelect.bind(this);
     this.showMarkers = this.showMarkers.bind(this);
     this.showOptions = this.showOptions.bind(this);
-    this.handleClick = this.handleClick(this);
+    this.handleLocation = this.handleLocation.bind(this);
   }
 
   showMarkers() {
@@ -65,8 +97,20 @@ class ChargingExperience extends React.Component {
     e.target.value === "all" ? this.setState({ chosenIndex: null }) : this.setState({ chosenIndex: e.target.value });
   }
 
-  handleClick(e) {
-    this.setState({ chosenPos: e.latlng });
+  handleLocation(latlng) {
+    this.setState({
+      currentPos: latlng
+    }, () => {
+      getStations(latlng)
+        .then(res => { this.setState({ stations: res.data }) })
+        .catch(err => { 
+          this.setState({ error: err.response.status });
+          M.toast({html: 'Error ' + this.state.error, classes:"purple darken-4 yellow-text"})
+        })
+    });
+  }
+  componentDidMount() {
+    M.AutoInit();
   }
 
   render() {
@@ -78,20 +122,16 @@ class ChargingExperience extends React.Component {
         <div className="col s10">
           <div className="card">
             <MapContainer
-              onClick={this.handleClick}
               className="map"
-              center={centerPosition}
+              center={Athens}
               zoom={this.state.zoom}
             >
               <TileLayer
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              
               {this.showMarkers()}
-              {this.state.chosenPos !== null && (
-                <Marker position={this.state.chosenPos}/>
-              )}
+              <LocationMarker setter={this.handleLocation} />
             </MapContainer>
             <form>
               <select className="browser-default" onChange={this.handleSelect}>
@@ -121,6 +161,12 @@ class ChargingExperience extends React.Component {
             </table>
           )
           }
+        </div>
+
+        <div className="fixed-action-btn">
+          <button className="btn-floating tooltipped red pulse" data-position="left" data-tooltip="Click map to give location">
+            !
+          </button>
         </div>
       </div>
     )
