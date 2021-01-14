@@ -1,0 +1,132 @@
+
+.leftButton{
+    background-color: #4c53af; 
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    width: 20%;
+    position: absolute;
+    position: fixed;
+    left: 29%;
+    top:50%;
+    float:left;
+    margin:2px;
+    cursor: pointer;
+    transition-duration: 0.4s;
+    border-radius: 3px;
+}
+
+.rightButton{
+    background-color: #4c53af; 
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    width: 20%;
+    position: absolute;
+    position: fixed;
+    right: 29%;
+    top:50%;
+    float:left;
+    margin:2px;
+    cursor: pointer;
+    transition-duration: 0.4s;
+    border-radius: 3px;
+}
+
+.leftButton:hover {
+    background-color: #2691e9;
+}
+.rightButton:hover{
+    background-color: #2691e9;
+}
+/* .searchUser {
+    width: 100%;
+    background-color: #ff0000;
+    color: rgb(0, 0, 0);
+  } */
+.returnbtn{
+    background-color: #4c53af; 
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    width: 20%;
+    position: absolute;
+    position: fixed;
+    right: 40%;
+    top:80%;
+    float:left;
+    margin:2px;
+    cursor: pointer;
+    transition-duration: 0.4s;
+    border-radius: 3px;
+    display: block;
+}
+
+.returnbtn:hover{
+    background-color: #2691e9;
+}
+
+.overlay {
+    position: absolute;
+    height: 100vh;
+    width: 100%;
+    background: rgba(212, 212, 212, 0.9);
+    z-index: 1;
+    place-content: center;
+    color: rgb(218, 213, 213);
+    display: none;
+    opacity: 1;
+}
+.viewUsers{
+    display: none;
+}
+#myInput {
+  /* background-image: url('/css/searchicon.png'); Add a search icon to input */
+  background-position: 10px 12px; /* Position the search icon */
+  background-repeat: no-repeat; /* Do not repeat the icon image */
+  width: 100%; /* Full-width */
+  font-size: 16px; /* Increase font-size */
+  padding: 12px 20px 12px 40px; /* Add some padding */
+  border: 1px solid #ddd; /* Add a grey border */
+  margin-bottom: 12px; /* Add some space below the input */
+  color: black;
+  display: block;
+}
+
+#names {
+  /* Remove default list styling */
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: block;
+}
+
+#names li a {
+  border: 1px solid #ddd; /* Add a border to all links */
+  margin-top: -1px; /* Prevent double borders */
+  background-color: #ffffff; /* Grey background color */
+  padding: 12px; /* Add some padding */
+  text-decoration: none; /* Remove default text underline */
+  font-size: 18px; /* Increase the font-size */
+  color: rgb(0, 0, 0); /* Add a black text color */
+  display: block;/* Make it into a block element to fill the whole list */
+}
+
+#names li a:hover:not(.header) {
+  background-color: #eee; /* Add a hover effect to all links, except for headers */
+}
+.station-map {
+    height: 500px;
+    width: 80%;
+    right: 10%;
+    left: 10%;
+}
