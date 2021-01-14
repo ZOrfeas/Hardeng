@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import Hardeng.Rest.Utilities;
+import Hardeng.Rest.Utilities.CsvObject;
 import Hardeng.Rest.exceptions.DriverNotFoundException;
 import Hardeng.Rest.exceptions.CarNotFoundException;
 import Hardeng.Rest.exceptions.CarDriverNotFoundException;
@@ -64,31 +65,22 @@ public class EVServiceImpl implements EVService {
 
     public static class SessionObject {
         @JsonProperty("SessionIndex")
-        @CsvBindByName
         private Integer sessionIndex;
         @JsonProperty("SessionID")
-        @CsvBindByName
         private String sessionId;
         @JsonProperty("EnergyProvider")
-        @CsvBindByName
         private String energyProvider;
         @JsonProperty("StartedOn")
-        @CsvBindByName
         private String startedOn;
         @JsonProperty("FinishedOn")
-        @CsvBindByName
         private String finishedOn;
         @JsonProperty("EnergyDelivered")
-        @CsvBindByName
         private Float energyDelivered;
         @JsonProperty("PricePolicyRef")
-        @CsvBindByName
         private String pricePolicyRef;
         @JsonProperty("CostPerKWh")
-        @CsvBindByName
         private Float costPerKWh;
         @JsonProperty("SessionCost")
-        @CsvBindByName
         private Float sessionCost;
 
         SessionObject(Integer index, ChargingSession cSession) {
@@ -102,38 +94,88 @@ public class EVServiceImpl implements EVService {
             this.costPerKWh = cSession.getPricePolicy().getCostPerKWh();
             this.sessionCost = this.costPerKWh * this.energyDelivered;
         }
-        @Override
-        public String toString() {
-            return this.sessionIndex.toString() +'|'+ this.sessionId.toString() +'|'+ this.energyProvider +'|'+
-            this.startedOn +'|'+ this.finishedOn +'|'+ this.pricePolicyRef +'|'+ this.energyDelivered.toString() +'|'+
-            + '|' + this.costPerKWh +'|'+ this.sessionCost;
-        }
     }
-
-    public class SessEVObject {
-        @JsonProperty("VehicleID")
+    
+    public class CsvSessEVObject {
         @CsvBindByName
         private String vehicleID;
-        @JsonProperty("RequestTimeStamp")
+        public String getVehicleID () {return this.vehicleID;}
         @CsvBindByName
         private String requestTimeStamp;
-        @JsonProperty("PeriodFrom")
+        public String getRequestTimeStamp() {return this.requestTimeStamp;}
         @CsvBindByName
         private String periodFrom;
-        @JsonProperty("PeriodTo")
+        public String getPeriodFrom () {return this.periodFrom;}
         @CsvBindByName
         private String periodTo;
-        @JsonProperty("TotalEnergyConsumed")
+        public String getPeriodTo () {return this.periodTo;}
         @CsvBindByName
         private Float totalEnergyConsumed;
-        @JsonProperty("NumberOfVisitedPoints")
+        public Float getTotalEnergyConsumed () {return this.totalEnergyConsumed;}
         @CsvBindByName
         private Integer nrOfVisitedPoints;
-        @JsonProperty("NumberOfVehicleChargingSessions")
+        public Integer getNrOfVisitedPoints () {return this.nrOfVisitedPoints;}
         @CsvBindByName
         private Integer nrOfVehicleChargingSessions;
+        public Integer getNrOfVehicleChargingSessions () {return this.nrOfVehicleChargingSessions;}
+        @CsvBindByName
+        private Integer sessionIndex;
+        public Integer getSessionIndex () {return this.sessionIndex;}
+        @CsvBindByName
+        private String sessionId;
+        public String getSessionId () {return this.sessionId;}
+        @CsvBindByName
+        private String energyProvider;
+        public String getEnergyProvider () {return this.energyProvider;}
+        @CsvBindByName
+        private String startedOn;
+        public String getStartedOn () {return this.startedOn;}
+        @CsvBindByName
+        private String finishedOn;
+        public String getFinishedOn () {return this.finishedOn;}
+        @CsvBindByName
+        private Float energyDelivered;
+        public Float getEnergyDelivered () {return this.energyDelivered;}
+        @CsvBindByName
+        private String pricePolicyRef;
+        public String getPricePolicyRef () {return this.pricePolicyRef;}
+        @CsvBindByName
+        private Float costPerKWh;
+        public Float getCostPerKWh () {return this.costPerKWh;}
+        @CsvBindByName
+        private Float sessionCost;
+        public Float getSessionCost () {return this.sessionCost;}
+        CsvSessEVObject(SessEVObject parent, SessionObject so) {
+            this.vehicleID = parent.vehicleID; this.requestTimeStamp = parent.requestTimeStamp;
+            this.periodFrom = parent.periodFrom; this.periodTo = parent.periodTo;
+            this.totalEnergyConsumed = parent.totalEnergyConsumed;
+            this.nrOfVisitedPoints = parent.nrOfVisitedPoints;
+            this.nrOfVehicleChargingSessions = parent.nrOfVehicleChargingSessions;
+            this.sessionIndex = so.sessionIndex; this.sessionId = so.sessionId;
+            this.energyProvider = so.energyProvider; this.startedOn = so.startedOn;
+            this.finishedOn = so.finishedOn; this.energyDelivered = so.energyDelivered;
+            this.pricePolicyRef = so.pricePolicyRef; this.costPerKWh = so.costPerKWh;
+            this.sessionCost = so.sessionCost;
+        }
+
+    }
+    
+    public class SessEVObject implements CsvObject {
+        @JsonProperty("VehicleID")
+        private String vehicleID;
+        @JsonProperty("RequestTimeStamp")
+        private String requestTimeStamp;
+        @JsonProperty("PeriodFrom")
+        private String periodFrom;
+        @JsonProperty("PeriodTo")
+        private String periodTo;
+        @JsonProperty("TotalEnergyConsumed")
+        private Float totalEnergyConsumed;
+        @JsonProperty("NumberOfVisitedPoints")
+        private Integer nrOfVisitedPoints;
+        @JsonProperty("NumberOfVehicleChargingSessions")
+        private Integer nrOfVehicleChargingSessions;
         @JsonProperty("VehicleChargingSessionsList")
-        @CsvBindByName(column = "SESSIONINDEX|SESSIONID|ENERGYPROVIDER|STARTEDON|FINISHEDON|PRICEPOLICYREF|ENERGYDELIVERED|COSTPERKWH|SESSIONCOST")
         private List<SessionObject> sessionsSummaryList = new ArrayList<>();
 
         SessEVObject(Timestamp from, Timestamp to,
@@ -154,15 +196,15 @@ public class EVServiceImpl implements EVService {
             }
             this.nrOfVisitedPoints = points.size();
         }
-        public String getVehicleId() {return this.vehicleID;}
-        public String getRequestTimeStamp() {return this.requestTimeStamp;}
-        public String getPeriodFrom() {return this.periodFrom;}
-        public String getPeriodTo() {return this.periodTo;}
-        public Float getTotalEnergyConsumed() {return this.totalEnergyConsumed;}
-        public Integer getNrOfVisitedPoints() {return this.nrOfVisitedPoints;}
-        public Integer getNrOfVehicleChargingSessions() {return this.nrOfVehicleChargingSessions;}
+        @Override
         @JsonIgnore
-        public String getSessionsSummuryList() {return this.sessionsSummaryList.toString();}
+        public List<Object> getList() {
+            List<Object> toRet = new ArrayList<>();
+            for (SessionObject so : this.sessionsSummaryList) {
+                toRet.add(new CsvSessEVObject(this, so));
+            }
+            return toRet;
+        }
     }
     
     @Override

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import Hardeng.Rest.Utilities;
+import Hardeng.Rest.Utilities.CsvObject;
 import Hardeng.Rest.exceptions.ChargingPointNotFoundException;
 import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.models.ChargingPoint;
@@ -34,28 +35,20 @@ public class PointServiceImpl implements PointService {
 
     public static class SessionObject {
         @JsonProperty("SessionIndex")
-        @CsvBindByName
         private Integer sessionIndex;
         @JsonProperty("SessionID")
-        @CsvBindByName
         private String sessionId;
         @JsonProperty("StartedOn")
-        @CsvBindByName
         private String startedOn;
         @JsonProperty("FinishedOn")
-        @CsvBindByName
         private String finishedOn;
         @JsonProperty("Protocol")
-        @CsvBindByName
         private String protocol;
         @JsonProperty("EnergyDelivered")
-        @CsvBindByName
         private Float energyDelivered;
         @JsonProperty("Payment")
-        @CsvBindByName
         private String payment;
         @JsonProperty("VehicleType")
-        @CsvBindByName
         private String vehicleType;
 
         SessionObject(Integer index, ChargingSession cSession) {
@@ -68,6 +61,51 @@ public class PointServiceImpl implements PointService {
             this.payment = cSession.getPayment();
             this.vehicleType = cSession.getCarDriver().getCar().getModel();
         }
+
+    }
+    public static class CsvSessPointObject {
+        @CsvBindByName
+        private String point;
+        @CsvBindByName
+        private String pointOperator;
+        @CsvBindByName
+        private String requestTimeStamp;
+        @CsvBindByName
+        private String periodFrom;
+        @CsvBindByName
+        private String periodTo;
+        @CsvBindByName
+        private Integer numberOfChargingSessions;
+        @CsvBindByName
+        private Integer sessionIndex;
+        @CsvBindByName
+        private String sessionId;
+        @CsvBindByName
+        private String startedOn;
+        @CsvBindByName
+        private String finishedOn;
+        @CsvBindByName
+        private String protocol;
+        @CsvBindByName
+        private Float energyDelivered;
+        @CsvBindByName
+        private String payment;
+        @CsvBindByName
+        private String vehicleType;
+        CsvSessPointObject(SessPointObject pr, SessionObject so) {
+            this.point = pr.point; this.pointOperator = pr.pointOperator;
+            this.requestTimeStamp = pr.requestTimeStamp; this.periodFrom = pr.periodFrom;
+            this.periodTo = pr.periodTo; this.numberOfChargingSessions = pr.numberOfChargingSessions;
+            this.sessionIndex= so.sessionIndex; this.sessionId = so.sessionId; this.startedOn = so.startedOn;
+            this.finishedOn = so.finishedOn; this.protocol = so.protocol; this.energyDelivered = so.energyDelivered;
+            this.payment = so.payment; this.vehicleType = so.vehicleType;
+        }
+        public String getPoint() {return this.point;}
+        public String getPointOperator() {return this.pointOperator;}
+        public String getRequestTimeStamp() {return this.requestTimeStamp;}
+        public String getPeriodFrom() {return this.periodFrom;}
+        public String getPeriodTo() {return this.periodTo;}
+        public Integer getNumberOfChargingSessions() {return this.numberOfChargingSessions;}
         public Integer getSessionIndex() {return this.sessionIndex;}
         public String getSessionId() {return this.sessionId;}
         public String getStartedOn() {return this.startedOn;}
@@ -76,36 +114,22 @@ public class PointServiceImpl implements PointService {
         public Float getEnergyDelivered() {return this.energyDelivered;}
         public String getPayment() {return this.payment;}
         public String getVehicleType() {return this.vehicleType;}
-        @Override
-        public String toString() {
-            return this.sessionIndex.toString() +'|'+ this.sessionId.toString() +'|'+
-             this.startedOn +'|'+ this.finishedOn +'|'+ this.protocol +'|'+ this.energyDelivered.toString() +'|'+
-             this.payment +'|'+ this.vehicleType;
-        }
 
     }
-    
-    public static class SessPointObject {
+    public static class SessPointObject implements CsvObject {
         @JsonProperty("Point")
-        @CsvBindByName
         private String point;
         @JsonProperty("PointOperator")
-        @CsvBindByName
         private String pointOperator;
         @JsonProperty("RequestTimeStamp")
-        @CsvBindByName
         private String requestTimeStamp;
         @JsonProperty("PeriodFrom")
-        @CsvBindByName
         private String periodFrom;
         @JsonProperty("PeriodTo")
-        @CsvBindByName
         private String periodTo;
         @JsonProperty("NumberOfChargingSessions")
-        @CsvBindByName
         private Integer numberOfChargingSessions;
         @JsonProperty("ChargingSessionsList")
-        @CsvBindByName(column = "SESSIONINDEX|SESSIONID|STARTEDON|FINISHEDON||PROTOCOLID|COSTPERKWH||PAYMENT|VEHICLETYPE")
         private List<SessionObject> chargingSessionsList = new ArrayList<>();
 
         SessPointObject(Timestamp from, Timestamp to,
@@ -120,14 +144,15 @@ public class PointServiceImpl implements PointService {
                 this.chargingSessionsList.add(new SessionObject(i+1, cSessions.get(i)));
             }
         }
-        public String getPoint() {return this.point;}
-        public String getPointOperator() {return this.pointOperator;}
-        public String getRequestTimeStamp() {return this.requestTimeStamp;}
-        public String getPeriodFrom() {return this.periodFrom;}
-        public String getPeriodTo() {return this.periodTo;}
-        public Integer getNumberOfChargingSessions() {return this.numberOfChargingSessions;}
+        @Override
         @JsonIgnore
-        public String getChargingSessionsList() {return this.chargingSessionsList.toString();}
+        public List<Object> getList() {
+            List<Object> toRet = new ArrayList<>();
+            for (SessionObject so : this.chargingSessionsList) {
+                toRet.add(new CsvSessPointObject(this, so));
+            }
+            return toRet;
+        }
     }
     
     @Override
