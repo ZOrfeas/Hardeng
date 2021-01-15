@@ -115,6 +115,58 @@ public class StationServiceImpl implements StationService {
         public String getSessionsSummaryList() {return this.sessionsSummaryList.toString();}
     }
     
+    public class NearbyStationObject {
+        @JsonProperty("position")
+        private List<Double> pos;
+        @JsonProperty("label")
+        private String label;
+        @JsonProperty("time")
+        private String time;
+        @JsonProperty("condition")
+        private String cond;
+        @JsonProperty("station_id")
+        private Integer id;
+
+        NearbyStationObject(ChargingStation cStation) {
+            this.pos = new ArrayList<Double>();
+            this.pos.add(cStation.getLatitude());
+            this.pos.add(cStation.getLongitude());
+            this.label = cStation.getAddressLine();
+            this.time = "Unknown";
+            
+            Integer level1 = 0;
+            Integer level2 = 0;
+            Integer level3 = 0;
+
+            List<ChargingPoint> cPoints =  cPointRepo.findBycStation(cStation);
+            for (int i = 0; i < cPoints.size(); i++) {
+                ChargingPoint cP = cPoints.get(i);
+                if (cP.getChargerType() == 1 && cP.isOccupied() == false) level1++;
+                if (cP.getChargerType() == 2 && cP.isOccupied() == false) level2++;
+                if (cP.getChargerType() == 3 && cP.isOccupied() == false) level3++;
+            }
+            log.info("1: "+ level1.toString() + " 2: " + level2.toString() + " 3: " + level3.toString());
+            if (level1 + level2 + level3 == 1)
+            {
+                if (level1 == 1) {this.cond = "1 Type-1 charger available";}
+                if (level2 == 1) {this.cond = "1 Type-2 charger available";}
+                if (level3 == 1) {this.cond = "1 Type-3 charger available";}
+            }
+            else
+            {
+                this.cond = "";
+                if (level1 != 0) {this.cond += level1.toString() + " Type-1, ";}
+                if (level2 != 0) {this.cond += level2.toString() + " Type-2, ";}
+                if (level3 != 0) {this.cond += level3.toString() + " Type-3, ";}
+                this.cond = this.cond.substring(0, this.cond.length() -2);
+                this.cond += " chargers available";
+            }
+            log.info(this.cond);
+
+            this.id = cStation.getId();
+        }
+    }
+
     @Override
     public SessStationObject sessionsPerStation(
      Integer stationId, String dateFrom, String dateTo) throws NoDataException {
@@ -132,4 +184,18 @@ public class StationServiceImpl implements StationService {
         return new SessStationObject(queryDateFrom, queryDateTo,
         queryStation, cPoints);
     }
+
+    @Override
+    public List<NearbyStationObject> nearbyStations(Double latitude, 
+    Double longitude, Double rad) throws NoDataException {
+        List<ChargingStation> queryStations = cStationRepo.findByLatitudeBetweenAndLongitudeBetween
+        (latitude - rad, latitude + rad, longitude - rad, longitude + rad);
+        if (queryStations.isEmpty()) throw new NoDataException();
+        List<NearbyStationObject> nearbyStations = new ArrayList<>();
+        for (int i = 0; i < queryStations.size(); i++)
+        {
+            nearbyStations.add(new NearbyStationObject(queryStations.get(i)));
+        }
+        return nearbyStations;
+    };
 }

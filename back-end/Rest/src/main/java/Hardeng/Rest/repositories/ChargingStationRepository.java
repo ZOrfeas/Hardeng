@@ -9,12 +9,25 @@ import Hardeng.Rest.models.EnergyProvider;
 
 @Repository
 public interface ChargingStationRepository extends JpaRepository<ChargingStation, Integer> {
-/** 
- *  Returns Energy Provider at a Charging Station {@code eProvider}
-    * @param eProvider ChargingStation in question
-    * @return List of charging points
-*/
+    /** 
+     *  Returns Charging Station by energyProvider {@code eProvider}
+     * @param eProvider Energy Provider in question
+     * @return List of charging stations
+    */
 
     List<ChargingStation> findByeProvider(EnergyProvider eProvider);
+
+    /** 
+     * Returns List of Charging Stations based on 
+     * latitude and longitude retrictions
+     * @param latLow latitude lower limit
+     * @param latUp latitude upper liit
+     * @param lonLow longitude lower limit
+     * @param lonUp longitude upperlimit
+     * @return List of charging stations
+     */
+
+    List<ChargingStation> findByLatitudeBetweenAndLongitudeBetween(Double latLow,
+    Double latUp, Double lonLow, Double lonUp);
 
 }
