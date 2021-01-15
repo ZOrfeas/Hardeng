@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -17,10 +18,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     
-    private static String backendAdminRole = "BACKEND_ADMIN";
-    private static String frontendConsumerRole = "FRONTEND";
-    private static String stationAdminRole = "STATION_ROLE";
-    private static String driverRole = "DRIVER_ROLE";
+    public static String masterAdminRole = "MASTER_ADMIN";
+    public static String stationAdminRole = "STATION_ADMIN";
+    public static String driverRole = "DRIVER";
+
+    public static SimpleGrantedAuthority masterAuthority = new SimpleGrantedAuthority("ROLE_" + masterAdminRole);
+    public static SimpleGrantedAuthority stationAdminAuthority = new SimpleGrantedAuthority("ROLE_" + stationAdminRole);
+    public static SimpleGrantedAuthority driverAuthority = new SimpleGrantedAuthority("ROLE_" + driverRole);
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -30,8 +34,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             and().
             authorizeRequests().
             antMatchers(/** fill me */).permitAll(). // here go whatever endpoints are deemed to be accessible by all
-            antMatchers(/** fill me */).hasRole(backendAdminRole); // here go endpoints only we have access to
-            
+            antMatchers(/** fill me */).hasRole(masterAdminRole); // here go endpoints only we have access to
+        
     }
 
     
