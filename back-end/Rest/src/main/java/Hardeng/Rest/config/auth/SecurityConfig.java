@@ -1,7 +1,8 @@
 package Hardeng.Rest.config.auth;
 
 
-import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,28 +17,41 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     
-    public static String masterAdminRole = "MASTER_ADMIN";
-    public static String stationAdminRole = "STATION_ADMIN";
-    public static String driverRole = "DRIVER";
+    public final static String masterAdminRole = "MASTER_ADMIN";
+    public final static String stationAdminRole = "STATION_ADMIN";
+    public final static String driverRole = "DRIVER";
 
-    public static SimpleGrantedAuthority masterAuthority = new SimpleGrantedAuthority("ROLE_" + masterAdminRole);
-    public static SimpleGrantedAuthority stationAdminAuthority = new SimpleGrantedAuthority("ROLE_" + stationAdminRole);
-    public static SimpleGrantedAuthority driverAuthority = new SimpleGrantedAuthority("ROLE_" + driverRole);
+    public final static SimpleGrantedAuthority masterAuthority = new SimpleGrantedAuthority("ROLE_" + masterAdminRole);
+    public final static SimpleGrantedAuthority stationAdminAuthority = new SimpleGrantedAuthority("ROLE_" + stationAdminRole);
+    public final static SimpleGrantedAuthority driverAuthority = new SimpleGrantedAuthority("ROLE_" + driverRole);
 
+    public final static List<SimpleGrantedAuthority> driverAuthorities = 
+        new ArrayList<>(List.of(driverAuthority));
+    public final static List<SimpleGrantedAuthority> stationAdminAuthorities =
+        new ArrayList<>(List.of(driverAuthority, stationAdminAuthority));
+    public final static List<SimpleGrantedAuthority> masterAuthorities =
+        new ArrayList<>(List.of(driverAuthority, stationAdminAuthority, masterAuthority));
+    
+    
     @Autowired
     private UserDetailsService userDetailsService;
 
     @Autowired
+    private CustomAuthEntryPoint customEntryPoint;
+
+    @Autowired
+    private CustomFilter customFilter;
+
+    @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.
-            userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-            
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }    
     
     @Override
@@ -46,10 +60,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             csrf().disable().
             sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
             and().
+            exceptionHandling().authenticationEntryPoint(customEntryPoint).
+            and().
             authorizeRequests().
-            antMatchers(/** fill me */).permitAll(). // here go whatever endpoints are deemed to be accessible by all
+            antMatchers("/login").permitAll(). // here go whatever endpoints are deemed to be accessible by all
             antMatchers(/** fill me */).hasRole(masterAdminRole); // here go endpoints only we have access to
 
+        http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     

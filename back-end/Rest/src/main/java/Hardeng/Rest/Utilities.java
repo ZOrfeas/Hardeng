@@ -18,11 +18,17 @@ public class Utilities {
     public static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static class SecurityConstants {
+        public static final long validity_time = 5*60*60;
+        public static final long a_long_time = 60*60*24*365;
         @Value("${jwt.secret}")
         public static String secret;
-        public static final long validity_time = 5*60*60;
         @Value("${jwt.header-name}")
         public static String header_name;
+        @Value("${master.username}")
+        public static String masterUsername;
+        @Value("${master.password}")
+        public static String masterPassword;
+
     }
 
     public static Timestamp timestampFromString(String orgString, SimpleDateFormat timestampFormat) {

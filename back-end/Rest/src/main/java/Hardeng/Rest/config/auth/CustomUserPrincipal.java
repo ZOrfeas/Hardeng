@@ -20,4 +20,19 @@ public class CustomUserPrincipal extends User{
     public String getRole() {
         return this.role;
     }
+
+    public static String makeUserRoleString(String username, String role) {
+        return role + '-' + username;
+    }
+
+    public String retUserRoleString() {
+        return makeUserRoleString(this.getUsername(), this.role);
+    }
+
+    public static String roleFromUserRoleString(String userRoleString) {
+        return userRoleString.split("-",2)[0];
+    }
+    public static String usernameFromUserRoleString(String userRoleString) {
+        return userRoleString.split("-",2)[1];
+    }
 }
