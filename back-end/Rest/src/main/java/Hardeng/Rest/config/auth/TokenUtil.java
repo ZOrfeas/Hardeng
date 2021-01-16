@@ -32,6 +32,11 @@ public class TokenUtil implements Serializable {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
+    public String getRoleFromToken(String token) {
+        final Claims claims = getAllClaimsFromToken(token);
+        return claims.get("role", String.class);
+    }
+
     private Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
@@ -45,13 +50,14 @@ public class TokenUtil implements Serializable {
         return Jwts.builder().setClaims(claims).setSubject(subject)
                    .setIssuedAt(new Date(System.currentTimeMillis()))
                    .setExpiration(new Date(System.currentTimeMillis() +
-                    SecurityConstants.validity_time * 1000))
+                        SecurityConstants.validity_time * 1000))
                    .signWith(SignatureAlgorithm.HS512, SecurityConstants.secret)
                    .compact();
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, String role) {
         Map<String,Object> claims = new HashMap<>();
+        claims.put("role", role);
         return doGenerateToken(claims, userDetails.getUsername());
     }
 

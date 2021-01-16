@@ -1,7 +1,6 @@
 package Hardeng.Rest.config.auth;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +10,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import Hardeng.Rest.models.Driver;
 import Hardeng.Rest.repositories.DriverRepository;
 
-public class DriverDetailsServiceImpl implements  UserDetailsService {
+@Service
+public class UserDetailsServiceImpl implements  UserDetailsService {
     
     @Autowired
     private DriverRepository driverRepo;
@@ -34,8 +35,8 @@ public class DriverDetailsServiceImpl implements  UserDetailsService {
         return new User(driver.getUsername(), driver.getPassword(), grantedAuthorities);  
     }
     // this should be somehow interwoven with db logic more cleanly/automatically
-    public Driver save(Driver driver) {
+    public Driver encodeDriver(Driver driver) {
         driver.setPassword(encoder.encode(driver.getPassword()));
-        return driverRepo.save(driver);
+        return driver;
     }
 }
