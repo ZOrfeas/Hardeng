@@ -11,13 +11,8 @@ ReactDOM.render(
   <React.StrictMode>
     <Header />
 
-<<<<<<< HEAD
     {/*<ChargingExperience />*/}
-    {/*<StationMonitoring />*/}
-=======
-    {/* <ChargingExperience /> */}
     <StationMonitoring />
->>>>>>> fdea569eb83851190b7cc71a0a6932fa6b9f3bd1
     {/*<>*/}
   </React.StrictMode>,
   document.getElementById('root')

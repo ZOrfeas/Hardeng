@@ -3,16 +3,48 @@ import "./StationMonitoring.css";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css'
+import M, { Autocomplete } from 'materialize-css';
+import { AiOutlineSend } from "react-icons/ai";
+
+const driversHardcoded = [
+  {driver_name: "Kostas", id: 11111, bonus_points: 10, carID: 13,  email: "kostas@kostas.gr", walletID: 12315464758},
+  {driver_name: "Kostakis", id: 22222, bonus_points: 12, carID: 5,  email: "kostakis@kostakis.gr", walletID: 9999999999 }
+];
+
+document.addEventListener('DOMContentLoaded', function() {
+  var options = {
+     data: {},
+    onAutocomplete:function(res){
+      document.getElementById('drivers-name').value=res;
+      // document.getElementById('drivers-name').value=res;
+      // document.getElementById('drivers-name').value=res;
+      // document.getElementById('drivers-name').value=res;
+      
+    }    
+  };
+  var elems = document.querySelectorAll('.autocomplete');
+  var instances = M.Autocomplete.init(elems, options);
+  var sela = {};
+  for (const i in driversHardcoded){
+    var name = driversHardcoded[i]["driver_name"] + " #" + driversHardcoded[i]["id"];
+    sela[name] = 'https://placehold.it/250x250';
+  }
+  instances[0].updateData(sela);
+});
 
 class StationMonitoring extends React.Component {
   constructor(props) {
     super(props);
-
+    this.setState({
+      username: "",
+      drivers: driversHardcoded
+    });
+    this.handleUserInput = this.handleUserInput.bind(this);
     this.state = {
       user: props.user
     };
   }
-  Return(){
+  ReturnFromViewUsers(){
     let viewUsers =  document.getElementById('viewUsers');
     let btns =  document.getElementById('btn-group');
     btns.style.display = 'block';
@@ -20,92 +52,154 @@ class StationMonitoring extends React.Component {
   }
   
   searchForUsers(){
+    // getDriver();
     let btns =  document.getElementById('btn-group');
+    let rtnBtns =  document.getElementById('rtn-btn-users');
     let viewUsers =  document.getElementById('viewUsers');
     btns.style.display = 'none';
     viewUsers.style.display = 'block';
-  }
-
-  myFunction() {
-    // Declare variables
-    var input, filter, ul, li, a, i, txtValue;
-    input = document.getElementById('myInput');
-    filter = input.value.toUpperCase();
-    ul = document.getElementById("names");
-    li = ul.getElementsByTagName('li');
-  
-    // Loop through all list items, and hide those who don't match the search query
-    for (i = 0; i < li.length; i++) {
-      a = li[i].getElementsByTagName("a")[0];
-      txtValue = a.textContent || a.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        li[i].style.display = "";
-      } else {
-        li[i].style.display = "none";
-      }
-    }
+    rtnBtns.style.display = 'block';
   }
 
   searchForStations(){
-    let rbtn = document.getElementById('rbtn');
+    // let rbtn = document.getElementById('rbtn');
     let btns =  document.getElementById('btn-group');
-    let overlay = document.getElementById('overlay');
+    let stationsMap = document.getElementById('stationsMap');
     let btn = document.getElementById('rtn-btn-stations');
-    overlay.style.display = 'block';
+    stationsMap.style.display = 'block';
     btn.style.display = 'block';
     btns.style.display = 'none';
   }
   ReturnFromViewStations(){
-    let overlay = document.getElementById('overlay');
+    let stationsMap = document.getElementById('stationsMap');
     let btns =  document.getElementById('btn-group');
-    overlay.style.display = 'none'
+    let rtnBtns =  document.getElementById('rtn-btn-stations');
+    rtnBtns.style.display = 'none';
+    stationsMap.style.display = 'none';
     btns.style.display = 'block';
   }
-  // showInfo(Event){
-  //   let input = document.getElementById("myInput");
-  //   let e = event.which || event.keyCode;
-  //   if (e == 13){
-  //     alert("Enter was pressed was presses");
-  //   }
-  // }
+  handleUserInput(e) {
+    const name = e.target.name;
+    const value = e.target.value;
+    this.setState({ [name]: value });
+  }
   
 
-  
   render(){
     return(
       
       <div className="a">
-        <div className="overlay" id="overlay">
-          <div className="stations-map">
-            <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={true} className="station-map">
-              <TileLayer
-                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              <Marker position={[51.505, -0.09]}>
-                <Popup>
-                  data bla bla <br /> data.
-                </Popup>
-              </Marker>
-            </MapContainer>
-          </div>
+        <div className="stationsMap" id="stationsMap">
+          <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={true} className="station-map">
+            <TileLayer
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker position={[51.505, -0.09]}>
+              <Popup>
+                data bla bla <br /> data.
+              </Popup>
+            </Marker>
+          </MapContainer>
           <form action="">
             <input type="button" className="returnbtn" value="Return" id="rtn-btn-stations" onClick={this.ReturnFromViewStations}/>
           </form>
+        
         </div>
+        
+        
         <div className="viewUsers" id="viewUsers" display="none">
+          <div className="row">
+            <div className="col s12">
+              <div className="row">
+                <div className="input-field col s12">
+                  <i className="material-icons prefix"></i>
+                  <input type="text" id="autocomplete-input" className="autocomplete"/>
+                  <label for="autocomplete-input">Autocomplete</label>
+                </div>
+              </div>
+              {/* <div className="card small"> */}
+              
+                <div className="row">
+                  <div className="col s12 m6" id='res'>
+                    <div className="card blue-grey darken-1">
+                      <div className="card-content white-text">
+                        <span className="card-title">Driver's Info.</span>
+                        
+                        {/* <p>User's Name.</p> */}
+                      </div>
+                      <div className="card-action">
+                        <p>Name</p> 
+                        <input 
+                        type="username" 
+                        placeholder="Drivers Name"
+                        id="drivers-name" 
+                        className="Drivers Name" 
+                        value={this.state.username}
+                        onChange={this.handleUserInput}
+                        />
+                        <p>Email</p> 
+                        <input 
+                        type="username" 
+                        placeholder="Email"
+                        id="email" 
+                        className="email" 
+                        value={this.state.username}
+                        onChange={this.handleUserInput}
+                        />
+                        <p>Bonus Points</p> 
+                        <input 
+                        type="username" 
+                        placeholder="Bonus Points"
+                        id="bonus-points" 
+                        className="bonusPoints" 
+                        value={this.state.username}
+                        onChange={this.handleUserInput}
+                        />
+                        <p>Wallet</p> 
+                        <input 
+                        type="username" 
+                        placeholder="WalletID"
+                        id="wallet-id"
+                        className="walletID" 
+                        value={this.state.username}
+                        onChange={this.handleUserInput}
+                        />
+                      </div>
+                      <div className="right-align">
+                        <button className="btn waves-effect waves-light" type="submit" name="action">Submit Changes  <AiOutlineSend/>
+                        </button>
+                      </div>
+        
+                    </div>
+                  </div>
+                    {/* <div className="col s12 m6" id='res'>
+                      <div className="card blue-grey darken-1">
+                        <div className="card-content white-text">
+                          <span className="card-title">User's Name.</span>
+
+                        </div>
+                        <div className="card-action">
+                          <input 
+                          type="username" 
+                          placeholder="Name"
+                          id="example-text" 
+                          className="example text" 
+                          value={this.state.username}
+                          onChange={this.handleUserInput}
+                          />
+                        </div>
+                      </div>
+                    </div> */}
+                </div>
+            </div>
+          </div>
           <form action="">
-            <input type="button" className="returnbtn" value="Return" id="rtn-btn" onClick={this.Return}/>
-            <input type="text" id="myInput" onKeyUp={this.myFunction} placeholder="Search for names.."/* onKeyPress={this.showInfo(Event)}*//>
-            <ul id="names">
-              <li><a href="#">Adele #3118</a></li>
-              <li><a href="#">Agnes</a></li>
-              <li><a href="#">Billy</a></li>
-              <li><a href="#">Bob</a></li>
-              <li><a href="#">Calvin</a></li>
-              <li><a href="#">Christina</a></li>
-              <li><a href="#">Cindy</a></li>
-            </ul> 
+            <input type="button" 
+            className="returnbtn" 
+            value="Return" 
+            id="rtn-btn-users" 
+            onClick={this.ReturnFromViewUsers}/>
           </form>
         </div>
         <form action="">

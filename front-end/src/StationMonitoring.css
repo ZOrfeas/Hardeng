@@ -42,14 +42,11 @@
 .leftButton:hover {
     background-color: #2691e9;
 }
+
 .rightButton:hover{
     background-color: #2691e9;
 }
-/* .searchUser {
-    width: 100%;
-    background-color: #ff0000;
-    color: rgb(0, 0, 0);
-  } */
+
 .returnbtn{
     background-color: #4c53af; 
     border: none;
@@ -68,24 +65,13 @@
     cursor: pointer;
     transition-duration: 0.4s;
     border-radius: 3px;
-    display: block;
+    display: none;
 }
 
 .returnbtn:hover{
     background-color: #2691e9;
 }
 
-.overlay {
-    position: absolute;
-    height: 100vh;
-    width: 100%;
-    background: rgba(212, 212, 212, 0.9);
-    z-index: 1;
-    place-content: center;
-    color: rgb(218, 213, 213);
-    display: none;
-    opacity: 1;
-}
 .viewUsers{
     display: none;
 }
@@ -125,8 +111,44 @@
   background-color: #eee; /* Add a hover effect to all links, except for headers */
 }
 .station-map {
+    /* display: block; */
     height: 500px;
     width: 80%;
     right: 10%;
     left: 10%;
+}
+
+.stationsMap{
+  display: none;
+}
+
+.card {
+  width: 50%  ;
+  float: left; 
+ }
+
+
+ .exampleText {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  /* color: rgb(255, 255, 255);
+  background-color: #546e7a;
+  --input-border: #8b8a8b;
+  --input-focus-h: 245;
+  --input-focus-s: 100%;
+  --input-focus-l: 42%;
+  font-size: 16px;
+  font-size: max(16px, 1em);
+  font-family: inherit;
+  padding: 0.25em 0.5em;
+  border: 2px solid var(--input-border);
+  border-radius: 4px; */
+ }
+ input[type=text] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
 }
