@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { tokenFileExists, deleteTokenFile, getToken } = require("../utils");
+const { tokenFileExists, deleteTokenFile, getToken, errorHandler } = require("../utils");
 
 exports.command = 'logout'
 
@@ -10,20 +10,16 @@ exports.handler = function(argv) {
     if (tokenFileExists()) {
         const token = getToken();
 
-        axios.post('/logout', {
-            query: {
-                format: argv.format,
-                apikey: argv.apikey
-            },
+        axios.post('/logout', null, {
             headers: {
-                'X-OBSERVATORY-AUTH': token
+                'X-OBSERVATORY-AUTH': token.toString()
             }
         })
         .then(() => {
             deleteTokenFile();
         })
         .catch(err => {
-            console.log(err.response.data);
+            errorHandler(err);
         })
     }
     else {

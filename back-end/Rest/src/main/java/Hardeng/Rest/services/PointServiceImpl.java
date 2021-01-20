@@ -63,6 +63,7 @@ public class PointServiceImpl implements PointService {
         }
 
     }
+
     public static class CsvSessPointObject {
         @CsvBindByName
         private String point;
@@ -116,6 +117,7 @@ public class PointServiceImpl implements PointService {
         public String getVehicleType() {return this.vehicleType;}
 
     }
+    
     public static class SessPointObject implements CsvObject {
         @JsonProperty("Point")
         private String point;

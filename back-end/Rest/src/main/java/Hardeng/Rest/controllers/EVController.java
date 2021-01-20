@@ -25,6 +25,7 @@ public class EVController {
         log.info("Sessions per EV requested...");
         if (vehicleId == null || dateFrom == null || dateTo == null) throw new BadRequestException();
         String[] tokens = vehicleId.split("-");
+        if (tokens.length != 2) throw new BadRequestException();
         Integer driverId = Integer.parseInt(tokens[0]);
         Integer carId = Integer.parseInt(tokens[1]);
         return evService.sessionsPerEV(driverId, carId, dateFrom, dateTo);

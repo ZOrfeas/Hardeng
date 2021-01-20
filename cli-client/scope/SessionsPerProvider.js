@@ -1,13 +1,13 @@
 const axios = require('axios');
-const { isValidDate, tokenFileExists, getToken } = require("../utils");
+const { isValidDate, tokenFileExists, getToken, errorHandler } = require("../utils");
 
 exports.command = 'SessionsPerProvider'
 
-exports.desc = "Charging sessions in a time period by an electricity provider"
+exports.desc = "Charging sessions in a time period by an energy provider"
 
 exports.builder ={
     provider: {
-        describe: "Electricity provider",
+        describe: "Energy provider",
         demand: true
     },
     datefrom: {
@@ -17,6 +17,11 @@ exports.builder ={
     dateto:{
         describe: "Ending date",
         demand:true
+    },
+    format: {
+      demand: true,
+      describe: 'Choose output format',
+      choices: ['csv', 'json']
     }
 }
 
@@ -41,18 +46,17 @@ exports.handler = function(argv)
         const endpoint =  '/SessionsPerProvider'+ '/' + provid + '/' + start + '/' + finish;
         axios.get(endpoint, {
             params:{
-                format: argv.format,
-                apikey: argv.apikey
+                format: argv.format
             },
             headers: {
-                'X-OBSERVATORY-AUTH': token
+                'X-OBSERVATORY-AUTH': token.toString()
             }
         })
         .then(res =>{
             console.log(res.data);
         })
         .catch(err => {
-            console.log(err.response.data)
+            errorHandler(err);
         })
 
     }

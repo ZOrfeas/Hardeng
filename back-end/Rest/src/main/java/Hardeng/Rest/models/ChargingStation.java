@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 
 import org.springframework.data.geo.Point;
 
@@ -29,7 +30,7 @@ public class ChargingStation {
     @Column(nullable = true, length = 50)
     private String addressLine;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Admin admin;
 
     @ManyToOne
