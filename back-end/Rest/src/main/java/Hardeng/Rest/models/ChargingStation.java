@@ -33,7 +33,7 @@ public class ChargingStation {
     @ManyToOne(fetch = FetchType.LAZY)
     private Admin admin;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private EnergyProvider eProvider;
 
     ChargingStation() {}

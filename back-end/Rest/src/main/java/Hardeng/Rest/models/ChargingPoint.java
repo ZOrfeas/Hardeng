@@ -99,5 +99,5 @@ public class ChargingPoint {
     public int hashCode() {return Objects.hash(this.id);}
     @Override
     public String toString() {return "Point{" + "id=" + this.id + ", chargingStationID=" + this.cStation.getId() + ", Type=" 
-                                + this.chargerType + "}";}
+                                + this.chargerType + ", Occupied=" + this.isOccupied.toString() +"}";}
 }
