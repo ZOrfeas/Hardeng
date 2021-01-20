@@ -1,5 +1,8 @@
 package Hardeng.Rest.config.auth;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,7 +18,8 @@ import Hardeng.Rest.Utilities.SecurityConstants;
 
 @Service
 public class UserDetailsServiceImpl implements  UserDetailsService {
-    
+	private static Logger log = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
+
     @Autowired
     private DriverRepository driverRepo;
     @Autowired
@@ -27,16 +31,20 @@ public class UserDetailsServiceImpl implements  UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         
+        log.info("I'm service, before having stuff" + username);
         String role = CustomUserPrincipal.roleFromUserRoleString(username);
         String realUsername = CustomUserPrincipal.usernameFromUserRoleString(username);
         CustomUserPrincipal toRet;
-
+        log.info("I'm the service, i have: " + role + '|' + realUsername);
         switch (role) {
             case (SecurityConfig.masterAdminRole):
-                if (SecurityConstants.masterUsername.equals(realUsername)) 
-                    toRet = new CustomUserPrincipal(realUsername, role, SecurityConstants.masterPassword, SecurityConfig.masterAuthorities);
-                else
+                log.info("attempt to login user");
+                if (SecurityConstants.masterUsername.equals(realUsername)) {
+                    toRet = new CustomUserPrincipal(realUsername, role, encoder.encode(SecurityConstants.masterPassword), SecurityConfig.masterAuthorities);
+                } else {
+                    log.info("shit-failed y'all");
                     throw new UsernameNotFoundException("Master admin username was not correct");
+                }
                 break;
             
             case (SecurityConfig.stationAdminRole):

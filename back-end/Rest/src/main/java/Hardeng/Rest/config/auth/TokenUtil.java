@@ -31,11 +31,6 @@ public class TokenUtil implements Serializable {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
-    public String getRoleFromToken(String token) {
-        final Claims claims = getAllClaimsFromToken(token);
-        return claims.get("role", String.class);
-    }
-
     private Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
@@ -56,7 +51,10 @@ public class TokenUtil implements Serializable {
 
     public String generateToken(CustomUserPrincipal userDetails) {
         Map<String,Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.retUserRoleString());
+        if (userDetails.getRole().equals(SecurityConfig.masterAdminRole))
+            return generateMasterToken();
+        else
+            return doGenerateToken(claims, userDetails.retUserRoleString());
     }
 
     public static String generateMasterToken() {

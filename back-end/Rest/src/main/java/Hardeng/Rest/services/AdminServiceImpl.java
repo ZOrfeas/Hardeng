@@ -41,7 +41,7 @@ public class AdminServiceImpl implements AdminService {
         @JsonProperty("status")
         @CsvBindByName
         private String status;
-        StatusObject(String status) {
+        public StatusObject(String status) {
             this.status = status;
         }
         public String getStatus() {return this.status;}

@@ -22,7 +22,7 @@ public class CustomUserPrincipal extends User{
     }
 
     public static String makeUserRoleString(String username, String role) {
-        return role + '-' + username;
+        return role + '|' + username;
     }
 
     public String retUserRoleString() {
@@ -30,9 +30,9 @@ public class CustomUserPrincipal extends User{
     }
 
     public static String roleFromUserRoleString(String userRoleString) {
-        return userRoleString.split("-",2)[0];
+        return userRoleString.split("\\|",2)[0];
     }
     public static String usernameFromUserRoleString(String userRoleString) {
-        return userRoleString.split("-",2)[1];
+        return userRoleString.split("\\|",2)[1];
     }
 }

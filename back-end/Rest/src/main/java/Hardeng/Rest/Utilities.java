@@ -5,7 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
+// import org.springframework.beans.factory.annotation.Value;
 
 /**
  * This is probably the best way to group some globals to
@@ -20,14 +20,14 @@ public class Utilities {
     public static class SecurityConstants {
         public static final long validity_time = 5*60*60;
         public static final long a_long_time = 60*60*24*365;
-        @Value("${jwt.secret}")
-        public static String secret;
-        @Value("${jwt.header-name}")
-        public static String header_name;
-        @Value("${master.username}")
-        public static String masterUsername;
-        @Value("${master.password}")
-        public static String masterPassword;
+        // @Value("${jwt.secret}")
+        public static final String secret = "developmentjwtkey";
+        // @Value("${jwt.header}")
+        public static final String header_name = "X-OBSERVATORY-AUTH";
+        // @Value("${master.username}")
+        public static final String masterUsername = "master-of-puppets";
+        // @Value("${master.password}")
+        public static final String masterPassword = "for-whom-the-bell-tolls";
 
     }
 

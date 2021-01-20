@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +19,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import Hardeng.Rest.Utilities.SecurityConstants;
 
 @Configuration
 @EnableWebSecurity
@@ -51,7 +54,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        // auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth.
+        inMemoryAuthentication().withUser(SecurityConstants.masterUsername).
+        password("{noop}"+SecurityConstants.masterPassword).
+        roles(SecurityConfig.driverRole,SecurityConfig.masterAdminRole,SecurityConfig.stationAdminRole).
+        and().and().
+        userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }    
     
     @Override
@@ -64,12 +73,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             and().
             authorizeRequests().
             antMatchers("/login").permitAll(). // here go whatever endpoints are deemed to be accessible by all
-            antMatchers(/** fill me */).hasRole(masterAdminRole); // here go endpoints only we have access to
-
+            antMatchers("/frontend").hasRole(masterAdminRole); // here go endpoints only we have access to
         http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-    
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();

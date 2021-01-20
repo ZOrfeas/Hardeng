@@ -33,12 +33,14 @@ public class CustomFilter extends OncePerRequestFilter {
                                     HttpServletResponse response, FilterChain chain) 
                                     throws ServletException, IOException
     {
+        // log.error("THE HEADER NAME IS: "+SecurityConstants.header_name+'|');
         final String requestTokenHeader = request.getHeader(SecurityConstants.header_name);
-        
         String username = null;
         String token = null;
-        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-            token = requestTokenHeader.substring(7);
+        // if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+            // token = requestTokenHeader.substring(7);
+        log.info(requestTokenHeader);
+        if (requestTokenHeader != null) {
             try {
                 username = tokenUtil.getUsernameFromToken(token);
             } catch (IllegalArgumentException e) {
