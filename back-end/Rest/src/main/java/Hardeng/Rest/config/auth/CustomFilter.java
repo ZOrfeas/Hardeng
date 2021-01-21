@@ -41,6 +41,7 @@ public class CustomFilter extends OncePerRequestFilter {
             // token = requestTokenHeader.substring(7);
         log.info(requestTokenHeader);
         if (requestTokenHeader != null) {
+            token = requestTokenHeader;
             try {
                 username = tokenUtil.getUsernameFromToken(token);
             } catch (IllegalArgumentException e) {

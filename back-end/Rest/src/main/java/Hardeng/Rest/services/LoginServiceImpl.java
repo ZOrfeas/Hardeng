@@ -74,21 +74,5 @@ public class LoginServiceImpl implements LoginService {
         CustomUserPrincipal tempUser = (CustomUserPrincipal) uDService.loadUserByUsername(roleUserString);
         toRet = new LoginObject(tokenUtil.generateToken(tempUser));
         return toRet;
-        // switch (type) {
-        //     case (SecurityConfig.masterAdminRole):
-                
-        //     break;
-
-        //     case (SecurityConfig.stationAdminRole):
-
-        //     break;
-
-        //     case (SecurityConfig.driverRole):
-
-        //     break;
-
-        //     default:
-        //     throw new BadRequestException();
-        // }
     }
 }

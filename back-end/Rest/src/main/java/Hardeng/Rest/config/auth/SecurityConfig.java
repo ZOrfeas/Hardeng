@@ -54,13 +54,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        // auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-        auth.
-        inMemoryAuthentication().withUser(SecurityConstants.masterUsername).
-        password("{noop}"+SecurityConstants.masterPassword).
-        roles(SecurityConfig.driverRole,SecurityConfig.masterAdminRole,SecurityConfig.stationAdminRole).
-        and().and().
-        userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        // auth.
+        // inMemoryAuthentication().withUser(SecurityConstants.masterUsername).
+        // password("{noop}"+SecurityConstants.masterPassword).
+        // roles(SecurityConfig.driverRole,SecurityConfig.masterAdminRole,SecurityConfig.stationAdminRole).
+        // and().and().
+        // userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }    
     
     @Override
