@@ -20,8 +20,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import Hardeng.Rest.Utilities.SecurityConstants;
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -55,12 +53,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-        // auth.
-        // inMemoryAuthentication().withUser(SecurityConstants.masterUsername).
-        // password("{noop}"+SecurityConstants.masterPassword).
-        // roles(SecurityConfig.driverRole,SecurityConfig.masterAdminRole,SecurityConfig.stationAdminRole).
-        // and().and().
-        // userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }    
     
     @Override
@@ -73,7 +65,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             and().
             authorizeRequests().
             antMatchers("/login").permitAll(). // here go whatever endpoints are deemed to be accessible by all
-            antMatchers("/frontend").hasRole(masterAdminRole); // here go endpoints only we have access to
+            antMatchers("/frontend").hasRole(masterAdminRole).
+            anyRequest().authenticated(); // here go endpoints only we have access to
         http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
     }
 

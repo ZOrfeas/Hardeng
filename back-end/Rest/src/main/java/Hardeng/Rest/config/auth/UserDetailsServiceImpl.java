@@ -1,8 +1,5 @@
 package Hardeng.Rest.config.auth;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,7 +15,6 @@ import Hardeng.Rest.Utilities.SecurityConstants;
 
 @Service
 public class UserDetailsServiceImpl implements  UserDetailsService {
-	private static Logger log = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 
     @Autowired
     private DriverRepository driverRepo;
@@ -31,18 +27,14 @@ public class UserDetailsServiceImpl implements  UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         
-        log.info("I'm service, before having stuff" + username);
         String role = CustomUserPrincipal.roleFromUserRoleString(username);
         String realUsername = CustomUserPrincipal.usernameFromUserRoleString(username);
         CustomUserPrincipal toRet;
-        log.info("I'm the service, i have: " + role + '|' + realUsername);
         switch (role) {
             case (SecurityConfig.masterAdminRole):
-                log.info("attempt to login user");
                 if (SecurityConstants.masterUsername.equals(realUsername)) {
                     toRet = new CustomUserPrincipal(realUsername, role, encoder.encode(SecurityConstants.masterPassword), SecurityConfig.masterAuthorities);
                 } else {
-                    log.info("shit-failed y'all");
                     throw new UsernameNotFoundException("Master admin username was not correct");
                 }
                 break;
@@ -66,15 +58,45 @@ public class UserDetailsServiceImpl implements  UserDetailsService {
 
         return toRet;
     }
-    
-    // these should be somehow interwoven with db logic more cleanly/automatically
-    public Driver encodeDriver(Driver driver) {
+    /**
+     * {@link Hardeng.Rest.models.Driver#Driver(String, String, String, String, Integer, Long, Long) Driver}
+     * @return created Driver Object with encrypted password
+     */
+    public Driver makeDriver(String driverName, String username, String password, String email, Integer bonusPoints, Long cardID, Long walletID) {
+        Driver toRet = new Driver(driverName, username, password, email, bonusPoints, cardID, walletID);
+        toRet.setPassword(encoder.encode(toRet.getPassword()));
+        return toRet;
+    }
+    public Driver makeDriver(String driverName, String username, String password, String email) {
+        return makeDriver(driverName, username, password, email, 0, null, null);
+    }
+
+    /**
+     * {@link Hardeng.Rest.models#Admin(String, String, String, String, String, String, String) Admin}
+     * @return created Admin Object with encrypted password
+     */
+    public Admin makeAdmin(String username, String password, String email, String companyName, String companyPhone, String companyLocation) {
+        Admin toRet = new Admin(username, password, email, companyName, companyPhone, companyLocation);
+        toRet.setPassword(encoder.encode(toRet.getPassword()));
+        return toRet;
+    }
+    public Admin makeAdmin(String username, String password) {
+        return makeAdmin(username, password, null, "undefined", null, null);
+    }
+
+    /**
+     * Encrypts a Driver's password
+     */
+    public Driver encryptDriver(Driver driver) {
         driver.setPassword(encoder.encode(driver.getPassword()));
         return driver;
     }
-
-    public Admin encodeAdmin(Admin admin) {
+    /**
+     * Encrypts an admin's password
+     */
+    public Admin encryptAdmin(Admin admin) {
         admin.setPassword(encoder.encode(admin.getPassword()));
         return admin;
     }
+
 }

@@ -27,17 +27,15 @@ public class LoginController {
     public LoginObject login(@RequestParam(name = "username") String username,
                              @RequestParam(name = "password") String password, @PathVariable String type) {
         log.info("Login requested...");
-        // remove this
-        log.info(username+password+type);
-        // remove this
         if (username == null || password == null) throw new BadRequestException();
         return loginService.login(username, password, type);
     }
 
-    @PreAuthorize("hasRole('ROLE_" + SecurityConfig.masterAdminRole + "')")
+    @PreAuthorize("hasRole('ROLE_" + SecurityConfig.driverRole + "')")
     @GetMapping(value = "/testing")
     public StatusObject tester() {
-        return new StatusObject("test up and running");
+        log.info("Driver requested access to endpoint '/testing'");
+        return new StatusObject("Driver accessed endpoint successfuly");
     }
 
 }

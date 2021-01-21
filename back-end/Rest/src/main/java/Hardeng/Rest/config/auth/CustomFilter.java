@@ -33,13 +33,9 @@ public class CustomFilter extends OncePerRequestFilter {
                                     HttpServletResponse response, FilterChain chain) 
                                     throws ServletException, IOException
     {
-        // log.error("THE HEADER NAME IS: "+SecurityConstants.header_name+'|');
         final String requestTokenHeader = request.getHeader(SecurityConstants.header_name);
         String username = null;
         String token = null;
-        // if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-            // token = requestTokenHeader.substring(7);
-        log.info(requestTokenHeader);
         if (requestTokenHeader != null) {
             token = requestTokenHeader;
             try {
@@ -50,7 +46,7 @@ public class CustomFilter extends OncePerRequestFilter {
                 log.info("Token has expired");
             }
         } else {
-            log.warn("Token was null or did not start with 'Bearer ' ");
+            log.warn("Token was null");
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

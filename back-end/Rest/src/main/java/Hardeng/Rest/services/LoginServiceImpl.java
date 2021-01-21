@@ -11,19 +11,12 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import Hardeng.Rest.Utilities.SecurityConstants;
 import Hardeng.Rest.config.auth.CustomUserPrincipal;
-import Hardeng.Rest.config.auth.SecurityConfig;
 import Hardeng.Rest.config.auth.TokenUtil;
-import Hardeng.Rest.exceptions.AdminNotFoundException;
-import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.exceptions.InternalServerErrorException;
 import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.exceptions.NotAuthorizedException;
-import Hardeng.Rest.models.Driver;
-import Hardeng.Rest.models.Admin;
-import Hardeng.Rest.repositories.DriverRepository;
-import Hardeng.Rest.repositories.AdminRepository;
+
 
 import Hardeng.Rest.config.auth.UserDetailsServiceImpl;
 
@@ -31,11 +24,6 @@ import Hardeng.Rest.config.auth.UserDetailsServiceImpl;
 public class LoginServiceImpl implements LoginService {
     private static final Logger log = LoggerFactory.getLogger(LoginServiceImpl.class);
 
-    @Autowired
-    private DriverRepository cDriverRepo;
-    @Autowired
-    private AdminRepository cAdminRepo;
-    
     @Autowired
     private UserDetailsServiceImpl uDService;
     @Autowired
@@ -63,16 +51,11 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public LoginObject login (String username, String password, String type) throws NoDataException {
-        log.info("Beginning login attemp.");
-        LoginObject toRet;
+    public LoginObject login(String username, String password, String type) throws NoDataException {
+        log.info("Beginning login attempt...");
         String roleUserString = CustomUserPrincipal.makeUserRoleString(username, type);
-        // remove this
-        log.info(roleUserString+' '+password);
-        // remove this
         authenticate(roleUserString, password);
         CustomUserPrincipal tempUser = (CustomUserPrincipal) uDService.loadUserByUsername(roleUserString);
-        toRet = new LoginObject(tokenUtil.generateToken(tempUser));
-        return toRet;
+        return (new LoginObject(tokenUtil.generateToken(tempUser)));
     }
 }
