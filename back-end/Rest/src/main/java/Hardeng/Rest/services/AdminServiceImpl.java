@@ -41,7 +41,7 @@ public class AdminServiceImpl implements AdminService {
         @JsonProperty("status")
         @CsvBindByName
         private String status;
-        StatusObject(String status) {
+        public StatusObject(String status) {
             this.status = status;
         }
         public String getStatus() {return this.status;}
@@ -54,6 +54,10 @@ public class AdminServiceImpl implements AdminService {
         }
     }
     
+    // @Autowired
+    // private DataSource dataSource;
+    // the above may also be used to getConnection and run a ping on it
+    // may be A LOT CLEANER
     @Override
     public StatusObject isHealthy() {
         log.info("Beginning healthcheck...");

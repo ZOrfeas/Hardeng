@@ -26,7 +26,7 @@ public class Admin {
 
     @Column(length = 50, nullable = true)
     private String companyLocation;
-
+    
     Admin() {}
     /**
      * Admin entity constructor.
@@ -46,17 +46,12 @@ public class Admin {
          this.companyLocation = companyLocation;
      }
      /** 
-     * Overload of the {@link #Admin(String, String, String, String, Integer, String)} method with undefined
+     * Overload of the {@link #Admin(String, String, String, String, String, String)} method with undefined
      * {@code email=null}, {@code companyName='undefined'}, 
      * {@code companyPhone=null} and {@code companyLocation=null}
      */
     public Admin(String username, String password) {
-         this.username = username;
-         this.password = password;
-         this.email = null;
-         this.companyName = "undefined";
-         this.companyPhone = null;
-         this.companyLocation = null;
+         this(username,password,null,"undefined",null,null);
      }
 
     /* Getter methods */

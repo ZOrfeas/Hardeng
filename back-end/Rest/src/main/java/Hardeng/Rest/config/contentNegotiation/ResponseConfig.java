@@ -1,4 +1,4 @@
-package Hardeng.Rest.config;
+package Hardeng.Rest.config.contentNegotiation;
 
 import java.util.List;
 
