@@ -64,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             exceptionHandling().authenticationEntryPoint(customEntryPoint).
             and().
             authorizeRequests().
-            antMatchers("/login").permitAll(). // here go whatever endpoints are deemed to be accessible by all
+            antMatchers("/login/**").permitAll(). // here go whatever endpoints are deemed to be accessible by all
             antMatchers("/frontend").hasRole(masterAdminRole).
             anyRequest().authenticated(); // here go endpoints only we have access to
         http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);

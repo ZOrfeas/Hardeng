@@ -4,12 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import Hardeng.Rest.config.auth.CustomUserPrincipal;
 import Hardeng.Rest.config.auth.SecurityConfig;
 import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.services.LoginService;
@@ -33,9 +35,10 @@ public class LoginController {
 
     @PreAuthorize("hasRole('ROLE_" + SecurityConfig.driverRole + "')")
     @GetMapping(value = "/testing")
-    public StatusObject tester() {
+    public StatusObject tester(@AuthenticationPrincipal CustomUserPrincipal currLoggedUser) {
         log.info("Driver requested access to endpoint '/testing'");
-        return new StatusObject("Driver accessed endpoint successfuly");
+        log.info("It's user: " + currLoggedUser.getUsername());
+        return new StatusObject("Hi user " + currLoggedUser.getUsername());
     }
 
 }
