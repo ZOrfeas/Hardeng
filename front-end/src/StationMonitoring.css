@@ -1,3 +1,33 @@
+/* .overlay {
+  position: absolute;
+  height: 93.2%;
+  width: 100%;
+  background: rgba(0,0,0,.9);
+  z-index: 1;
+  place-content: center;
+  color: white;
+  display: none;
+  opacity: 1;
+  animation-name: overlay;
+  animation-duration: 3s;
+} */
+/* .animate-overlay-changeInfo {
+  animation: overlay 3s forwards;
+} */
+/* @keyframes overlay {
+  0% {
+      opacity: 0;
+  }
+  30% {
+      opacity: 1;
+  }
+  70% {
+      opacity: 1;
+  }
+  100% {
+      opacity: 0;
+  }
+} */
 
 .leftButton{
     background-color: #4c53af; 
@@ -76,7 +106,6 @@
     display: none;
 }
 #myInput {
-  /* background-image: url('/css/searchicon.png'); Add a search icon to input */
   background-position: 10px 12px; /* Position the search icon */
   background-repeat: no-repeat; /* Do not repeat the icon image */
   width: 100%; /* Full-width */
@@ -110,6 +139,7 @@
 #names li a:hover:not(.header) {
   background-color: #eee; /* Add a hover effect to all links, except for headers */
 }
+
 .station-map {
     /* display: block; */
     height: 500px;
@@ -127,25 +157,6 @@
   float: left; 
  }
 
-
- .exampleText {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  box-sizing: border-box;
-  /* color: rgb(255, 255, 255);
-  background-color: #546e7a;
-  --input-border: #8b8a8b;
-  --input-focus-h: 245;
-  --input-focus-s: 100%;
-  --input-focus-l: 42%;
-  font-size: 16px;
-  font-size: max(16px, 1em);
-  font-family: inherit;
-  padding: 0.25em 0.5em;
-  border: 2px solid var(--input-border);
-  border-radius: 4px; */
- }
  input[type=text] {
   width: 100%;
   padding: 12px 20px;

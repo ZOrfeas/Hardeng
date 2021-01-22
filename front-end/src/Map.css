@@ -1,0 +1,13 @@
+.map {
+    height: 500px;
+    width: 100%;    
+}
+
+#cardMap {
+    left: 6%;
+}
+#cardInfo {
+    height: 500px;
+    width: 20%; 
+    left: 10%;
+}

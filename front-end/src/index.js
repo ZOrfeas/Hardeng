@@ -5,6 +5,7 @@ import Header from './Header';
 import 'materialize-css/dist/css/materialize.min.css';
 import StationMonitoring from './StationMonitoring';
 /* Imports */
+import Map from './Map.js';
 
 
 ReactDOM.render(
@@ -14,6 +15,7 @@ ReactDOM.render(
     {/*<ChargingExperience />*/}
     <StationMonitoring />
     {/*<>*/}
+    {/* <Map/> */}
   </React.StrictMode>,
   document.getElementById('root')
 );
