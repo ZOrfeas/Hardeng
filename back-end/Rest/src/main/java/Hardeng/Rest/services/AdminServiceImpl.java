@@ -13,8 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import Hardeng.Rest.config.auth.SecurityConfig;
+
 import Hardeng.Rest.Utilities.CsvObject;
-// import Hardeng.Rest.exceptions.BadRequestException;
+import Hardeng.Rest.config.auth.UserDetailsServiceImpl;
+import Hardeng.Rest.exceptions.BadRequestException;
+//import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.exceptions.DriverNotFoundException;
 import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.models.Admin;
@@ -35,7 +39,8 @@ public class AdminServiceImpl implements AdminService {
     private ChargingSessionRepository sessionRepo;
     @Autowired
     private DriverRepository driverRepo;
-    
+    @Autowired
+    private UserDetailsServiceImpl udsi;
 
     public static class StatusObject implements CsvObject{
         @JsonProperty("status")
@@ -172,40 +177,32 @@ public class AdminServiceImpl implements AdminService {
         return new UserObject(driver);
     }
 
-    // public static class AdminDriverWrapper {
-    //     @JsonProperty("id")
-    //     private Integer id;
-    //     @JsonProperty("driverName")
-    //     private String driverName;
-    //     @JsonProperty("username")
-    //     private String username;
-    //     @JsonProperty("password")
-    //     private String password;
-    //     @JsonProperty("email")
-    //     private String email;
-    //     @JsonProperty("companyName")
-    //     private String companyName;
-    //     public void setPassword(String pass) {this.password = pass;}
-    //     public void setUsername(String name) {this.username = name;}
-    //     public Admin toAdmin() {return new Admin(this.username, this.password, this.email, this.companyName, null, null);}
-    //     public Driver toDriver() {return new Driver(this.driverName, this.username, this.password, this.email, null, null);}
-    // }
-    // @Override
-    // public StatusObject userMod(String username, String password,
-    //                             AdminDriverWrapper paramDict) throws BadRequestException
-    // {
-    //     log.info("Checking if driver exists...");
-    //     Optional<Driver> optDriver =  driverRepo.findByUsernameAndPassword(username, password);
-    //     if (!optDriver.isPresent()) {
-    //         log.info("Driver not found, checking if admin exists...");
-    //         Optional<Admin> optAdmin = adminRepo.findByUsernameAndPassword(username, password);
-    //         if(!optAdmin.isPresent()) {
-    //             log.info("Admin not found, creating Admin/User...");
-    //             if (paramDict.companyName != null) attemptCreateAdmin(username, password, paramDict);
-    //             else if (paramDict.driverName != null) attemptCreateDriver(username, password, paramDict);
-    //             else throw new BadRequestException();                                           
-    //         }
-    //     }
-    // }
+    
+    @Override
+    public StatusObject userMod(String driverName, String username, String password, String role, String email ) throws BadRequestException
+    {
+      switch(role)
+      {
+        case(SecurityConfig.driverRole):
+            throw new BadRequestException();
+            
+            
+        case("unregistered"):
+        case(SecurityConfig.stationAdminRole):
+            
+            if(driverRepo.findByUsername(username).isPresent()) throw new BadRequestException();
+            Driver newDriver = udsi.makeDriver(driverName, username, password, email);
+            driverRepo.save(newDriver);
+            break;
+        case(SecurityConfig.masterAdminRole):
+            if(adminRepo.findByUsername(username).isPresent()) throw new BadRequestException();
+            Admin newAdmin = udsi.makeAdmin(username, password);
+            adminRepo.save(newAdmin);
+            break;
+        default: throw new BadRequestException();       
+      }
+      return new StatusObject("Successful Sign Up");
+
+    }
 }
 

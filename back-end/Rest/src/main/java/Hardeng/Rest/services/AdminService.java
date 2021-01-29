@@ -1,9 +1,10 @@
 package Hardeng.Rest.services;
 
 
-// import Hardeng.Rest.exceptions.BadRequestException;
+import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.exceptions.NoDataException;
 // import Hardeng.Rest.services.AdminServiceImpl.AdminDriverWrapper;
+import Hardeng.Rest.config.auth.CustomUserPrincipal;
 import Hardeng.Rest.services.AdminServiceImpl.StatusObject;
 import Hardeng.Rest.services.AdminServiceImpl.UserObject;
 
@@ -30,12 +31,14 @@ public interface AdminService {
      */
     UserObject getUserInfo (String username) throws NoDataException;
 
-    // /**
-    //  * Creates or alters an existing user
-    //  * @param paramDict A Map Object with all Request body params
-    //  * @return an object containing a status code
-    //  * @throws BadRequestException
-    //  */
-    // StatusObject userMod (String username, String password,
-    //                       AdminDriverWrapper paramDict) throws BadRequestException;
+     /**
+      * Creates or alters an existing user
+      * @param driverName driver's name 
+      * @param role A Map Object with all Request body params
+      * @param email user's email
+      * @return an object containing a status code
+      * @throws BadRequestException
+      */
+    StatusObject userMod (String driverName, String username, String password, String role,
+    String email ) throws BadRequestException;
 }

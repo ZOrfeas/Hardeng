@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
+import Hardeng.Rest.models.Driver;
 import Hardeng.Rest.models.Admin;
 
 @Repository
@@ -33,4 +33,6 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
      * @return Optional<Admin> Object with Admin in it if it exists
      */
     Optional<Admin> findByUsernameAndPassword(String username, String password);
+
+
 }
