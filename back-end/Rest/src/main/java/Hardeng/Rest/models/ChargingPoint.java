@@ -77,12 +77,14 @@ public class ChargingPoint {
 
     public Integer getId() {return this.id;}
     public Condition getCondition() {return Condition.meaningOfCode(this.currentCondition);}
+    public Integer getConditionInt() {return this.currentCondition;}
     public Integer getMaxOutput() {return this.maxEnergyOutput;}
     public Boolean isOccupied() {return this.isOccupied;}
     public Integer getChargerType() {return this.chargerType;}
     public ChargingStation getCStation() {return this.cStation;}
 
     public void setCondition(Condition status) {this.currentCondition = status.value;}
+    public void setConditionInt(Integer condition) {this.currentCondition = condition;}
     public void setMaxOutput(Integer newMaxOutput) {this.maxEnergyOutput = newMaxOutput;}
     public void setIsOccupied() {this.isOccupied = true;}
     public void resetIsOccupied() {this.isOccupied = false;}

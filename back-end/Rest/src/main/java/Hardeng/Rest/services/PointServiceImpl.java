@@ -13,14 +13,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
 
 import Hardeng.Rest.Utilities;
 import Hardeng.Rest.Utilities.CsvObject;
 import Hardeng.Rest.exceptions.ChargingPointNotFoundException;
+import Hardeng.Rest.exceptions.ChargingStationNotFoundException;
 import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.models.ChargingPoint;
+import Hardeng.Rest.models.ChargingStation;
 import Hardeng.Rest.models.ChargingSession;
 import Hardeng.Rest.repositories.ChargingPointRepository;
+import Hardeng.Rest.repositories.ChargingStationRepository;
 import Hardeng.Rest.repositories.ChargingSessionRepository;
 import Hardeng.Rest.services.EVServiceImpl.PricePolicyRef;
 
@@ -32,6 +36,8 @@ public class PointServiceImpl implements PointService {
     private ChargingPointRepository cPointRepo;
     @Autowired
     private ChargingSessionRepository cSessRepo;
+    @Autowired
+    private ChargingStationRepository cStatRepo;
 
     public static class SessionObject {
         @JsonProperty("SessionIndex")
@@ -157,6 +163,30 @@ public class PointServiceImpl implements PointService {
         }
     }
     
+    public class PointObject {
+        @JsonProperty("PointID")
+        private Integer pointId;
+        @JsonProperty("CurrentCondition")
+        private Integer currentCondition;
+        @JsonProperty("MaxEnergyOutput")
+        private Integer maxEnergyOutput;
+        @JsonProperty("IsOccupied")
+        private Boolean isOccupied;
+        @JsonProperty("ChargerType")
+        private Integer chargerType;
+        @JsonProperty("StationID")
+        private Integer stationId;
+
+        PointObject (ChargingPoint cPoint) {
+            this.pointId = cPoint.getId();
+            this.currentCondition = cPoint.getConditionInt();
+            this.maxEnergyOutput = cPoint.getMaxOutput();
+            this.isOccupied = cPoint.isOccupied();
+            this.chargerType = cPoint.getChargerType();
+            this.stationId = cPoint.getCStation().getId();
+        }
+    }
+
     @Override
     public SessPointObject sessionsPerPoint (
      Integer pointId, String dateFrom, String dateTo) throws NoDataException{
@@ -174,5 +204,57 @@ public class PointServiceImpl implements PointService {
         if (cSessions.isEmpty()) throw new NoDataException();
         return new SessPointObject(queryDateFrom, queryDateTo,
          queryPoint, cSessions);
+    }
+
+    @Override
+    public PointObject createPoint(Integer condition, Integer maxEnergy, Boolean isOccupied,
+    Integer chargerType, Integer stationId) throws NoDataException {
+        log.info("Creating Charging Point...");
+        ChargingStation station = cStatRepo.findById(stationId)
+         .orElseThrow(()-> new ChargingStationNotFoundException(stationId));
+        ChargingPoint point = new ChargingPoint(condition, maxEnergy, isOccupied, chargerType, station);
+        ChargingPoint createdPoint = cPointRepo.save(point);
+        station.setNrOfChargingPoints(station.getNrOfChargingPoints()+1);
+        cStatRepo.save(station);
+        return new PointObject(createdPoint);
+    }
+
+    @Override
+    public PointObject readPoint(Integer pointId) throws NoDataException {
+        log.info("Reading Charging Point...");
+        ChargingPoint queryPoint = cPointRepo.findById(pointId)
+         .orElseThrow(()-> new ChargingPointNotFoundException(pointId));
+        return new PointObject(queryPoint);
+    }
+
+    @Override
+    public PointObject updatePoint(Integer pointId, Integer condition, Integer maxEnergy, Boolean isOccupied,
+    Integer chargerType, Integer stationId) throws NoDataException {
+        log.info("Updating Charging Point...");
+        ChargingPoint point = cPointRepo.findById(pointId)
+         .orElseThrow(()-> new ChargingPointNotFoundException(pointId));
+        ChargingStation station = cStatRepo.findById(point.getCStation().getId())
+         .orElseThrow(()-> new ChargingStationNotFoundException(point.getCStation().getId()));
+        point.setConditionInt(condition);
+        point.setMaxOutput(maxEnergy);
+        if (isOccupied == true) {point.setIsOccupied();}
+        else {point.resetIsOccupied();}
+        point.setChargerType(chargerType);
+        point.setCStation(station);
+        ChargingPoint updatedPoint = cPointRepo.save(point);
+        return new PointObject(updatedPoint);
+    }
+
+    @Override
+    public ResponseEntity<Object> deletePoint(Integer pointId) throws NoDataException {
+        log.info("Deleting Charging Point...");
+        ChargingPoint point = cPointRepo.findById(pointId)
+         .orElseThrow(()-> new ChargingPointNotFoundException(pointId));
+        ChargingStation station = cStatRepo.findById(point.getCStation().getId())
+        .orElseThrow(()-> new ChargingStationNotFoundException(point.getCStation().getId()));
+        cPointRepo.deleteById(pointId);
+        station.setNrOfChargingPoints(station.getNrOfChargingPoints()-1);
+        cStatRepo.save(station);
+        return ResponseEntity.noContent().build();
     }
 }

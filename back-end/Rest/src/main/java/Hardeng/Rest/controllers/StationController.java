@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import Hardeng.Rest.exceptions.BadRequestException;
@@ -49,7 +48,7 @@ public class StationController {
    }
 
    /* CRUD for Charging Station */
-   public static class UpdateStation {
+   public static class RequestStation {
       private Double lat;
       private Double lon;
       private String address;
@@ -70,14 +69,14 @@ public class StationController {
 
    }
 
-   @PostMapping(value = "/Station", consumes="application/x-www-form-urlencoded", produces = {"application/json"})
-   public StationObject createStation(@RequestParam(name = "lat") Double lat, @RequestParam(name = "lon") Double lon,
-   @RequestParam(name = "address") String address, @RequestParam(name = "adminId") Integer adminId,
-   @RequestParam(name = "eProviderId") Integer eProviderId) {
+   @PostMapping(value = "/Station", consumes=MediaType.APPLICATION_JSON_VALUE, produces = {"application/json"})
+   public StationObject createStation(@RequestBody RequestStation station) {
       log.info("Create station...");
-      if (lat == null || lon == null || address == null || adminId == null || eProviderId == null) 
+      if (station.getLat() == null || station.getLon() == null || station.getAddress() == null || 
+      station.getAdminId() == null || station.getProviderId() == null) 
          throw new BadRequestException();
-      return stationService.createStation(lat, lon, address, adminId, eProviderId);
+      return stationService.createStation(station.getLat(), station.getLon(), 
+         station.getAddress(), station.getAdminId(), station.getProviderId());
    }
 
    @GetMapping(value = "/Station/{stationId}", produces = {"application/json"})
@@ -88,7 +87,7 @@ public class StationController {
    }
 
    @PutMapping(value = "/Station/{stationId}", consumes=MediaType.APPLICATION_JSON_VALUE, produces = {"application/json"})
-   public StationObject updateStation(@PathVariable(name = "stationId") Integer stationId, @RequestBody UpdateStation station) {
+   public StationObject updateStation(@PathVariable(name = "stationId") Integer stationId, @RequestBody RequestStation station) {
       log.info("Update station...");
       if (stationId == null || station.getLat() == null || station.getLon() == null || station.getAddress() == null || 
       station.getAdminId() == null || station.getProviderId() == null) 
