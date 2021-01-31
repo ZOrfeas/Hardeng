@@ -13,16 +13,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
 
 import Hardeng.Rest.Utilities;
 import Hardeng.Rest.Utilities.CsvObject;
 import Hardeng.Rest.exceptions.ChargingStationNotFoundException;
+import Hardeng.Rest.exceptions.AdminNotFoundException;
+import Hardeng.Rest.exceptions.EnergyProviderNotFoundException;
 import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.models.ChargingStation;
 import Hardeng.Rest.models.ChargingPoint;
+import Hardeng.Rest.models.Admin;
+import Hardeng.Rest.models.EnergyProvider;
 import Hardeng.Rest.repositories.ChargingStationRepository;
 import Hardeng.Rest.repositories.ChargingPointRepository;
 import Hardeng.Rest.repositories.ChargingSessionRepository;
+import Hardeng.Rest.repositories.AdminRepository;
+import Hardeng.Rest.repositories.EnergyProviderRepository;
 
 @Service
 public class StationServiceImpl implements StationService {
@@ -34,6 +41,10 @@ public class StationServiceImpl implements StationService {
     private ChargingPointRepository cPointRepo;
     @Autowired
     private ChargingSessionRepository cSessRepo;
+    @Autowired
+    private AdminRepository cAdminRepo;
+    @Autowired
+    private EnergyProviderRepository cEnergyProviderRepo;
 
     public class PointObject {
         @JsonProperty("PointID")
@@ -210,6 +221,33 @@ public class StationServiceImpl implements StationService {
         }
     }
 
+    public class StationObject {
+        @JsonProperty("StationID")
+        private Integer stationId;
+        @JsonProperty("TotalChargingPoints")
+        private Integer nrOfChargingPoints;
+        @JsonProperty("Longitude")
+        private Double longitude;
+        @JsonProperty("Latitude")
+        private Double latitude;
+        @JsonProperty("AddressLine")
+        private String addressLine;
+        @JsonProperty("AdminID")
+        private Integer adminId;
+        @JsonProperty("EnergyProviderID")
+        private Integer eProviderId;
+
+        StationObject (ChargingStation cStation) {
+            this.stationId = cStation.getId();
+            this.nrOfChargingPoints = cStation.getNrOfChargingPoints();
+            this.latitude = cStation.getLatitude();
+            this.longitude = cStation.getLongitude();
+            this.addressLine = cStation.getAddressLine();
+            this.adminId = cStation.getAdmin().getId();
+            this.eProviderId = cStation.getEnergyProvider().getId();
+        }
+    }
+
     @Override
     public SessStationObject sessionsPerStation(
      Integer stationId, String dateFrom, String dateTo) throws NoDataException {
@@ -241,4 +279,53 @@ public class StationServiceImpl implements StationService {
         }
         return nearbyStations;
     };
+
+    @Override
+    public StationObject createStation(Double lat, Double lon, String address,
+    Integer adminId, Integer eProviderId) throws NoDataException {
+        log.info("Creating Charging Station...");
+        Admin admin = cAdminRepo.findById(adminId)
+         .orElseThrow(()-> new AdminNotFoundException(adminId));
+        EnergyProvider eProvider = cEnergyProviderRepo.findById(eProviderId)
+         .orElseThrow(()-> new EnergyProviderNotFoundException(eProviderId));
+        ChargingStation station = new ChargingStation(0, lon, lat, address, admin, eProvider);
+        ChargingStation createdStation = cStationRepo.save(station);
+        return new StationObject(createdStation);
+    }
+
+    @Override
+    public StationObject readStation(Integer stationId) throws NoDataException {
+        log.info("Reading Charging Station...");
+        ChargingStation queryStation = cStationRepo.findById(stationId)
+         .orElseThrow(()-> new ChargingStationNotFoundException(stationId));
+        return new StationObject(queryStation);
+    }
+
+    @Override
+    public StationObject updateStation(Integer stationId, Double lat, Double lon, String address,
+    Integer adminId, Integer eProviderId) throws NoDataException {
+        log.info("Updating Charging Station...");
+        ChargingStation station = cStationRepo.findById(stationId)
+        .orElseThrow(()-> new ChargingStationNotFoundException(stationId));
+        Admin admin = cAdminRepo.findById(adminId)
+         .orElseThrow(()-> new AdminNotFoundException(adminId));
+        EnergyProvider eProvider = cEnergyProviderRepo.findById(eProviderId)
+         .orElseThrow(()-> new EnergyProviderNotFoundException(eProviderId));
+        station.setLongitude(lon);
+        station.setLatitude(lat);
+        station.setAddressLine(address);
+        station.setAdmin(admin);
+        station.setEnergyProvider(eProvider);
+        ChargingStation updatedStation = cStationRepo.save(station);
+        return new StationObject(updatedStation);
+    }
+
+    @Override
+    public ResponseEntity<Object> deleteStation(Integer stationId) throws NoDataException {
+        log.info("Deleting Charging Station...");
+        ChargingStation station = cStationRepo.findById(stationId)
+        .orElseThrow(()-> new ChargingStationNotFoundException(stationId));
+        cStationRepo.deleteById(stationId);
+        return ResponseEntity.noContent().build();
+    }
 }
