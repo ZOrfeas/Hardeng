@@ -3,8 +3,12 @@ package Hardeng.Rest.services;
 
 import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.exceptions.NoDataException;
+
+import org.springframework.web.multipart.MultipartFile;
+
 // import Hardeng.Rest.services.AdminServiceImpl.AdminDriverWrapper;
 import Hardeng.Rest.config.auth.CustomUserPrincipal;
+import Hardeng.Rest.services.AdminServiceImpl.SessionStatsObject;
 import Hardeng.Rest.services.AdminServiceImpl.StatusObject;
 import Hardeng.Rest.services.AdminServiceImpl.UserObject;
 
@@ -41,4 +45,11 @@ public interface AdminService {
       */
     StatusObject userMod (String driverName, String username, String password, String role,
     String email ) throws BadRequestException;
+
+    /**
+     * Service to import sessions from csv
+     * @param file Contains the sessions to be imported
+     * @return Returns an object containing db stats after import
+     */
+    SessionStatsObject sessionUpdate(MultipartFile file);
 }

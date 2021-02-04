@@ -1,5 +1,7 @@
 package Hardeng.Rest.services;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,27 +9,41 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvToBeanBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import Hardeng.Rest.config.auth.SecurityConfig;
-
+import Hardeng.Rest.Utilities;
 import Hardeng.Rest.Utilities.CsvObject;
 import Hardeng.Rest.config.auth.UserDetailsServiceImpl;
 import Hardeng.Rest.exceptions.BadRequestException;
+import Hardeng.Rest.exceptions.CarDriverNotFoundException;
+import Hardeng.Rest.exceptions.CarNotFoundException;
+import Hardeng.Rest.exceptions.ChargingPointNotFoundException;
 //import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.exceptions.DriverNotFoundException;
+import Hardeng.Rest.exceptions.InternalServerErrorException;
 import Hardeng.Rest.exceptions.NoDataException;
+import Hardeng.Rest.exceptions.PricePolicyNotFoundException;
 import Hardeng.Rest.models.Admin;
 import Hardeng.Rest.models.Car;
 import Hardeng.Rest.models.CarDriver;
+import Hardeng.Rest.models.ChargingPoint;
+import Hardeng.Rest.models.ChargingSession;
 import Hardeng.Rest.models.Driver;
+import Hardeng.Rest.models.PricePolicy;
 import Hardeng.Rest.repositories.AdminRepository;
+import Hardeng.Rest.repositories.CarDriverRepository;
+import Hardeng.Rest.repositories.CarRepository;
+import Hardeng.Rest.repositories.ChargingPointRepository;
 import Hardeng.Rest.repositories.ChargingSessionRepository;
 import Hardeng.Rest.repositories.DriverRepository;
+import Hardeng.Rest.repositories.PricePolicyRepository;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -39,6 +55,14 @@ public class AdminServiceImpl implements AdminService {
     private ChargingSessionRepository sessionRepo;
     @Autowired
     private DriverRepository driverRepo;
+    @Autowired
+    private CarDriverRepository carDriverRepo;
+    @Autowired
+    private ChargingPointRepository cPointRepo;
+    @Autowired
+    private PricePolicyRepository pPolicyRepo;
+    @Autowired
+    private CarRepository carRepo;
     @Autowired
     private UserDetailsServiceImpl udsi;
 
@@ -91,6 +115,11 @@ public class AdminServiceImpl implements AdminService {
         defaultAdmin = new Admin("admin", "petrol4ever");
         log.info("Creating default admin...");
         adminRepo.save(defaultAdmin);
+        
+        log.info("Deleting all existing sessions...");
+        sessionRepo.deleteAll();
+        log.info("Sessions deleted.");
+
         return new StatusObject("OK");
     }
 
@@ -204,5 +233,112 @@ public class AdminServiceImpl implements AdminService {
       return new StatusObject("Successful Sign Up");
 
     }
+
+    public static class SessionStatsObject {
+        @JsonProperty("SessionsInUploadedFile")
+        private Integer sessionsInUploadedFile;
+        @JsonProperty("SessionsImported")
+        private long sessionsImported;
+        @JsonProperty("TotalSessionsInDatabase")
+        private long totalSessionsInDatabase;
+        
+        public SessionStatsObject(Integer sessInFile, long sessImported, long totalSess) {
+            this.sessionsInUploadedFile = sessInFile;
+            this.sessionsImported = sessImported;
+            this.totalSessionsInDatabase = totalSess;
+        }
+
+        public Integer getSessionsInUploadedFile() {return this.sessionsInUploadedFile;}
+        public long getSessionsImported() {return this.sessionsImported;}
+        public long getTotalSessionsInDatabase() {return this.totalSessionsInDatabase;}
+
+    }
+
+    public static class SessionsImportObject {
+        @CsvBindByName(column = "startedOn")
+        private String startedOn;
+        @CsvBindByName(column = "finishedOn")
+        private String finishedOn;
+        @CsvBindByName(column = "energyDelivered")
+        private Float energyDelivered;
+        @CsvBindByName(column = "payment")
+        private String payment;
+        @CsvBindByName(column = "chargingPointId")
+        private Integer chargingPointId;
+        @CsvBindByName(column = "pricePolicyId")
+        private Integer pricePolicyId;
+        @CsvBindByName(column = "driverId")
+        private Integer driverId;
+        @CsvBindByName(column = "carId")
+        private Integer carId;
+
+        public String getStartedOn() {return this.startedOn;}
+        public String getFinishedOn() {return this.finishedOn;}
+        public Float getEnergyDelivered() {return this.energyDelivered;}
+        public String getPayment() {return this.payment;}
+        public Integer getChargingPointId() {return this.chargingPointId;}
+        public Integer getPricePolicyId() {return this.pricePolicyId;}
+        public Integer getDriverId() {return this.driverId;}
+        public Integer getCarId() {return this.carId;}
+
+        public void setStartedOn(String newStart) {this.startedOn = newStart;}
+        public void setFinishedOn(String newFinish) {this.finishedOn = newFinish;}
+        public void setEnergyDelivered(Float newEnergy) {this.energyDelivered = newEnergy;}
+        public void setPayment(String newPayment) {this.payment = newPayment;}
+        public void setChargingPointId(Integer newId) {this.chargingPointId = newId;}
+        public void setPricePolicyId(Integer newId) {this.pricePolicyId = newId;}
+        public void setCarId(Integer newId) {this.carId = newId;}
+        public void setDriverId(Integer newId) {this.driverId = newId;}
+        // public ChargingSession transformChargingSession() {
+        //     CarDriver cDriver;
+        //     ChargingPoint cPoint = cPointRepo.findById();
+        //     PricePolicy pPolicy;
+        //     return new ChargingSession(this.startedOn, this.finishedOn, this.energyDelivered, this.payment, 
+        //                                this.chargingPointId, this.pricePolicyId, carDriver)
+        // }
+    }
+
+    // A semi-beautiful mess, if anyone feels up to it, feel free to make it normal,
+    // or just gimme a shout and say "dude-bro wtf"
+    @Override
+    public SessionStatsObject sessionUpdate(MultipartFile file) {
+        List<SessionsImportObject> toAdd;
+        try {
+        toAdd = new CsvToBeanBuilder(new InputStreamReader(file.getInputStream()))
+            .withType(SessionsImportObject.class).build().parse();
+        } catch(IOException e) {
+            throw new InternalServerErrorException();
+        }
+        SessionStatsObject toRet;
+        long pre,after;
+        List<ChargingSession> converted = new ArrayList<>();
+        toAdd.forEach((temp) -> converted.add(new ChargingSession(
+            Utilities.timestampFromString(temp.getStartedOn(), Utilities.TIMESTAMP_FORMAT), 
+            Utilities.timestampFromString(temp.getFinishedOn(),Utilities.TIMESTAMP_FORMAT), 
+            temp.getEnergyDelivered(), 
+            temp.getPayment(), 
+            cPointRepo.findById(temp.getChargingPointId()).orElseThrow(
+                ()->new ChargingPointNotFoundException(temp.getChargingPointId())), 
+            pPolicyRepo.findById(temp.getPricePolicyId()).orElseThrow(
+                ()->new PricePolicyNotFoundException(temp.getPricePolicyId())), 
+            carDriverRepo.findByDriverAndCar(
+                driverRepo.findById(temp.getDriverId()).orElseThrow(
+                    ()->new DriverNotFoundException(temp.getDriverId())
+                ),
+                carRepo.findById(temp.getCarId()).orElseThrow(
+                    ()->new CarNotFoundException(temp.getCarId())
+                )).orElseThrow(()->new CarDriverNotFoundException(temp.getDriverId(), temp.getCarId()))
+        )));
+        pre = sessionRepo.count();
+        sessionRepo.saveAll(converted);
+        sessionRepo.flush();
+        after = sessionRepo.count();
+
+        toRet = new SessionStatsObject(toAdd.size(), after-pre, after);
+        return toRet;
+    }
+
+
+
 }
 
