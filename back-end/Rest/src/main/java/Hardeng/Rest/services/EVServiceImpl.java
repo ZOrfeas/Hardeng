@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 import Hardeng.Rest.Utilities;
 import Hardeng.Rest.Utilities.CsvObject;
@@ -207,6 +209,21 @@ public class EVServiceImpl implements EVService {
         }
     }
     
+    public class EVObject {
+        @JsonProperty("DriverID")
+        private Integer driverId;
+        @JsonProperty("CarID")
+        private Integer carId;
+        @JsonProperty("CurrentCapacity")
+        private Double currentCap;
+
+        EVObject (CarDriver ev) {
+            this.driverId = ev.getDriver().getID();
+            this.carId = ev.getCar().getId();
+            this.currentCap = ev.getCurrentCapacity();
+        }
+    }
+
     @Override
     public SessEVObject sessionsPerEV(
      Integer driverId, Integer carId, String dateFrom, String dateTo) throws NoDataException {
@@ -230,5 +247,72 @@ public class EVServiceImpl implements EVService {
         if (cSessions.isEmpty()) throw new NoDataException();
         return new SessEVObject(queryDateFrom, queryDateTo,
         queryCarDriver, cSessions);
+    }
+
+    @Override
+    public EVObject createEV(Integer driverId, Integer carId, Double newCap) throws NoDataException {
+        log.info("Creating EV...");
+        Driver driver = cDriverRepo.findById(driverId)
+        .orElseThrow(()-> new DriverNotFoundException(driverId));
+        Car car = cCarRepo.findById(carId)
+         .orElseThrow(()-> new CarNotFoundException(carId));
+        CarDriver ev = new CarDriver(driver, car, newCap);
+        CarDriver createdEV = cCarDriverRepo.save(ev);
+        return new EVObject(createdEV);
+    }
+
+    @Override
+    public EVObject readEV(Integer driverId, Integer carId) throws NoDataException {
+        log.info("Reading EV...");
+        Driver queryDriver = cDriverRepo.findById(driverId)
+         .orElseThrow(()-> new DriverNotFoundException(driverId));
+        Car queryCar = cCarRepo.findById(carId)
+         .orElseThrow(()-> new CarNotFoundException(carId));
+        CarDriver queryEV = cCarDriverRepo.findByDriverAndCar(queryDriver, queryCar)
+        .orElseThrow(()-> new CarDriverNotFoundException(queryDriver.getID(), queryCar.getId()));
+        return new EVObject(queryEV);
+    }
+
+    @Override
+    public EVObject updateEV(Integer driverId, Integer carId, Double newCap) throws NoDataException {
+        log.info("Updating EV...");
+        Driver queryDriver = cDriverRepo.findById(driverId)
+         .orElseThrow(()-> new DriverNotFoundException(driverId));
+        Car queryCar = cCarRepo.findById(carId)
+         .orElseThrow(()-> new CarNotFoundException(carId));
+        CarDriver queryEV = cCarDriverRepo.findByDriverAndCar(queryDriver, queryCar)
+        .orElseThrow(()-> new CarDriverNotFoundException(queryDriver.getID(), queryCar.getId()));
+        queryEV.setDriver(queryDriver);
+        queryEV.setCar(queryCar);
+        queryEV.setCurrentCapacity(newCap);
+        CarDriver updatedEV = cCarDriverRepo.save(queryEV);
+        return new EVObject(updatedEV);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<Object> deleteEV(Integer driverId, Integer carId) throws NoDataException {
+        log.info("Deleting EV...");
+        Driver queryDriver = cDriverRepo.findById(driverId)
+         .orElseThrow(()-> new DriverNotFoundException(driverId));
+        Car queryCar = cCarRepo.findById(carId)
+         .orElseThrow(()-> new CarNotFoundException(carId));
+        CarDriver queryEV = cCarDriverRepo.findByDriverAndCar(queryDriver, queryCar)
+        .orElseThrow(()-> new CarDriverNotFoundException(queryDriver.getID(), queryCar.getId()));
+
+        /* Set car & driver ids in charging sessions to null before deleting
+        for (CarDriver carDriver: driver.getCars())
+        {
+            List<ChargingSession> cSessList = cSessRepo.findByCarDriver(carDriver);
+            
+            for (ChargingSession cSess: cSessList)
+            {
+                cSess.setCarDriver(null);
+            }
+        }*/
+        log.info(queryDriver.getID().toString());
+        log.info(queryCar.getId().toString());
+        cCarDriverRepo.deleteByIdiDriverIdAndIdiCarId(queryDriver.getID(), queryCar.getId());
+        return ResponseEntity.noContent().build();
     }
 }

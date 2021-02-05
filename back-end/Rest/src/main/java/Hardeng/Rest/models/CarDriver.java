@@ -7,13 +7,13 @@ import javax.persistence.*;
 public class CarDriver {
 
     @EmbeddedId
-    private CarDriverId id;
+    private CarDriverId idi = new CarDriverId();
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("driverId")
     public Driver driver;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("carId")
     public Car car;
 
