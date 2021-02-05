@@ -33,7 +33,7 @@ public class ChargingSession {
     private PricePolicy pricePolicy;
     
     
-    @ManyToOne
+    @ManyToOne(optional = true)
     private CarDriver carDriver;
 
     ChargingSession() {}
