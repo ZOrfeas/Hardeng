@@ -61,6 +61,7 @@ class ChargingExperience extends React.Component {
     super(props);
 
     this.state = {
+      session = null,
       stations: stationsHardcoded,
       currentPos: null,
       chosenIndex: null,
@@ -104,8 +105,10 @@ class ChargingExperience extends React.Component {
       getStations(latlng)
         .then(res => { this.setState({ stations: res.data }) })
         .catch(err => { 
-          this.setState({ error: err.response.status });
-          M.toast({html: 'Error ' + this.state.error, classes:"purple darken-4 yellow-text"})
+          if(err.response){
+            this.setState({ error: err.response.status });
+            M.toast({html: 'Error ' + this.state.error, classes:"purple darken-4 yellow-text"});
+          }
         })
     });
   }
@@ -140,7 +143,7 @@ class ChargingExperience extends React.Component {
                 {this.showOptions()}
               </select>
             </form>
-          </div>
+          
           {this.state.chosenIndex !== null && (
             <table className="centered white">
               <thead>
@@ -161,6 +164,7 @@ class ChargingExperience extends React.Component {
             </table>
           )
           }
+          </div>
         </div>
 
         <div className="fixed-action-btn">
