@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +19,7 @@ import Hardeng.Rest.services.EVService;
 import Hardeng.Rest.services.EVServiceImpl.SessEVObject;
 import Hardeng.Rest.services.EVServiceImpl.EVObject;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class EVController {
     private static final Logger log = LoggerFactory.getLogger(EVController.class);

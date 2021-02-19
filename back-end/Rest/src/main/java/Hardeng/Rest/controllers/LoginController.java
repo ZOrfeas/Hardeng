@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import Hardeng.Rest.services.LoginService;
 import Hardeng.Rest.services.AdminServiceImpl.StatusObject;
 import Hardeng.Rest.services.LoginServiceImpl.LoginObject;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class LoginController {
     private static final Logger log = LoggerFactory.getLogger(LoginController.class);

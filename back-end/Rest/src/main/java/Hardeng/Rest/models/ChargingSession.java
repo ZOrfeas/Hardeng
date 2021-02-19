@@ -8,7 +8,6 @@ import java.text.ParseException;
 
 @Entity
 public class ChargingSession {
-    private final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +35,7 @@ public class ChargingSession {
     @ManyToOne(optional = true)
     private CarDriver carDriver;
 
-    ChargingSession() {}
+    public ChargingSession() {}
     /**
      * ChargingSession entity constructor.
      * @param startedOn Τimestamp of the begining of the charging session
@@ -123,6 +122,7 @@ public class ChargingSession {
 
     /* String to Timestap parser */
     public java.sql.Timestamp parseTimestamp(String timestamp) {
+        SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             return new java.sql.Timestamp(TIMESTAMP_FORMAT.parse(timestamp).getTime());
         } catch (ParseException e) {

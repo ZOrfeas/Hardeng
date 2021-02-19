@@ -19,6 +19,7 @@ import Hardeng.Rest.services.PointService;
 import Hardeng.Rest.services.PointServiceImpl.SessPointObject;
 import Hardeng.Rest.services.PointServiceImpl.PointObject;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class PointController {
     private static final Logger log = LoggerFactory.getLogger(PointController.class);

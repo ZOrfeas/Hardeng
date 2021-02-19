@@ -18,6 +18,7 @@ import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.services.DriverService;
 import Hardeng.Rest.services.DriverServiceImpl.DriverObject;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class DriverController {
     private static final Logger log = LoggerFactory.getLogger(DriverController.class);
