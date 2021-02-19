@@ -74,7 +74,7 @@ public class AdminController {
 
     @PreAuthorize("hasRole('ROLE_" + SecurityConfig.stationAdminRole + "')")
     @PostMapping(value = "/system/sessionupd", produces = {"application/json"},
-                 consumes = {"text/csv"})
+                 consumes = {"multipart/form-data"})
     public SessionStatsObject sessionUpdate(@RequestParam("file") MultipartFile file) {
         log.info("Session import requested...");
         return adminService.sessionUpdate(file);

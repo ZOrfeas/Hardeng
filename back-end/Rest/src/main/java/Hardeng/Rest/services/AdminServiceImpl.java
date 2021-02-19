@@ -33,10 +33,8 @@ import Hardeng.Rest.exceptions.PricePolicyNotFoundException;
 import Hardeng.Rest.models.Admin;
 import Hardeng.Rest.models.Car;
 import Hardeng.Rest.models.CarDriver;
-import Hardeng.Rest.models.ChargingPoint;
 import Hardeng.Rest.models.ChargingSession;
 import Hardeng.Rest.models.Driver;
-import Hardeng.Rest.models.PricePolicy;
 import Hardeng.Rest.repositories.AdminRepository;
 import Hardeng.Rest.repositories.CarDriverRepository;
 import Hardeng.Rest.repositories.CarRepository;
@@ -323,11 +321,10 @@ public class AdminServiceImpl implements AdminService {
                 ()->new PricePolicyNotFoundException(temp.getPricePolicyId())), 
             carDriverRepo.findByDriverAndCar(
                 driverRepo.findById(temp.getDriverId()).orElseThrow(
-                    ()->new DriverNotFoundException(temp.getDriverId())
-                ),
+                    ()->new DriverNotFoundException(temp.getDriverId())),
                 carRepo.findById(temp.getCarId()).orElseThrow(
-                    ()->new CarNotFoundException(temp.getCarId())
-                )).orElseThrow(()->new CarDriverNotFoundException(temp.getDriverId(), temp.getCarId()))
+                    ()->new CarNotFoundException(temp.getCarId()))
+                ).orElseThrow(()->new CarDriverNotFoundException(temp.getDriverId(), temp.getCarId()))
         )));
         pre = sessionRepo.count();
         sessionRepo.saveAll(converted);
