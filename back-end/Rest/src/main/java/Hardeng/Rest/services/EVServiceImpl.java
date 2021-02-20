@@ -300,19 +300,18 @@ public class EVServiceImpl implements EVService {
         CarDriver queryEV = cCarDriverRepo.findByDriverAndCar(queryDriver, queryCar)
         .orElseThrow(()-> new CarDriverNotFoundException(queryDriver.getID(), queryCar.getId()));
 
-        /* Set car & driver ids in charging sessions to null before deleting
-        for (CarDriver carDriver: driver.getCars())
+        /* Set car & driver ids in charging sessions to null before deleting */
+        for (CarDriver carDriver: queryDriver.getCars())
         {
             List<ChargingSession> cSessList = cSessRepo.findByCarDriver(carDriver);
             
             for (ChargingSession cSess: cSessList)
             {
                 cSess.setCarDriver(null);
+                cSessRepo.save(cSess);
             }
-        }*/
-        log.info(queryDriver.getID().toString());
-        log.info(queryCar.getId().toString());
-        cCarDriverRepo.deleteByIdiDriverIdAndIdiCarId(queryDriver.getID(), queryCar.getId());
+        }
+        queryDriver.removeCar(queryCar);
         return ResponseEntity.noContent().build();
     }
 }

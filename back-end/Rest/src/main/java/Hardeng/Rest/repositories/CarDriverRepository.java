@@ -19,6 +19,4 @@ public interface CarDriverRepository extends JpaRepository<CarDriver, CarDriverI
      * @return CarDriver
      */
     Optional<CarDriver> findByDriverAndCar(Driver driver, Car car);
-
-    void deleteByIdiDriverIdAndIdiCarId(Integer driverId, Integer carId);
 }

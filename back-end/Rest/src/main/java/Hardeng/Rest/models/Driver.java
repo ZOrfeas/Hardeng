@@ -126,14 +126,18 @@ public class Driver {
 
     /**
      * Handles the removal of a Car from a Driver
-     * <br></br>
-     * NOTE! may need iteration over set to find the
-     * propper CarDriver Entity to remove !ETON
      * @param rmCar Car to be removed
      */
      public void removeCar(Car rmCar) {
         this.driverCars.remove(rmCar);
-        rmCar.getDrivers().remove(this);
+        CarDriver temp = new CarDriver();
+        for (CarDriver carDriver: rmCar.getDrivers()) {
+            if (carDriver.getDriver().equals(this)) {
+                temp = carDriver;
+                break;
+            }
+        }
+        rmCar.getDrivers().remove(temp);
     }
 
     @Override
