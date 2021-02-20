@@ -12,6 +12,7 @@ import com.opencsv.bean.CsvBindByName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
 
@@ -245,6 +246,7 @@ public class PointServiceImpl implements PointService {
         return new PointObject(updatedPoint);
     }
 
+    @Transactional
     @Override
     public ResponseEntity<Object> deletePoint(Integer pointId) throws NoDataException {
         log.info("Deleting Charging Point...");
@@ -252,6 +254,16 @@ public class PointServiceImpl implements PointService {
          .orElseThrow(()-> new ChargingPointNotFoundException(pointId));
         ChargingStation station = cStatRepo.findById(point.getCStation().getId())
         .orElseThrow(()-> new ChargingStationNotFoundException(point.getCStation().getId()));
+
+        /* Set charging point id to null in charging sessions */
+        List<ChargingSession> cSessList = cSessRepo.findByChargingPoint(point);
+            
+        for (ChargingSession cSess: cSessList)
+        {
+            cSess.setChargingPoint(null);
+            cSessRepo.save(cSess);
+        }
+        
         cPointRepo.deleteById(pointId);
         station.setNrOfChargingPoints(station.getNrOfChargingPoints()-1);
         cStatRepo.save(station);

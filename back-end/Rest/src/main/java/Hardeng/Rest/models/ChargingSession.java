@@ -25,10 +25,10 @@ public class ChargingSession {
     @Column(length = 20, nullable = false)
     private String payment;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     private ChargingPoint chargingPoint;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     private PricePolicy pricePolicy;
     
     

@@ -12,6 +12,7 @@ import com.opencsv.bean.CsvBindByName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
 
@@ -22,6 +23,7 @@ import Hardeng.Rest.exceptions.AdminNotFoundException;
 import Hardeng.Rest.exceptions.EnergyProviderNotFoundException;
 import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.models.ChargingStation;
+import Hardeng.Rest.models.ChargingSession;
 import Hardeng.Rest.models.ChargingPoint;
 import Hardeng.Rest.models.Admin;
 import Hardeng.Rest.models.EnergyProvider;
@@ -30,6 +32,7 @@ import Hardeng.Rest.repositories.ChargingPointRepository;
 import Hardeng.Rest.repositories.ChargingSessionRepository;
 import Hardeng.Rest.repositories.AdminRepository;
 import Hardeng.Rest.repositories.EnergyProviderRepository;
+import Hardeng.Rest.services.PointServiceImpl;
 
 @Service
 public class StationServiceImpl implements StationService {
@@ -320,11 +323,26 @@ public class StationServiceImpl implements StationService {
         return new StationObject(updatedStation);
     }
 
+    @Transactional
     @Override
     public ResponseEntity<Object> deleteStation(Integer stationId) throws NoDataException {
         log.info("Deleting Charging Station...");
         ChargingStation station = cStationRepo.findById(stationId)
         .orElseThrow(()-> new ChargingStationNotFoundException(stationId));
+
+        /* Delete all charging points and set charging point id to null in charging sessions */
+        for (ChargingPoint point: cPointRepo.findBycStation(station)) {
+            List<ChargingSession> cSessList = cSessRepo.findByChargingPoint(point);
+            
+            for (ChargingSession cSess: cSessList)
+            {
+                cSess.setChargingPoint(null);
+                cSessRepo.save(cSess);
+            }
+            
+            cPointRepo.deleteById(point.getId());
+        }
+
         cStationRepo.deleteById(stationId);
         return ResponseEntity.noContent().build();
     }

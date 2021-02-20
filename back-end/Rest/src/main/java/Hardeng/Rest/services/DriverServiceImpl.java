@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
 
@@ -97,6 +98,7 @@ public class DriverServiceImpl implements DriverService {
         return new DriverObject(updatedDriver);
     }
 
+    @Transactional
     @Override
     public ResponseEntity<Object> deleteDriver(Integer driverId) throws NoDataException {
         log.info("Deleting Driver...");
