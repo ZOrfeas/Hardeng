@@ -3,6 +3,7 @@ package Hardeng.Rest.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import Hardeng.Rest.models.Admin;
 import Hardeng.Rest.models.ChargingStation;
 import Hardeng.Rest.models.EnergyProvider;
 
@@ -30,4 +31,11 @@ public interface ChargingStationRepository extends JpaRepository<ChargingStation
     List<ChargingStation> findByLatitudeBetweenAndLongitudeBetween(Double latLow,
     Double latUp, Double lonLow, Double lonUp);
 
+    /** 
+     *  Returns Charging Station by admin {@code admin}
+     * @param admin Admin in question
+     * @return List of charging stations
+    */
+
+    List<ChargingStation> findByAdmin(Admin admin);
 }

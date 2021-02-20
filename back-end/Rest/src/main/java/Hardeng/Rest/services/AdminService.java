@@ -4,6 +4,7 @@ package Hardeng.Rest.services;
 import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.exceptions.NoDataException;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 // import Hardeng.Rest.services.AdminServiceImpl.AdminDriverWrapper;
@@ -11,6 +12,7 @@ import Hardeng.Rest.config.auth.CustomUserPrincipal;
 import Hardeng.Rest.services.AdminServiceImpl.SessionStatsObject;
 import Hardeng.Rest.services.AdminServiceImpl.StatusObject;
 import Hardeng.Rest.services.AdminServiceImpl.UserObject;
+import Hardeng.Rest.services.AdminServiceImpl.AdminObject;
 
 public interface AdminService {
     
@@ -52,4 +54,15 @@ public interface AdminService {
      * @return Returns an object containing db stats after import
      */
     SessionStatsObject sessionUpdate(MultipartFile file);
+
+    /* CRUD for Admin */
+    AdminObject createAdmin(String username, String password, String email,
+    String companyName, String companyPhone, String companyLocation) throws NoDataException;
+
+    AdminObject readAdmin(Integer adminId) throws NoDataException;
+
+    AdminObject updateAdmin(Integer adminId, String username, String password, String email,
+    String companyName, String companyPhone, String companyLocation) throws NoDataException;
+    
+    ResponseEntity<Object> deleteAdmin(Integer adminId) throws NoDataException;
 }

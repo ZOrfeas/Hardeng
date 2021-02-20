@@ -68,7 +68,7 @@ public class DriverServiceImpl implements DriverService {
         log.info("Creating Driver...");
         Driver driver = udsi.makeDriver(driverName, username, password, email, bonusPoints, cardId, walletId);
         Driver createdDriver = driverRepo.save(driver);
-        return new DriverObject(driver);
+        return new DriverObject(createdDriver);
     }
 
     @Override
@@ -111,6 +111,7 @@ public class DriverServiceImpl implements DriverService {
             for (ChargingSession cSess: cSessList)
             {
                 cSess.setCarDriver(null);
+                cSessRepo.save(cSess);
             }
         }
 

@@ -15,7 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import Hardeng.Rest.config.auth.SecurityConfig;
 import Hardeng.Rest.Utilities;
@@ -27,6 +29,7 @@ import Hardeng.Rest.exceptions.CarNotFoundException;
 import Hardeng.Rest.exceptions.ChargingPointNotFoundException;
 //import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.exceptions.DriverNotFoundException;
+import Hardeng.Rest.exceptions.AdminNotFoundException;
 import Hardeng.Rest.exceptions.InternalServerErrorException;
 import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.exceptions.PricePolicyNotFoundException;
@@ -34,12 +37,15 @@ import Hardeng.Rest.models.Admin;
 import Hardeng.Rest.models.Car;
 import Hardeng.Rest.models.CarDriver;
 import Hardeng.Rest.models.ChargingSession;
+import Hardeng.Rest.models.ChargingStation;
 import Hardeng.Rest.models.Driver;
+import Hardeng.Rest.models.PricePolicy;
 import Hardeng.Rest.repositories.AdminRepository;
 import Hardeng.Rest.repositories.CarDriverRepository;
 import Hardeng.Rest.repositories.CarRepository;
 import Hardeng.Rest.repositories.ChargingPointRepository;
 import Hardeng.Rest.repositories.ChargingSessionRepository;
+import Hardeng.Rest.repositories.ChargingStationRepository;
 import Hardeng.Rest.repositories.DriverRepository;
 import Hardeng.Rest.repositories.PricePolicyRepository;
 
@@ -63,6 +69,10 @@ public class AdminServiceImpl implements AdminService {
     private CarRepository carRepo;
     @Autowired
     private UserDetailsServiceImpl udsi;
+    @Autowired
+    private ChargingStationRepository cStationRepo;
+    @Autowired
+    private PasswordEncoder encoder;
 
     public static class StatusObject implements CsvObject{
         @JsonProperty("status")
@@ -335,7 +345,93 @@ public class AdminServiceImpl implements AdminService {
         return toRet;
     }
 
+    /* CRUD for Admin */
+    public class AdminObject {
+        @JsonProperty("AdminID")
+        private Integer adminId;
+        @JsonProperty("Username")
+        private String username;
+        @JsonProperty("Password")
+        private String password;
+        @JsonProperty("Email")
+        private String email;
+        @JsonProperty("CompanyName")
+        private String companyName;
+        @JsonProperty("CompanyPhone")
+        private String companyPhone;
+        @JsonProperty("CompanyLocation")
+        private String companyLocation;
 
+        AdminObject (Admin admin) {
+            this.adminId = admin.getId();
+            this.username = admin.getUsername();
+            this.password = admin.getPassword();
+            this.email = admin.getEmail();
+            this.companyName = admin.getCompanyName();
+            this.companyPhone = admin.getCompanyPhone();
+            this.companyLocation = admin.getCompanyLocation();
+        }
+    }
+
+    @Override
+    public AdminObject createAdmin(String username, String password, String email,
+    String companyName, String companyPhone, String companyLocation) throws NoDataException {
+        log.info("Creating Admin...");
+        Admin admin = udsi.makeAdmin(username, password, email, companyName, companyPhone, companyLocation);
+        Admin createdAdmin = adminRepo.save(admin);
+        return new AdminObject(createdAdmin);
+    }
+
+    @Override
+    public AdminObject readAdmin(Integer adminId) throws NoDataException {
+        log.info("Reading Admin...");
+        Admin queryAdmin = adminRepo.findById(adminId)
+         .orElseThrow(()-> new AdminNotFoundException(adminId));
+        return new AdminObject(queryAdmin);
+    }
+
+    @Override
+    public AdminObject updateAdmin(Integer adminId, String username, String password, String email,
+    String companyName, String companyPhone, String companyLocation) throws NoDataException {
+        log.info("Updating Admin...");
+        Admin queryAdmin = adminRepo.findById(adminId)
+         .orElseThrow(()-> new AdminNotFoundException(adminId));
+        
+        queryAdmin.setUsername(username);
+        queryAdmin.setPassword(encoder.encode(password));
+        queryAdmin.setEmail(email);
+        queryAdmin.setCompanyName(companyName);
+        queryAdmin.setCompanyPhone(companyPhone);
+        queryAdmin.setCompanyLocation(companyLocation);
+        
+        Admin updatedAdmin = adminRepo.save(queryAdmin);
+        return new AdminObject(updatedAdmin);
+    }
+
+    @Override
+    public ResponseEntity<Object> deleteAdmin(Integer adminId) throws NoDataException {
+        log.info("Deleting Admin...");
+        Admin admin = adminRepo.findById(adminId)
+         .orElseThrow(()-> new AdminNotFoundException(adminId));
+
+        /* Set admin id in charging stations & price policy to null before deleting */
+        List<ChargingStation> cStatList = cStationRepo.findByAdmin(admin);
+        for (ChargingStation cStation: cStatList)
+        {
+            cStation.setAdmin(null);
+            cStationRepo.save(cStation);
+        }
+
+        List<PricePolicy> pPolicyList = pPolicyRepo.findByAdmin(admin);
+        for (PricePolicy pPolicy: pPolicyList)
+        {
+            pPolicy.setAdmin(null);
+            pPolicyRepo.save(pPolicy);
+        }
+        
+        adminRepo.deleteById(adminId);
+        return ResponseEntity.noContent().build();
+    }
 
 }
 

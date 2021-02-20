@@ -5,6 +5,7 @@ import Hardeng.Rest.services.AdminService;
 import Hardeng.Rest.services.AdminServiceImpl.SessionStatsObject;
 import Hardeng.Rest.services.AdminServiceImpl.StatusObject;
 import Hardeng.Rest.services.AdminServiceImpl.UserObject;
+import Hardeng.Rest.services.AdminServiceImpl.AdminObject;
 import Hardeng.Rest.config.auth.CustomUserPrincipal;
 //import java.util.Map;
 import Hardeng.Rest.config.auth.SecurityConfig;
@@ -13,13 +14,18 @@ import Hardeng.Rest.config.auth.SecurityConfig;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -80,5 +86,63 @@ public class AdminController {
         log.info("Session import requested...");
         return adminService.sessionUpdate(file);
     }
+
+    /* CRUD for Admin */
+   public static class RequestAdmin {
+    private String username;
+    private String password;
+    private String email;
+    private String companyName;
+    private String companyPhone;
+    private String companyLocation;
+
+    public String getUsername() {return this.username;}
+    public String getPassword() {return this.password;}
+    public String getEmail() {return this.email;}
+    public String getCompanyName() {return this.companyName;}
+    public String getCompanyPhone() {return this.companyPhone;}
+    public String getCompanyLocation() {return this.companyLocation;}
+
+    public void setUsername(String username) {this.username = username;}
+    public void setPassword(String password) {this.password = password;}
+    public void setEmail(String email) {this.email = email;}
+    public void setCompanyName(String companyName) {this.companyName = companyName;}
+    public void setCompanyPhone(String companyPhone) {this.companyPhone = companyPhone;}
+    public void setCompanyLocation(String companyLocation) {this.companyLocation = companyLocation;}
+ }
+
+ @PostMapping(value = "/Admin", consumes=MediaType.APPLICATION_JSON_VALUE, produces = {"application/json"})
+ public AdminObject createAdmin(@RequestBody RequestAdmin admin) {
+    log.info("Create admin...");
+    if (admin.getUsername() == null || admin.getPassword() == null || admin.getEmail() == null ||
+        admin.getCompanyName() == null || admin.getCompanyPhone() == null || admin.getCompanyLocation() == null) 
+       throw new BadRequestException();
+    return adminService.createAdmin(admin.getUsername(), admin.getPassword(), admin.getEmail(),
+        admin.getCompanyName(), admin.getCompanyPhone(), admin.getCompanyLocation());
+ }
+
+ @GetMapping(value = "/Admin/{adminId}", produces = {"application/json"})
+ public AdminObject readAdmin(@PathVariable(name = "adminId") Integer adminId) {
+    log.info("Read admin...");
+    if (adminId == null) throw new BadRequestException();
+    return adminService.readAdmin(adminId);
+ }
+
+ @PutMapping(value = "/Admin/{adminId}", consumes=MediaType.APPLICATION_JSON_VALUE, produces = {"application/json"})
+ public AdminObject updateAdmin(@PathVariable(name = "adminId") Integer adminId, @RequestBody RequestAdmin admin) {
+    log.info("Update admin...");
+    if (adminId == null || admin.getUsername() == null || admin.getPassword() == null || admin.getEmail() == null ||
+    admin.getCompanyName() == null || admin.getCompanyPhone() == null || admin.getCompanyLocation() == null) 
+       throw new BadRequestException();
+    return adminService.updateAdmin(adminId, admin.getUsername(), admin.getPassword(), admin.getEmail(),
+    admin.getCompanyName(), admin.getCompanyPhone(), admin.getCompanyLocation());
+ }
+
+ @DeleteMapping(value = "/Admin/{adminId}")
+ public ResponseEntity<Object> deleteAdmin(@PathVariable(name = "adminId") Integer adminId) {
+    log.info("Delete admin...");
+    if (adminId == null) throw new BadRequestException();
+    return adminService.deleteAdmin(adminId);
+ }
 
 }
