@@ -51,7 +51,7 @@ jobs:
       - name: Send to server
         uses: garygrossgarten/github-action-scp@release
         with:
-          local: "./build/libs/Rest-0.0.1-SNAPSHOT.jar"
+          local: "/home/runner/work/TL20-11/TL20-11/back-end/Rest/build/libs/Rest-0.0.1-SNAPSHOT.jar"
           remote: "~/backend.jar"
           host: "snf-880282.vm.okeanos.grnet.gr"
           username: "hardeng"
