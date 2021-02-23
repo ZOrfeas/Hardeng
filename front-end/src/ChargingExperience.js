@@ -29,10 +29,14 @@ let DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 const Athens = [37.983810, 23.727539];
-
+const pricesHardcoded = [10, 20, 30, 40, 50, 60];
+const vehiclesHardcoded = [
+  {label:"Honda Civic", id:1},
+  {label:"Renault Scenic", id:2}
+];
 const stationsHardcoded = [
-  { position: [37.983810, 23.727539], label: "Athens", time: "10 minutes", condition: "Available" },
-  { position: [40.629269, 22.947412], label: "Thessaloniki", time: "5 minutes", condition: "Maintenance" }
+  { position: [37.983810, 23.727539], label: "Athens", id: 1 },
+  { position: [40.629269, 22.947412], label: "Thessaloniki", id: 2 }
 ];
 
 function LocationMarker(props) {
@@ -61,10 +65,17 @@ class ChargingExperience extends React.Component {
     super(props);
 
     this.state = {
-      session = null,
       stations: stationsHardcoded,
+      prices: pricesHardcoded,
+      vehicles: vehiclesHardcoded,
+      
       currentPos: null,
+      
       chosenIndex: null,
+      stationID: null,
+      vehicleID: null,
+      payment: null,
+      
       zoom: 10,
       error: null,
     };
@@ -90,12 +101,28 @@ class ChargingExperience extends React.Component {
 
   showOptions() {
     return (
-      this.state.stations.map(({ position, label }, index) => <option value={index}> {label} </option>)
+      this.state.stations.map(({ label, id}, index) => <option value={index}> {label} </option>)
     );
   }
 
   handleSelect(e) {
-    e.target.value === "all" ? this.setState({ chosenIndex: null }) : this.setState({ chosenIndex: e.target.value });
+    if(e.target.name === "stationID"){
+      if(e.target.value === "all") {
+        this.setState({ chosenIndex: null, stationID: null });
+      }
+      else {
+        this.setState({ chosenIndex: e.target.value });
+        const s = this.state.stations;
+        const c = e.target.value;
+
+        this.setState({ stationID: s[c]['id'] });
+        
+      }
+    }
+
+    else {
+      this.setState({[e.target.name]: e.target.value});
+    }
   }
 
   handleLocation(latlng) {
@@ -136,16 +163,37 @@ class ChargingExperience extends React.Component {
               {this.showMarkers()}
               <LocationMarker setter={this.handleLocation} />
             </MapContainer>
+          
             <form>
-              <select className="browser-default" onChange={this.handleSelect}>
-                <option value="" disabled selected>Choose station ...</option>
-                <option value="all">Show all stations</option>
-                {this.showOptions()}
-              </select>
+              <div className="">
+                <select name="stationID" className="browser-default" onChange={this.handleSelect}>
+                  <option value="" disabled selected>Choose station ...</option>
+                  <option value="all">Show all stations</option>
+                  {this.state.stations.map(({label}, index) => <option value={index}> {label} </option>)}
+                </select>
+                <select name="payment" className="browser-default" onChange={this.handleSelect}>
+                  <option value="" disabled selected>Payment amount</option>
+                  {this.state.prices.map(price => <option value={price}> {price} </option>)}
+                </select>
+
+                <select name="vehicleID" className="browser-default" onChange={this.handleSelect}>
+                  <option value="" disabled selected>Choose car</option>
+                  {this.state.vehicles.map(({label, id}) => <option value={id}> {label} </option>)}
+                </select>
+
+                <div className="center-align yellow">
+                <button
+                  className="btn-flat waves-effect waves-light purple-text text-darken-4"
+                  type="submit"
+                  >
+                  Initiate Charging Session
+                </button>
+                </div>
+              </div>
             </form>
           
-          {this.state.chosenIndex !== null && (
-            <table className="centered white">
+            {this.state.chosenIndex !== null && false && (
+              <table className="centered white">
               <thead>
                 <tr>
                   <th>Location</th>
@@ -162,8 +210,8 @@ class ChargingExperience extends React.Component {
                 </tr>
               </tbody>
             </table>
-          )
-          }
+            )
+            }
           </div>
         </div>
 
