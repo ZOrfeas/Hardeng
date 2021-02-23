@@ -49,11 +49,11 @@ exports.handler = function(argv)
       console.log("For more, type: Admin --help")
     }
     else{
-      console.log('Username: ',myArgs[2],'| Password: ', myArgs[4])//to be removed -> query here
+      console.log('APIkey: ', myArgs[8])
     }
   }
   if(myArgs[0] == '--users'){
-    console.log("Username: ", 'API key')//->query must include the case that username doesnot exist (myArgs[1])
+    console.log("Username: ", 'API key')
   }
   if(myArgs[0] == '--sessionupd')
   {
@@ -70,7 +70,6 @@ exports.handler = function(argv)
   {
     axios.get('/admin/healthcheck', {
       params: {
-          format: argv.format,
           apikey: argv.apikey
       }
   })
@@ -85,7 +84,6 @@ exports.handler = function(argv)
   {
     axios.post('/admin/resetsessions', {
       params: {
-          format: argv.format,
           apikey: argv.apikey
       }
   })

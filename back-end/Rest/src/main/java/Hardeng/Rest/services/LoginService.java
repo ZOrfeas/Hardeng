@@ -4,5 +4,5 @@ import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.services.LoginServiceImpl.LoginObject;
 
 public interface LoginService {
-    LoginObject login(String username, String password) throws NoDataException;
+    LoginObject login(String username, String password, String type) throws NoDataException;
 }

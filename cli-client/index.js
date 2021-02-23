@@ -3,7 +3,6 @@
 require('dotenv').config();
 
 const axios = require("axios");
-const { isValidApikey } = require('./utils');
 
 axios.defaults.baseURL = process.env.BASE_URL;
 
@@ -11,19 +10,5 @@ require('yargs/yargs')(process.argv.slice(2))
   .commandDir('scope')
   .demandCommand(1)
   .strict()
-  .option('format', {
-      demandOption: true,
-      describe: 'Choose output format',
-      choices: ['csv', 'json']
-  })
-  .option('apikey', {
-      demandOption: true,
-      describe: 'Specify API key'
-  })
-  .check((argv) => {
-    if (!isValidApikey(argv.apikey))
-        throw new Error('Invalid API key format');
-    return true;
-  })
   .help()
   .argv

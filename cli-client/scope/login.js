@@ -1,5 +1,6 @@
 const axios = require("axios");
-const { tokenFileExists, createTokenFile } = require("../utils");
+const qs = require('querystring');
+const { tokenFileExists, createTokenFile, errorHandler } = require("../utils");
 
 exports.command = 'login'
 
@@ -13,6 +14,11 @@ exports.builder = {
     passw: {
       describe: 'Pass the password',
       demand: true
+    },
+    role: {
+      demandOption: true,
+      describe: 'Choose user role',
+      choices: ['admin', 'driver']
     }
 }
 
@@ -20,23 +26,21 @@ exports.handler = function(argv) {
 
     if (!tokenFileExists()) {
 
-        axios.post('/login', {
-            params: {
-                format: argv.format,
-                apikey: argv.apikey,
-                username: argv.username,
-                password: argv.passw
-            },
+        axios.post('/login', qs.stringify({
+            username: argv.username,
+            password: argv.passw,
+            role: argv.role
+            }), {
             headers: {
                 'content-type': 'application/x-www-form-urlencoded'
             }
         })
         .then(res => {
-            const token = (argv.format === 'csv') ? res.data.substring(6) : res.data.token;
+            const token = res.data.token;
             createTokenFile(token);
         })
         .catch(err => {
-            console.log(err.response.data);
+            errorHandler(err);
         })
     }
     else {

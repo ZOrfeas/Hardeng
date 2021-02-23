@@ -1,5 +1,5 @@
 import axios from 'axios';
-axios.defaults.baseURL = "";
+axios.defaults.baseURL = "http://localhost:8080/evcharge/api/";
 
 export function userLogin(user, pass, type) {
   const reqURL = type;
@@ -30,13 +30,9 @@ export function getAdminInfo(adminKey) {
 }
 
 export function getStations(latlng){
-  const reqURL = "station"
-  const obj = {
-    latitude: latlng[0],
-    longitude: latlng[1],
-  };
-
-  return axios.post(reqURL, obj);
+  const radius = 0.25;
+  const reqURL = "NearbyStations/" + latlng["lat"] + "/" + latlng["lng"] + "/" + radius;
+  return axios.get(reqURL, null);
 }
 
 

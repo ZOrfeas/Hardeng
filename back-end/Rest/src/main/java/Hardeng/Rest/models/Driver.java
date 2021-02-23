@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+
 import java.util.Set;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -69,9 +70,8 @@ public class Driver {
         this.bonusPoints = bonusPoints; this.cardID = cardID; this.walletID = walletID;
     }
 
-    public Driver(String driverName, String username, String password, String email, Long cardID, Long walletID){
-        this.driverName = driverName; this.username = username; this.password = password; this.email = email; 
-        this.bonusPoints = 0; this.cardID = cardID; this.walletID = null; //maybe walletID = null
+    public Driver(String driverName, String username, String password, String email){
+        this(driverName,username,password,email,0,null,null);
     }
     
 
@@ -126,14 +126,18 @@ public class Driver {
 
     /**
      * Handles the removal of a Car from a Driver
-     * <br></br>
-     * NOTE! may need iteration over set to find the
-     * propper CarDriver Entity to remove !ETON
      * @param rmCar Car to be removed
      */
      public void removeCar(Car rmCar) {
         this.driverCars.remove(rmCar);
-        rmCar.getDrivers().remove(this);
+        CarDriver temp = new CarDriver();
+        for (CarDriver carDriver: rmCar.getDrivers()) {
+            if (carDriver.getDriver().equals(this)) {
+                temp = carDriver;
+                break;
+            }
+        }
+        rmCar.getDrivers().remove(temp);
     }
 
     @Override

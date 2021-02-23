@@ -4,7 +4,7 @@
   "description": "CLI for Hardeng",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "",
   "license": "ISC",
@@ -12,5 +12,8 @@
     "axios": "^0.21.1",
     "dotenv": "^8.2.0",
     "yargs": "^16.2.0"
+  },
+  "devDependencies": {
+    "mocha": "^8.2.1"
   }
 }

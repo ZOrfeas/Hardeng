@@ -52,9 +52,17 @@ function getTokenFilePath () {
     return filePath;
 }
 
+function errorHandler (err) {
+    if (err.response === undefined)
+        console.log("Error: ", err.message);
+    else
+        console.log(err.response.data);
+}
+
 module.exports = { isValidApikey,
                    isValidDate,
                    createTokenFile,
                    deleteTokenFile,
                    tokenFileExists,
-                   getToken };
+                   getToken,
+                   errorHandler };

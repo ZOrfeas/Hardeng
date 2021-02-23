@@ -52,4 +52,8 @@ public interface ChargingSessionRepository extends JpaRepository<ChargingSession
     Float totalEnergyDelivered(Timestamp dateFrom, Timestamp dateTo, ChargingPoint cPoint);
 
     List<ChargingSession> findByStartedOnBetweenAndCarDriver(Timestamp dateFrom, Timestamp dateTo, CarDriver carDriver);
+
+    List<ChargingSession> findByCarDriver(CarDriver carDriver);
+
+    List<ChargingSession> findByChargingPoint(ChargingPoint cPoint);
 }

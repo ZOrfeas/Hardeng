@@ -5,6 +5,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+// import org.springframework.beans.factory.annotation.Value;
+
 /**
  * This is probably the best way to group some globals to
  * allow for easier future changes, should the need arise.
@@ -14,6 +16,20 @@ public class Utilities {
     public static final String[] FORMATS = {"application/json", "text/csv"};
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
     public static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    public static class SecurityConstants {
+        public static final long validity_time = 5*60*60;
+        public static final long a_long_time = 60*60*24*365;
+        // @Value("${jwt.secret}")
+        public static final String secret = "developmentjwtkey";
+        // @Value("${jwt.header}")
+        public static final String header_name = "X-OBSERVATORY-AUTH";
+        // @Value("${master.username}")
+        public static final String masterUsername = "master-of-puppets";
+        // @Value("${master.password}")
+        public static final String masterPassword = "for-whom-the-bell-tolls";
+
+    }
 
     public static Timestamp timestampFromString(String orgString, SimpleDateFormat timestampFormat) {
         try {
@@ -26,4 +42,6 @@ public class Utilities {
     public static interface CsvObject {
         List<Object> getList();
     }
+
+
 }

@@ -12,16 +12,27 @@ import com.opencsv.bean.CsvBindByName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
 
 import Hardeng.Rest.Utilities;
+import Hardeng.Rest.Utilities.CsvObject;
 import Hardeng.Rest.exceptions.ChargingStationNotFoundException;
+import Hardeng.Rest.exceptions.AdminNotFoundException;
+import Hardeng.Rest.exceptions.EnergyProviderNotFoundException;
 import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.models.ChargingStation;
+import Hardeng.Rest.models.ChargingSession;
 import Hardeng.Rest.models.ChargingPoint;
+import Hardeng.Rest.models.Admin;
+import Hardeng.Rest.models.EnergyProvider;
 import Hardeng.Rest.repositories.ChargingStationRepository;
 import Hardeng.Rest.repositories.ChargingPointRepository;
 import Hardeng.Rest.repositories.ChargingSessionRepository;
+import Hardeng.Rest.repositories.AdminRepository;
+import Hardeng.Rest.repositories.EnergyProviderRepository;
+import Hardeng.Rest.services.PointServiceImpl;
 
 @Service
 public class StationServiceImpl implements StationService {
@@ -33,6 +44,10 @@ public class StationServiceImpl implements StationService {
     private ChargingPointRepository cPointRepo;
     @Autowired
     private ChargingSessionRepository cSessRepo;
+    @Autowired
+    private AdminRepository cAdminRepo;
+    @Autowired
+    private EnergyProviderRepository cEnergyProviderRepo;
 
     public class PointObject {
         @JsonProperty("PointID")
@@ -52,39 +67,71 @@ public class StationServiceImpl implements StationService {
             Float eDeliv = cSessRepo.totalEnergyDelivered(dateFrom, dateTo, cPoint);
             this.energyDelivered =  eDeliv == null ? 0.0f : eDeliv;
         }
-        @Override
-        public String toString() {
-            return this.pointId +'|'+ this.pointSessions.toString() +'|'+ this.energyDelivered.toString();
-        }
     }
     
-    public class SessStationObject {
-        @JsonProperty("StationID")
+    public static class CsvSessStationObject {
         @CsvBindByName
         private String stationId;
-        @JsonProperty("Operator")
         @CsvBindByName
         private String operator;
-        @JsonProperty("RequestTimeStamp")
         @CsvBindByName
         private String requestTimeStamp;
-        @JsonProperty("PeriodFrom")
         @CsvBindByName
         private String periodFrom;
-        @JsonProperty("PeriodTo")
         @CsvBindByName
         private String periodTo;
-        @JsonProperty("TotalEnergyDelivered")
         @CsvBindByName
         private Float totalEnergyDelivered;
-        @JsonProperty("NumberOfChargingSessions")
         @CsvBindByName
         private Integer nrOfChargingSessions;
-        @JsonProperty("NumberOfActivePoints")
         @CsvBindByName
         private Integer nrOfActivePoints;
+        @CsvBindByName
+        private String pointId;
+        @CsvBindByName
+        private Integer pointSessions;
+        @CsvBindByName
+        private Float energyDelivered;
+
+        CsvSessStationObject(SessStationObject ss, PointObject po) {
+            this.stationId = ss.stationId; this.operator = ss.operator;
+            this.requestTimeStamp = ss.requestTimeStamp; this.periodFrom = ss.periodFrom;
+            this.periodTo = ss.periodTo; this.totalEnergyDelivered = ss.totalEnergyDelivered;
+            this.nrOfChargingSessions = ss.nrOfChargingSessions; this.nrOfActivePoints = ss.nrOfActivePoints;
+            this.pointId = po.pointId; this.pointSessions = po.pointSessions; this.energyDelivered = po.energyDelivered;
+        }
+        public String getStationId() {return this.stationId;}
+        public String getOperator() {return this.operator;}
+        public String getRequestTimeStamp() {return this.requestTimeStamp;}
+        public String getPeriodFrom() {return this.periodFrom;}
+        public String getPeriodTo() {return this.periodTo;}
+        public Float getTotalEnergyDelivered() {return this.totalEnergyDelivered;}
+        public Integer getNrOfChargingSessions() {return this.nrOfChargingSessions;}
+        public Integer getNrOfActivePoints() {return this.nrOfActivePoints;}
+        public String getPointId() {return this.pointId;}
+        public Integer getPointSessions() {return this.pointSessions;}
+        public Float getEnergyDelivered() {return this.energyDelivered;}
+
+    }
+    
+    public class SessStationObject implements CsvObject {
+        @JsonProperty("StationID")
+        private String stationId;
+        @JsonProperty("Operator")
+        private String operator;
+        @JsonProperty("RequestTimeStamp")
+        private String requestTimeStamp;
+        @JsonProperty("PeriodFrom")
+        private String periodFrom;
+        @JsonProperty("PeriodTo")
+        private String periodTo;
+        @JsonProperty("TotalEnergyDelivered")
+        private Float totalEnergyDelivered;
+        @JsonProperty("NumberOfChargingSessions")
+        private Integer nrOfChargingSessions;
+        @JsonProperty("NumberOfActivePoints")
+        private Integer nrOfActivePoints;
         @JsonProperty("SessionsSummaryList")
-        @CsvBindByName(column = "POINTID|POINTSESSIONS|ENERGYDELIVERED")
         private List<PointObject> sessionsSummaryList = new ArrayList<>();
 
         SessStationObject(Timestamp from, Timestamp to,
@@ -104,6 +151,7 @@ public class StationServiceImpl implements StationService {
                 this.nrOfChargingSessions = this.nrOfChargingSessions + pointObject.pointSessions;
             }
         }
+        /*
         public String getStationId() {return this.stationId;}
         public String getOperator() {return this.operator;}
         public String getRequestTimeStamp() {return this.requestTimeStamp;}
@@ -112,9 +160,97 @@ public class StationServiceImpl implements StationService {
         public Float getTotalEnergyDelivered() {return this.totalEnergyDelivered;}
         public Integer getNrOfActivePoints() {return this.nrOfActivePoints;}
         @JsonIgnore
-        public String getSessionsSummaryList() {return this.sessionsSummaryList.toString();}
+        public String getSessionsSummaryList() {return this.sessionsSummaryList.toString();}*/
+        @Override
+        @JsonIgnore
+        public List<Object> getList() {
+            List<Object> toRet = new ArrayList<>();
+            for (PointObject po : this.sessionsSummaryList) {
+                toRet.add(new CsvSessStationObject(this, po));
+            }
+            return toRet;
+        }
     }
     
+    public class NearbyStationObject {
+        @JsonProperty("position")
+        private List<Double> pos;
+        @JsonProperty("label")
+        private String label;
+        @JsonProperty("time")
+        private String time;
+        @JsonProperty("condition")
+        private String cond;
+        @JsonProperty("station_id")
+        private Integer id;
+
+        NearbyStationObject(ChargingStation cStation) {
+            this.pos = new ArrayList<Double>();
+            this.pos.add(cStation.getLatitude());
+            this.pos.add(cStation.getLongitude());
+            this.label = cStation.getAddressLine();
+            this.time = "Unknown";
+            
+            Integer level1 = 0;
+            Integer level2 = 0;
+            Integer level3 = 0;
+
+            List<ChargingPoint> cPoints =  cPointRepo.findBycStation(cStation);
+            for (int i = 0; i < cPoints.size(); i++) {
+                ChargingPoint cP = cPoints.get(i);
+                if (cP.getChargerType() == 1 && cP.isOccupied() == false) level1++;
+                if (cP.getChargerType() == 2 && cP.isOccupied() == false) level2++;
+                if (cP.getChargerType() == 3 && cP.isOccupied() == false) level3++;
+            }
+            log.info("1: "+ level1.toString() + " 2: " + level2.toString() + " 3: " + level3.toString());
+            if (level1 + level2 + level3 == 1)
+            {
+                if (level1 == 1) {this.cond = "1 Type-1 charger available";}
+                if (level2 == 1) {this.cond = "1 Type-2 charger available";}
+                if (level3 == 1) {this.cond = "1 Type-3 charger available";}
+            }
+            else
+            {
+                this.cond = "";
+                if (level1 != 0) {this.cond += level1.toString() + " Type-1, ";}
+                if (level2 != 0) {this.cond += level2.toString() + " Type-2, ";}
+                if (level3 != 0) {this.cond += level3.toString() + " Type-3, ";}
+                this.cond = this.cond.substring(0, this.cond.length() -2);
+                this.cond += " chargers available";
+            }
+            log.info(this.cond);
+
+            this.id = cStation.getId();
+        }
+    }
+
+    public class StationObject {
+        @JsonProperty("StationID")
+        private Integer stationId;
+        @JsonProperty("TotalChargingPoints")
+        private Integer nrOfChargingPoints;
+        @JsonProperty("Longitude")
+        private Double longitude;
+        @JsonProperty("Latitude")
+        private Double latitude;
+        @JsonProperty("AddressLine")
+        private String addressLine;
+        @JsonProperty("AdminID")
+        private Integer adminId;
+        @JsonProperty("EnergyProviderID")
+        private Integer eProviderId;
+
+        StationObject (ChargingStation cStation) {
+            this.stationId = cStation.getId();
+            this.nrOfChargingPoints = cStation.getNrOfChargingPoints();
+            this.latitude = cStation.getLatitude();
+            this.longitude = cStation.getLongitude();
+            this.addressLine = cStation.getAddressLine();
+            this.adminId = cStation.getAdmin().getId();
+            this.eProviderId = cStation.getEnergyProvider().getId();
+        }
+    }
+
     @Override
     public SessStationObject sessionsPerStation(
      Integer stationId, String dateFrom, String dateTo) throws NoDataException {
@@ -131,5 +267,83 @@ public class StationServiceImpl implements StationService {
         if (cPoints.isEmpty()) throw new NoDataException();
         return new SessStationObject(queryDateFrom, queryDateTo,
         queryStation, cPoints);
+    }
+
+    @Override
+    public List<NearbyStationObject> nearbyStations(Double latitude, 
+    Double longitude, Double rad) throws NoDataException {
+        List<ChargingStation> queryStations = cStationRepo.findByLatitudeBetweenAndLongitudeBetween
+        (latitude - rad, latitude + rad, longitude - rad, longitude + rad);
+        if (queryStations.isEmpty()) throw new NoDataException();
+        List<NearbyStationObject> nearbyStations = new ArrayList<>();
+        for (int i = 0; i < queryStations.size(); i++)
+        {
+            nearbyStations.add(new NearbyStationObject(queryStations.get(i)));
+        }
+        return nearbyStations;
+    };
+
+    @Override
+    public StationObject createStation(Double lat, Double lon, String address,
+    Integer adminId, Integer eProviderId) throws NoDataException {
+        log.info("Creating Charging Station...");
+        Admin admin = cAdminRepo.findById(adminId)
+         .orElseThrow(()-> new AdminNotFoundException(adminId));
+        EnergyProvider eProvider = cEnergyProviderRepo.findById(eProviderId)
+         .orElseThrow(()-> new EnergyProviderNotFoundException(eProviderId));
+        ChargingStation station = new ChargingStation(0, lon, lat, address, admin, eProvider);
+        ChargingStation createdStation = cStationRepo.save(station);
+        return new StationObject(createdStation);
+    }
+
+    @Override
+    public StationObject readStation(Integer stationId) throws NoDataException {
+        log.info("Reading Charging Station...");
+        ChargingStation queryStation = cStationRepo.findById(stationId)
+         .orElseThrow(()-> new ChargingStationNotFoundException(stationId));
+        return new StationObject(queryStation);
+    }
+
+    @Override
+    public StationObject updateStation(Integer stationId, Double lat, Double lon, String address,
+    Integer adminId, Integer eProviderId) throws NoDataException {
+        log.info("Updating Charging Station...");
+        ChargingStation station = cStationRepo.findById(stationId)
+        .orElseThrow(()-> new ChargingStationNotFoundException(stationId));
+        Admin admin = cAdminRepo.findById(adminId)
+         .orElseThrow(()-> new AdminNotFoundException(adminId));
+        EnergyProvider eProvider = cEnergyProviderRepo.findById(eProviderId)
+         .orElseThrow(()-> new EnergyProviderNotFoundException(eProviderId));
+        station.setLongitude(lon);
+        station.setLatitude(lat);
+        station.setAddressLine(address);
+        station.setAdmin(admin);
+        station.setEnergyProvider(eProvider);
+        ChargingStation updatedStation = cStationRepo.save(station);
+        return new StationObject(updatedStation);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<Object> deleteStation(Integer stationId) throws NoDataException {
+        log.info("Deleting Charging Station...");
+        ChargingStation station = cStationRepo.findById(stationId)
+        .orElseThrow(()-> new ChargingStationNotFoundException(stationId));
+
+        /* Delete all charging points and set charging point id to null in charging sessions */
+        for (ChargingPoint point: cPointRepo.findBycStation(station)) {
+            List<ChargingSession> cSessList = cSessRepo.findByChargingPoint(point);
+            
+            for (ChargingSession cSess: cSessList)
+            {
+                cSess.setChargingPoint(null);
+                cSessRepo.save(cSess);
+            }
+            
+            cPointRepo.deleteById(point.getId());
+        }
+
+        cStationRepo.deleteById(stationId);
+        return ResponseEntity.noContent().build();
     }
 }

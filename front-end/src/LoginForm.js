@@ -50,8 +50,10 @@ class LoginForm extends React.Component {
           window.location.reload();
         })
         .catch(err => {
-          console.log(err);
-          this.setState({ error: err.response.status });
+          if(err.response){
+            console.log(err);
+            this.setState({ error: err.response.status });
+          }
         });
     }
   }
