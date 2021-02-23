@@ -1,5 +1,13 @@
 import axios from 'axios';
-axios.defaults.baseURL = "http://localhost:8080/evcharge/api/";
+axios.defaults.baseURL = "http://snf-880282.vm.okeanos.grnet.gr:8080/evcharge/api/";
+
+const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNQVNURVJfQURNSU58bWFzdGVyLW9mLXB1cHBldHMiLCJleHAiOjE2MTQxMzg5NTYsImlhdCI6MTYxNDEwNzQyMH0.WpEqYtGzYtfIZnqjhRqDUaj_OSh8dRJK1edwfNrKOu1VzfFQdNu2_DzXvK-WQ3NCKa1J1ZexCDwO7yW-qhitWw';
+
+const config = {
+  headers: {
+    'X-OBSERVATORY-AUTH': token
+  }
+};
 
 export function userLogin(user, pass, type) {
   const reqURL = type;
@@ -32,7 +40,7 @@ export function getAdminInfo(adminKey) {
 export function getStations(latlng){
   const radius = 0.25;
   const reqURL = "NearbyStations/" + latlng["lat"] + "/" + latlng["lng"] + "/" + radius;
-  return axios.get(reqURL, null);
+  return axios.get(reqURL, config);
 }
 
 

@@ -130,7 +130,9 @@ class ChargingExperience extends React.Component {
       currentPos: latlng
     }, () => {
       getStations(latlng)
-        .then(res => { this.setState({ stations: res.data }) })
+        .then(res => { 
+          console.log(res.data);
+          this.setState({ stations: res.data }) })
         .catch(err => { 
           if(err.response){
             this.setState({ error: err.response.status });
