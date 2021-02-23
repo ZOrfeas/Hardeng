@@ -41,7 +41,7 @@ jobs:
         run: |
           ./gradlew build
           pwd
-          ls
+          ls build/libs/
       
       # possible issue, remember to check
       #- name: Ensure .jar creation
