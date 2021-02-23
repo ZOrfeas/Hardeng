@@ -54,7 +54,7 @@ jobs:
           host: snf-880282.vm.okeanos.grnet.gr
           username: hardeng
           password: 12345
-          source: "build/libs/Rest-0.0.1-SNAPSHOT.jar"
+          source: "/home/runner/work/TL20-11/TL20-11/back-end/Rest/build/libs/Rest-0.0.1-SNAPSHOT.jar"
           target: "/home/hardeng/backend.jar"
           
       - name: Restart server
