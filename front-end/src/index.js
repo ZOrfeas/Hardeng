@@ -11,14 +11,24 @@ import Map from './Map.js';
 
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Header />
+  <Router>
+    <React.StrictMode>
+      <Header />
 
-    <ChargingExperience />
-    {/*<StationMonitoring />*/}
-    {/*<>*/}
-    {/* <Map/> */}
-  </React.StrictMode>,
+      <Route exact ={true} path="/" render = {() =>(
+        <Home/>
+      )}/>
+
+      <Route exact ={true} path="/ChargingExperience" render = {() =>(
+        <ChargingExperience />
+      )}/>
+
+      <Route exact ={true} path="/StationMonitoring" render = {() =>(
+        <StationMonitoring />
+      )}/>
+
+    </React.StrictMode>
+  </Router>,
   document.getElementById('root')
 );
 

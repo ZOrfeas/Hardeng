@@ -8,11 +8,11 @@ import { getStations } from './API';
 import Map from './Map.js';
 import image from './icons/image3.jpg'
 
-// const driversHardcoded = [
-//   {driver_name: "Kostas", id: 11111, bonus_points: 10, carID: 13,  email: "kostas@kostas.gr", walletID: 12315464758},
-//   {driver_name: "Kostakis", id: 22222, bonus_points: 12, carID: 5,  email: "kostakis@kostakis.gr", walletID: 9999999999 },
-//   {driver_name: "Kost", id: 22222, bonus_points: 12, carID: 5,  email: "kostakis@kostakis.gr", walletID: 9999999999 }
-// ];
+const driversHardcoded = [
+  {driver_name: "Kostas", id: 11111, bonus_points: 10, carID: 13,  email: "kostas@kostas.gr", walletID: 12315464758},
+  {driver_name: "Kostakis", id: 22222, bonus_points: 12, carID: 5,  email: "kostakis@kostakis.gr", walletID: 9999999999 },
+  {driver_name: "Kost", id: 22222, bonus_points: 12, carID: 5,  email: "kostakis@kostakis.gr", walletID: 9999999999 }
+];
 
 
 
@@ -67,15 +67,15 @@ class StationMonitoring extends React.Component {
     viewUsers.style.display = 'none';
   }
   
-//   searchForUsers(){
-//     console.log("Hello world!"); 
-//     let btns =  document.getElementById('btn-group');
-//     let rtnBtns =  document.getElementById('rtn-btn-users');
-//     let viewUsers =  document.getElementById('viewUsers');
-//     btns.style.display = 'none';
-//     viewUsers.style.display = 'block';
-//     rtnBtns.style.display = 'block';
-//   }
+  searchForUsers(){
+    console.log("Hello world!"); 
+    let btns =  document.getElementById('btn-group');
+    let rtnBtns =  document.getElementById('rtn-btn-users');
+    let viewUsers =  document.getElementById('viewUsers');
+    btns.style.display = 'none';
+    viewUsers.style.display = 'block';
+    rtnBtns.style.display = 'block';
+  }
 
   searchForStations(){
     let btns =  document.getElementById('btn-group');
@@ -89,11 +89,11 @@ class StationMonitoring extends React.Component {
     this.setState({chosenIndex: null});
   }
 
-//   handleUserInput(e) {
-//     const name = e.target.name;
-//     const value = e.target.value;
-//     this.setState({ [name]: value });
-//   }
+  handleUserInput(e) {
+    const name = e.target.name;
+    const value = e.target.value;
+    this.setState({ [name]: value });
+  }
 
   submitChanges(){
     if (window.confirm("U sur?????")) {
@@ -117,6 +117,7 @@ class StationMonitoring extends React.Component {
               }} className = "background">
           {this.state.chosenIndex !== null && (
             <div className="stationsMap" id="stationsMap">
+              
               <Map/>
               
               <form action="">
@@ -200,7 +201,6 @@ class StationMonitoring extends React.Component {
               onClick={this.ReturnFromViewUsers}/>
             </form>
           </div>
-          
           <form action="">
             <div className="btn-group" id="btn-group" display="block">
               <input type="button" className="leftButton" value="View Users" id="lbtn" onClick={this.searchForUsers}/>
