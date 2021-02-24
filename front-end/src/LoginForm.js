@@ -76,10 +76,10 @@ class LoginForm extends React.Component {
   render() {
     return (
       <div>
-        <button onClick={this.handleLogout} className="btn-flat waves-effect waves-light yellow-text"> Logout </button>
+        <button onClick={this.handleLogout} className="btn-flat waves-effect waves-light green-text"> Logout </button>
         <Popup
           onClose={this.handlePopupClose}
-          trigger={open => <button open={open} className="btn-flat yellow waves-effect waves-light"> Login </button>}
+          trigger={open => <button open={open} className="btn-flat green waves-effect waves-light"> Login </button>}
           modal
         >
           {close => (

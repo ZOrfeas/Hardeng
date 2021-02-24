@@ -6,6 +6,7 @@ import M, { Autocomplete } from 'materialize-css';
 import { AiOutlineSend } from "react-icons/ai";
 import { getStations } from './API';
 import Map from './Map.js';
+import image from './icons/image3.jpg'
 
 const driversHardcoded = [
   {driver_name: "Kostas", id: 11111, bonus_points: 10, carID: 13,  email: "kostas@kostas.gr", walletID: 12315464758},
@@ -78,21 +79,12 @@ class StationMonitoring extends React.Component {
 
   searchForStations(){
     let btns =  document.getElementById('btn-group');
-    // let stationsMap = document.getElementById('stationsMap');
-    // let btn = document.getElementById('rtn-btn-stations');
-    // stationsMap.style.display = 'block';
     this.setState({chosenIndex: true});
-    // btn.style.display = 'block';
     btns.style.display = 'none';    
   }
 
   ReturnFromViewStations(){
-    // let stationsMap = document.getElementById('stationsMap');
     let btns =  document.getElementById('btn-group');
-    // let rtnBtns =  document.getElementById('rtn-btn-stations');
-    
-    // rtnBtns.style.display = 'none';
-    // stationsMap.style.display = 'none';
     btns.style.display = 'block';
     this.setState({chosenIndex: null});
   }
@@ -104,10 +96,6 @@ class StationMonitoring extends React.Component {
   }
 
   submitChanges(){
-    // let overlay = document.getElementById('overlay');
-    // overlay.style.display = 'block';
-    // setTimeout(function(){overlay.style.display = 'none'},3000);  //Took me some time to make this, may as well leave it be
-
     if (window.confirm("U sur?????")) {
         //get driver with id and change info
     } 
@@ -120,101 +108,106 @@ class StationMonitoring extends React.Component {
     return(
       
       <div className="a">
-        {/* <div class="overlay" id="overlay">     // Took me some time to make this, may as well leave it be
-          <h3>Applying Changes...</h3>
-        </div> */}
-        {this.state.chosenIndex !== null && (
-          <div className="stationsMap" id="stationsMap">
-            <Map/>
-            
-            <form action="">
-              <input type="button" className="stationbutton" value="Return" id="rtn-btn-stations" onClick={this.ReturnFromViewStations} />
-            </form>      
-          </div>
-        )
-        }
-        <div className="viewUsers" id="viewUsers" display="none">
-          <div className="row">
-            <div className="col s12">
-              <div className="row">
-                <div className="input-field col s12">
-                  <i className="material-icons prefix"></i>
-                  <input type="text" id="autocomplete-input" className="autocomplete"/>
-                  <label for="autocomplete-input">Autocomplete</label>
-                </div>
-              </div>
+        <div style={{ 
+              backgroundImage: `url(${image})`,
+              width:'100%',
+              backgroundRepeat: 'no-repeat',
+              height: '1000px',
+              backgroundSize: 'cover',
+              }} className = "background">
+          {this.state.chosenIndex !== null && (
+            <div className="stationsMap" id="stationsMap">
+              <Map/>
+              
+              <form action="">
+                <input type="button" className="stationbutton" value="Return" id="rtn-btn-stations" onClick={this.ReturnFromViewStations} />
+              </form>      
+            </div>
+          )
+          }
+          <div className="viewUsers" id="viewUsers" display="none">
+            <div className="row">
+              <div className="col s12">
                 <div className="row">
-                  <div className="col s2" id='res'>
-                    <div className="card blue-grey darken-1 hoverable">
-                      <div className="card-content white-text">
-                        <span className="card-title">Driver's Info.</span>
-                      </div>
-                      <div className="card-action">
-                        <p>Name</p> 
-                        <input 
-                        type="username" 
-                        placeholder="Drivers Name"
-                        id="drivers-name" 
-                        className="Drivers Name" 
-                        value={this.state.username}
-                        onChange={this.handleUserInput}
-                        />
-                        <p>Email</p> 
-                        <input 
-                        type="username" 
-                        placeholder="Email"
-                        id="email" 
-                        className="email" 
-                        value={this.state.username}
-                        onChange={this.handleUserInput}
-                        />
-                        <p>Bonus Points</p> 
-                        <input 
-                        type="username" 
-                        placeholder="Bonus Points"
-                        id="bonus-points" 
-                        className="bonusPoints" 
-                        value={this.state.username}
-                        onChange={this.handleUserInput}
-                        />
-                        <p>Wallet</p> 
-                        <input 
-                        type="username" 
-                        placeholder="WalletID"
-                        id="wallet-id"
-                        className="walletID" 
-                        value={this.state.username}
-                        onChange={this.handleUserInput}
-                        />
-                      </div>
-                      <div className="right-align">
-                        <button className="waves-effect waves-light btn modal-trigger" 
-                                type="submit" 
-                                name="action" 
-                                id="sumbit-changes" 
-                                onClick={this.submitChanges}> Save Changes 
-                        </button>
+                  <div className="input-field col s12">
+                    <i className="material-icons prefix"></i>
+                    <input type="text" id="autocomplete-input" className="autocomplete"/>
+                    <label for="autocomplete-input">Autocomplete</label>
+                  </div>
+                </div>
+                  <div className="row">
+                    <div className="col s2" id='res'>
+                      <div className="card blue-grey darken-1 hoverable">
+                        <div className="card-content white-text">
+                          <span className="card-title">Driver's Info.</span>
+                        </div>
+                        <div className="card-action">
+                          <p>Name</p> 
+                          <input 
+                          type="username" 
+                          placeholder="Drivers Name"
+                          id="drivers-name" 
+                          className="Drivers Name" 
+                          value={this.state.username}
+                          onChange={this.handleUserInput}
+                          />
+                          <p>Email</p> 
+                          <input 
+                          type="username" 
+                          placeholder="Email"
+                          id="email" 
+                          className="email" 
+                          value={this.state.username}
+                          onChange={this.handleUserInput}
+                          />
+                          <p>Bonus Points</p> 
+                          <input 
+                          type="username" 
+                          placeholder="Bonus Points"
+                          id="bonus-points" 
+                          className="bonusPoints" 
+                          value={this.state.username}
+                          onChange={this.handleUserInput}
+                          />
+                          <p>Wallet</p> 
+                          <input 
+                          type="username" 
+                          placeholder="WalletID"
+                          id="wallet-id"
+                          className="walletID" 
+                          value={this.state.username}
+                          onChange={this.handleUserInput}
+                          />
+                        </div>
+                        <div className="right-align">
+                          <button className="waves-effect waves-light btn modal-trigger" 
+                                  type="submit" 
+                                  name="action" 
+                                  id="sumbit-changes" 
+                                  onClick={this.submitChanges}> Save Changes 
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+              </div>
             </div>
+            <form action="">
+              <input type="button" 
+              className="returnbtn" 
+              value="Return" 
+              id="rtn-btn-users" 
+              onClick={this.ReturnFromViewUsers}/>
+            </form>
           </div>
+          
           <form action="">
-            <input type="button" 
-            className="returnbtn" 
-            value="Return" 
-            id="rtn-btn-users" 
-            onClick={this.ReturnFromViewUsers}/>
+            <div className="btn-group" id="btn-group" display="block">
+              <input type="button" className="leftButton" value="View Users" id="lbtn" onClick={this.searchForUsers}/>
+              <input type="button" className="rightButton" value="View Stations" id="rbtn" onClick={this.searchForStations}/>
+            </div>
           </form>
         </div>
-        
-        <form action="">
-          <div className="btn-group" id="btn-group" display="block">
-            <input type="button" className="leftButton" value="View Users" id="lbtn" onClick={this.searchForUsers}/>
-            <input type="button" className="rightButton" value="View Stations" id="rbtn" onClick={this.searchForStations}/>
-          </div>
-        </form>
       </div>
     );
   }

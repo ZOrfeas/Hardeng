@@ -19,7 +19,6 @@ ReactDOM.render(
         <Home/>
       )}/>
 
-
       <Route exact ={true} path="/ChargingExperience" render = {() =>(
         <ChargingExperience />
       )}/>
@@ -27,12 +26,6 @@ ReactDOM.render(
       <Route exact ={true} path="/StationMonitoring" render = {() =>(
         <StationMonitoring />
       )}/>
-
-      {/* <Redirect
-        to={{
-          pathname: "/login",
-        }}
-      /> */}
 
     </React.StrictMode>
   </Router>,
