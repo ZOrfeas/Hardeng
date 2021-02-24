@@ -224,6 +224,55 @@ public class EVServiceImpl implements EVService {
         }
     }
 
+    public class DriverCarObject {
+        @JsonProperty("DriverID")
+        private Integer driverId;
+        @JsonProperty("Cars")
+        private List<CarObject> cars = new ArrayList<>();
+
+        private class CarObject {
+            @JsonProperty("CarID")
+            private Integer carId;
+            @JsonProperty("BrandName")
+            private String brandName;
+            @JsonProperty("Model")
+            private String model;
+            @JsonProperty("ChargerTypes")
+            private String chargerTypes;
+            @JsonProperty("MaxCapacity")
+            private Integer maxCap;
+            @JsonProperty("CurrentCapacity")
+            private Double currentCap;
+
+            CarObject(Car car, Double currentCap) {
+                this.carId = car.getId();
+                this.brandName = car.getBrandName();
+                this.model = car.getModel();
+                this.chargerTypes = createChargerTypeString(car.getacceptsType1(), car.getacceptsType2(), car.getacceptsType3());
+                this.maxCap = car.getBatteryCapacity();
+                this.currentCap = currentCap;
+            }
+
+            public String createChargerTypeString(Boolean level1, Boolean level2, Boolean level3) {
+                String chargerTypeString = "Accepts: ";
+
+                if (level1 == true) { chargerTypeString += "Type-1, ";}
+                if (level2 == true) { chargerTypeString += "Type-2, ";}
+                if (level3 == true) { chargerTypeString += "Type-3, ";}
+                
+                return chargerTypeString.substring(0, chargerTypeString.length() - 2);
+            }
+        }
+        
+        DriverCarObject(Driver driver, Set<CarDriver> cars) {
+            this.driverId = driver.getID();
+            for (CarDriver ev: cars) {
+                CarObject carObj = new CarObject(ev.getCar(), ev.getCurrentCapacity());
+                this.cars.add(carObj);
+            }
+        }
+    }
+
     @Override
     public SessEVObject sessionsPerEV(
      Integer driverId, Integer carId, String dateFrom, String dateTo) throws NoDataException {
@@ -314,4 +363,12 @@ public class EVServiceImpl implements EVService {
         queryDriver.removeCar(queryCar);
         return ResponseEntity.noContent().build();
     }
+
+    @Override
+    public DriverCarObject getAllCarDriver(Integer driverId) throws NoDataException {
+        Driver driver = cDriverRepo.findById(driverId)
+         .orElseThrow(()-> new DriverNotFoundException(driverId));
+        return new DriverCarObject(driver, driver.getCars());
+    }
+    
 }

@@ -18,6 +18,7 @@ import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.services.EVService;
 import Hardeng.Rest.services.EVServiceImpl.SessEVObject;
 import Hardeng.Rest.services.EVServiceImpl.EVObject;
+import Hardeng.Rest.services.EVServiceImpl.DriverCarObject;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -87,4 +88,9 @@ public class EVController {
       return evService.deleteEV(driverId, carId);
    }
 
+   @GetMapping(value = "/EVsPerDriver/{driverId}", produces = {"application/json"})
+   public DriverCarObject getAllCarDriver(@PathVariable(name = "driverId") Integer driverId) {
+      log.info("Get all EVs of a driver...");
+      return evService.getAllCarDriver(driverId);
+   }
 }
