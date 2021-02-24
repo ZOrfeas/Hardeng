@@ -12,13 +12,9 @@ ReactDOM.render(
   <React.StrictMode>
     <Header />
 
-<<<<<<< HEAD
-    {/*<ChargingExperience />*/}
-    <StationMonitoring />
-=======
     <ChargingExperience />
-    {/*<StationMonitoring />*/}
->>>>>>> 4a0d45923a24129b7ef8fbb392c86254b7177df8
+    
+    {/* <StationMonitoring /> */}
     {/*<>*/}
     {/* <Map/> */}
   </React.StrictMode>,
