@@ -1,0 +1,26 @@
+body {
+    background-color:#555;
+    overflow: hidden;  /* Hide scrollbars */
+}
+.navbar-fixed {
+    position: absolute;z-index:999999999;
+    
+}
+
+#home-nav {
+    width: 50%;
+    top: 10%;
+    left: 25%;
+    right: 25%;
+    /* font-size: 100px; */
+}
+
+.home-link {
+    font-size: 160%;
+    color: black;
+}
+
+.home-brand-logo{
+    color: black;
+    font-size: 180%;
+}

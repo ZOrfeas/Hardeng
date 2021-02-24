@@ -12,7 +12,11 @@ class Header extends React.Component {
     return (
       <nav>
         <div style={pad} className="nav-wrapper purple darken-4">
-          <div className="brand-logo"> HardEng </div>
+          <div className="brand-logo"> 
+            <a href="/" className="brand-logo">
+              HardEng
+            </a>
+          </div>
           <div className="right" >
             <LoginForm />
           </div>
