@@ -3,7 +3,7 @@ import UserInfo from './UserInfo';
 import M from 'materialize-css';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
-import { getStations } from './API';
+import { getStations, postInitiateSession, getDriverCars } from './API';
 import 'leaflet/dist/leaflet.css';
 import "./ChargingExperience.css";
 
@@ -65,6 +65,9 @@ class ChargingExperience extends React.Component {
     super(props);
 
     this.state = {
+      //driverKey: localStorage.getItem("driverKey"),
+      driverKey: 123,
+
       stations: stationsHardcoded,
       prices: pricesHardcoded,
       vehicles: vehiclesHardcoded,
@@ -78,14 +81,47 @@ class ChargingExperience extends React.Component {
       
       zoom: 10,
       error: null,
+      sessionError: null
     };
 
+    this.initiateSession = this.initiateSession.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.showMarkers = this.showMarkers.bind(this);
     this.showOptions = this.showOptions.bind(this);
     this.handleLocation = this.handleLocation.bind(this);
   }
 
+  initiateSession(e){
+    e.preventDefault();
+
+    const station = this.state.stationID;
+    const vehicle = this.state.vehicleID;
+    const payment = this.state.payment;
+    var newError = null;
+
+    if(station === null || vehicle === null || payment === null) {
+      newError = "All fields required";
+    }
+    else if(this.state.driverKey === null) {
+      newError = "Not logged in";
+    }
+    else {
+      postInitiateSession(this.state.driverKey, station)
+        .then(res => {
+          this.setState({sessionError: null});
+        })
+        .catch(err => {
+          if(err.response) {
+            newError = "Error " + err.response.status;
+          }
+        })
+    }
+
+    if(newError !== null){
+      this.setState({sessionError: newError});
+      M.toast({html: newError, classes:"purple darken-4 yellow-text"});
+    }
+  }
   showMarkers() {
     var i = this.state.chosenIndex;
 
@@ -98,13 +134,11 @@ class ChargingExperience extends React.Component {
       return (<Marker key={i} value={station.label} position={station.position}></Marker>);
     }
   }
-
   showOptions() {
     return (
       this.state.stations.map(({ label, id}, index) => <option value={index}> {label} </option>)
     );
   }
-
   handleSelect(e) {
     if(e.target.name === "stationID"){
       if(e.target.value === "all") {
@@ -124,7 +158,6 @@ class ChargingExperience extends React.Component {
       this.setState({[e.target.name]: e.target.value});
     }
   }
-
   handleLocation(latlng) {
     this.setState({
       currentPos: latlng
@@ -143,6 +176,16 @@ class ChargingExperience extends React.Component {
   }
   componentDidMount() {
     M.AutoInit();
+
+    if(this.state.driverKey !== null){
+      getDriverCars(this.state.driverKey)
+        .then(res => {this.setState({vehicles: res.data})})
+        .catch(err => {
+          if(err.response){
+            M.toast({html: 'Error ' + err.response.status, classes:"purple darken-4 yellow-text"});
+          }
+        })
+    }
   }
 
   render() {
@@ -165,8 +208,8 @@ class ChargingExperience extends React.Component {
               {this.showMarkers()}
               <LocationMarker setter={this.handleLocation} />
             </MapContainer>
-          
-            <form>
+
+            <form onSubmit={this.initiateSession}>
               <div className="">
                 <select name="stationID" className="browser-default" onChange={this.handleSelect}>
                   <option value="" disabled selected>Choose station ...</option>
@@ -177,19 +220,17 @@ class ChargingExperience extends React.Component {
                   <option value="" disabled selected>Payment amount</option>
                   {this.state.prices.map(price => <option value={price}> {price} </option>)}
                 </select>
-
                 <select name="vehicleID" className="browser-default" onChange={this.handleSelect}>
                   <option value="" disabled selected>Choose car</option>
                   {this.state.vehicles.map(({label, id}) => <option value={id}> {label} </option>)}
                 </select>
-
                 <div className="center-align yellow">
-                <button
-                  className="btn-flat waves-effect waves-light purple-text text-darken-4"
-                  type="submit"
-                  >
-                  Initiate Charging Session
-                </button>
+                  <button
+                    className="btn-flat purple-text text-darken-4"
+                    type="submit"
+                    >
+                    Initiate Charging Session
+                  </button>
                 </div>
               </div>
             </form>

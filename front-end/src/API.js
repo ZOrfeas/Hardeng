@@ -25,7 +25,7 @@ export function getDriverInfo(driverKey) {
     apiKey: driverKey,
   };
 
-  return axios.post(reqURL, obj);
+  return axios.post(reqURL, obj, config);
 }
 
 export function getAdminInfo(adminKey) {
@@ -41,6 +41,24 @@ export function getStations(latlng){
   const radius = 0.25;
   const reqURL = "NearbyStations/" + latlng["lat"] + "/" + latlng["lng"] + "/" + radius;
   return axios.get(reqURL, config);
+}
+
+export function postInitiateSession(driverKey, stationID){
+  const reqURL = "Session";
+  const obj = {
+    apiKey: driverKey,
+    station_id: stationID
+  };
+  return axios.post(reqURL, obj, config);
+}
+
+export function getDriverCars(driverKey) {
+  const reqURL = "driverCars";
+  const obj = {
+    apiKey: driverKey,
+  };
+
+  return axios.post(reqURL, obj, config);
 }
 
 

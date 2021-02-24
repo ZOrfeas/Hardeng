@@ -1,4 +1,4 @@
-/* .overlay {
+/* /* .overlay {
   position: absolute;
   height: 93.2%;
   width: 100%;
@@ -139,27 +139,27 @@
 #names li a:hover:not(.header) {
   background-color: #eee; /* Add a hover effect to all links, except for headers */
 }
-
+/*
 .station-map {
-    /* display: block; */
     height: 500px;
     width: 80%;
     right: 10%;
     left: 10%;
-}
+}*/
 
-.stationsMap{
+/*.stationsMap{
   display: none;
-}
+}*/
 
+/*
 .card {
-  width: 50%  ;
+  width: 100%;
   float: left; 
- }
-
+ }*/
+/* 
  input[type=text] {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
   box-sizing: border-box;
-}
+} */
