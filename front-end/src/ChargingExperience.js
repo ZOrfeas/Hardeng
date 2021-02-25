@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import UserInfo from './UserInfo';
+import Payment from './Payment';
 import M from 'materialize-css';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
 import { getStations, postInitiateSession, getDriverCars } from './API';
+import { FaCarBattery } from "react-icons/fa";
 import 'leaflet/dist/leaflet.css';
 import "./ChargingExperience.css";
 
@@ -65,8 +67,7 @@ class ChargingExperience extends React.Component {
     super(props);
 
     this.state = {
-      //driverKey: localStorage.getItem("driverKey"),
-      driverKey: 123,
+      driverKey: localStorage.getItem("driverKey"),
 
       stations: stationsHardcoded,
       prices: pricesHardcoded,
@@ -74,16 +75,20 @@ class ChargingExperience extends React.Component {
       
       currentPos: null,
       
+      sessionStarted: false,
       chosenIndex: null,
       stationID: null,
       vehicleID: null,
       payment: null,
+
+      paymentSuccessful: false,
       
       zoom: 10,
       error: null,
       sessionError: null
     };
 
+    this.stateSetter = this.stateSetter.bind(this);
     this.initiateSession = this.initiateSession.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.showMarkers = this.showMarkers.bind(this);
@@ -91,6 +96,9 @@ class ChargingExperience extends React.Component {
     this.handleLocation = this.handleLocation.bind(this);
   }
 
+  stateSetter() {
+    this.setState({paymentSuccessful: true});
+  }
   initiateSession(e){
     e.preventDefault();
 
@@ -108,7 +116,10 @@ class ChargingExperience extends React.Component {
     else {
       postInitiateSession(this.state.driverKey, station)
         .then(res => {
-          this.setState({sessionError: null});
+          this.setState({
+            sessionError: null,
+            sessionStarted: true,
+          });
         })
         .catch(err => {
           if(err.response) {
@@ -224,17 +235,28 @@ class ChargingExperience extends React.Component {
                   <option value="" disabled selected>Choose car</option>
                   {this.state.vehicles.map(({label, id}) => <option value={id}> {label} </option>)}
                 </select>
-                <div className="center-align yellow">
+                <div className="right-align">
                   <button
-                    className="btn-flat purple-text text-darken-4"
+                    className="btn-flat green-text"
                     type="submit"
                     >
-                    Initiate Charging Session
+                    Initiate Session <FaCarBattery/> 
                   </button>
+
+                  
                 </div>
               </div>
             </form>
-          
+
+            <div className="right-align">
+              <Payment 
+                disabled={!this.state.sessionStarted}
+                sessionStarted={this.state.sessionStarted} 
+                payment={this.state.payment}
+                stateSetter={this.stateSetter} 
+              />
+            </div>
+
             {this.state.chosenIndex !== null && false && (
               <table className="centered white">
               <thead>
