@@ -6,9 +6,6 @@ import Header from './Header';
 import 'materialize-css/dist/css/materialize.min.css';
 import StationMonitoring from './StationMonitoring';
 import Home from './Home';
-/* Imports */
-import Map from './Map.js';
-
 
 ReactDOM.render(
   <Router>
@@ -31,5 +28,3 @@ ReactDOM.render(
   </Router>,
   document.getElementById('root')
 );
-
-

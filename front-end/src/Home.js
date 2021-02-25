@@ -18,12 +18,10 @@ class Home extends React.Component{
         <div className="row">
           <div style={{ 
               backgroundImage: `url(${image})`,
-              width:'100%',
               backgroundRepeat: 'no-repeat',
               height: '1000px',
-              // display: 'block',
-              // backgroundPosition: 'center',
-              backgroundSize: 'cover',
+              backgroundAttachment: 'fixed',
+              backgroundSize: '100% 100%',
               }} className = "background">
                 
             <div className="row">
