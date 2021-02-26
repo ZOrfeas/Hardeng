@@ -281,14 +281,15 @@ public class StationServiceImpl implements StationService {
 
     @Override
     public List<NearbyStationObject> nearbyStations(Double latitude, 
-    Double longitude, Double rad)/* throws NoDataException */{
+    Double longitude, Double rad) throws NoDataException {
         List<NearbyStationObject> nearbyStations = new ArrayList<>();
         List<ChargingStation> queryStations;
         NearbyStationObject tempStation;
-        do {    
+        Integer count = 0;
+        do { 
+            count++;   
             queryStations = cStationRepo.findByLatitudeBetweenAndLongitudeBetween
             (latitude - rad, latitude + rad, longitude - rad, longitude + rad);
-            // if (queryStations.isEmpty()) throw new NoDataException();
             for (int i = 0; i < queryStations.size(); i++)
             {
                 tempStation = new NearbyStationObject(queryStations.get(i));
@@ -296,7 +297,8 @@ public class StationServiceImpl implements StationService {
                 nearbyStations.add(tempStation);
             }
             rad *= 2;
-        } while (nearbyStations.isEmpty());
+        } while (nearbyStations.isEmpty() && count != 4);
+        if (nearbyStations.isEmpty()) throw new NoDataException();
         return nearbyStations;
     };
 
