@@ -8,7 +8,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents} from 'react-leafl
 import "./EnergyMonitoring.css"
 import { ResponsiveLine } from '@nivo/line'
 import {Line} from 'react-chartjs-2'
-
+import bxb from './icons/bxb.png'
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -114,7 +114,13 @@ function LocationMarker(props) {
 
   return position === null ? null : (
     <Marker position={position} icon={locationIcon}>
-      <Popup>You selected this</Popup>
+      <Popup> <div style={{ 
+                backgroundImage: `url(${bxb})`,
+                backgroundRepeat: 'no-repeat',
+                height: '50px',
+                backgroundAttachment: 'fixed',
+                backgroundSize: '100% 100%',
+                }}> </div> </Popup>
     </Marker>
   )
 }
@@ -142,7 +148,6 @@ componentDidMount(){
 }
 
 CalcCostPerRegion (){
-    console.log('gia pame');
     let from = document.getElementById('datepicker-from');
     let to = document.getElementById('datepicker-to');
     let region = document.getElementById('region-placeholder');
@@ -158,8 +163,6 @@ CalcCostPerRegion (){
     }
     return null;
   }
-
-
 
   render(){
     return(
@@ -326,10 +329,6 @@ CalcCostPerRegion (){
           </div>
         </div>
       </div>
-
-
-
-
     );
   }
 }

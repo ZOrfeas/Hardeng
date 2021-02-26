@@ -37,6 +37,13 @@ class EditUserInfo extends React.Component {
     }
   }
  
+  componentDidMount(){
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('.datepicker');
+      var instances = M.Datepicker.init(elems, {format: 'yyyy-mm-dd'});
+    });
+  }
+  
    render(){
      return(
       
@@ -83,9 +90,32 @@ class EditUserInfo extends React.Component {
                                   onClick={this.submitChanges}> Save Changes 
                           </button>
                         </div>
+                        
                       </div>
                     </div>
                   </div>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col s3">
+              <div className="card small blue-grey darken-1 hoverable" id="energy_per_km">
+                <div className="card-content white-text">
+                <span className="card-title">Calculate Energy Cost per km.</span>
+                  <div class="input-field ">
+                    <input placeholder="42 km" id="first_name" type="text" class="validate"/>
+                    <label for="first_name"> Total distance traveled in chosen duration </label>
+                  </div> 
+                  <p>This is supposed to be  retrieved from the car</p>
+                </div>
+                <div className="card-action">      
+                  <input type="button" className="datepicker" value="From" id="user-datepicker-from" />
+                  <input type="button" className="datepicker" value="To" id="user-datepicker-to" />
+                  <div class="input-field right align">
+                    <input placeholder="0.42" id="first_name" type="text" class="validate"/>
+                    <label for="first_name"> Calculated Cost </label>
+                  </div> 
+                </div>
               </div>
             </div>
           </div>
