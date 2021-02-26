@@ -127,9 +127,9 @@
 #names li a:hover:not(.header) {
   background-color: #eee; /* Add a hover effect to all links, except for headers */
 }
- input[type=text] {
+ /* input[type=text] {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
   box-sizing: border-box;
-}
+} */

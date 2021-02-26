@@ -1,6 +1,6 @@
 body {
     background-color:#555;
-    overflow: hidden;  /* Hide scrollbars */
+    overflow: hidden;  /*Hide scrollbars*/
 }
 .navbar-fixed {
     position: absolute;z-index:999999999;
@@ -8,10 +8,10 @@ body {
 }
 
 #home-nav {
-    width: 50%;
+    width: 60%;
     top: 10%;
-    left: 25%;
-    right: 25%;
+    left: 20%;
+    right: 20%;
     /* font-size: 100px; */
 }
 

@@ -5,10 +5,9 @@ import ChargingExperience from './ChargingExperience';
 import Header from './Header';
 import 'materialize-css/dist/css/materialize.min.css';
 import StationMonitoring from './StationMonitoring';
+import EnergyMonitoring from './EnergyMonitoring';
 import Home from './Home';
-/* Imports */
-import Map from './Map.js';
-
+import EditUserInfo from './EditUserInfo';
 
 ReactDOM.render(
   <Router>
@@ -27,9 +26,15 @@ ReactDOM.render(
         <StationMonitoring />
       )}/>
 
+      <Route exact ={true} path="/EnergyMonitoring" render = {() =>(
+        <EnergyMonitoring/>
+      )}/>
+
+      <Route exact ={true} path="/EditUserInfo" render = {() =>(
+        <EditUserInfo/>
+      )}/>
+
     </React.StrictMode>
   </Router>,
   document.getElementById('root')
 );
-
-

@@ -161,24 +161,14 @@ class Map extends React.Component{
                 <span className="card-title">Charging Station's Info</span>
               </div>
               <div className="card-action">
-                <p>Address</p> 
-                <input 
-                type="username" 
-                placeholder="Address"
-                id="station-address" 
-                className="station-address" 
-                value={this.state.username}
-                onChange={this.handleUserInput}
-                />
-                <p>Charging Points</p> 
-                <input 
-                type="username" 
-                placeholder="Charging Points"
-                id="Charging-Points" 
-                className="Charging-Points" 
-                value={this.state.username}
-                onChange={this.handleUserInput}
-                />
+                <div class="input-field col s12 right align">
+                  <input placeholder="Address" id="station_address" type="text" class="validate"/>
+                  <label for="first_name">  </label>
+                </div> 
+                <div class="input-field col s12 right align">
+                  <input placeholder="Charging Points" id="station_charging_points" type="text" class="validate"/>
+                  <label for="first_name">  </label>
+                </div> 
               </div>
               <div className="right-align">
                 <button className="waves-effect waves-light btn modal-trigger" type="submit" name="action" id="sumbit-changes" onClick={this.submitChanges}>Save Changes 
