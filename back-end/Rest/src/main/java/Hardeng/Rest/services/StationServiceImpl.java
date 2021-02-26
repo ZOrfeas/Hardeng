@@ -184,6 +184,11 @@ public class StationServiceImpl implements StationService {
         @JsonProperty("station_id")
         private Integer id;
 
+        @JsonIgnore
+        public Boolean isFull() {
+            return "isfull".equals(this.cond);
+        }
+
         NearbyStationObject(ChargingStation cStation) {
             this.pos = new ArrayList<Double>();
             this.pos.add(cStation.getLatitude());
@@ -208,6 +213,11 @@ public class StationServiceImpl implements StationService {
                 if (level1 == 1) {this.cond = "1 Type-1 charger available";}
                 if (level2 == 1) {this.cond = "1 Type-2 charger available";}
                 if (level3 == 1) {this.cond = "1 Type-3 charger available";}
+            }
+            else if (level1 + level2 + level3 == 0) 
+            {
+                // station is fully occupied
+                this.cond = "isfull";
             }
             else
             {
@@ -271,15 +281,22 @@ public class StationServiceImpl implements StationService {
 
     @Override
     public List<NearbyStationObject> nearbyStations(Double latitude, 
-    Double longitude, Double rad) throws NoDataException {
-        List<ChargingStation> queryStations = cStationRepo.findByLatitudeBetweenAndLongitudeBetween
-        (latitude - rad, latitude + rad, longitude - rad, longitude + rad);
-        if (queryStations.isEmpty()) throw new NoDataException();
+    Double longitude, Double rad)/* throws NoDataException */{
         List<NearbyStationObject> nearbyStations = new ArrayList<>();
-        for (int i = 0; i < queryStations.size(); i++)
-        {
-            nearbyStations.add(new NearbyStationObject(queryStations.get(i)));
-        }
+        List<ChargingStation> queryStations;
+        NearbyStationObject tempStation;
+        do {    
+            queryStations = cStationRepo.findByLatitudeBetweenAndLongitudeBetween
+            (latitude - rad, latitude + rad, longitude - rad, longitude + rad);
+            // if (queryStations.isEmpty()) throw new NoDataException();
+            for (int i = 0; i < queryStations.size(); i++)
+            {
+                tempStation = new NearbyStationObject(queryStations.get(i));
+                if (tempStation.isFull()) continue;
+                nearbyStations.add(tempStation);
+            }
+            rad *= 2;
+        } while (nearbyStations.isEmpty());
         return nearbyStations;
     };
 
