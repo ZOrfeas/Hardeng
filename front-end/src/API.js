@@ -21,20 +21,24 @@ export function userLogin(user, pass, type) {
 
 export function getDriverInfo(driverKey) {
   const reqURL = "driver";
-  const obj = {
-    apiKey: driverKey,
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': driverKey
+    }
   };
 
-  return axios.post(reqURL, obj, config);
+  return axios.post(reqURL, config);
 }
 
 export function getAdminInfo(adminKey) {
   const reqURL = "admin";
-  const obj = {
-    apiKey: adminKey,
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': adminKey,
+    }
   };
 
-  return axios.post(reqURL, obj);
+  return axios.post(reqURL, config);
 }
 
 export function getStations(latlng){
@@ -46,30 +50,66 @@ export function getStations(latlng){
 export function postInitiateSession(driverKey, stationID){
   const reqURL = "Session";
   const obj = {
-    apiKey: driverKey,
     station_id: stationID
   };
+
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': driverKey,
+    }
+  };
+
   return axios.post(reqURL, obj, config);
 }
 
 export function getDriverCars(driverKey) {
   const reqURL = "driverCars";
-  const obj = {
-    apiKey: driverKey,
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': driverKey,
+    }
   };
 
-  return axios.post(reqURL, obj, config);
+  return axios.get(reqURL, config);
 }
 
 export function userPay(driverKey, type, credential){
   const reqURL = "payment";
   const obj = {
-    apiKey: driverKey,
     paymentType: type,
     account: credential,
   };
 
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': driverKey,
+    }
+  };
+
   return axios.post(reqURL, obj, config);
+}
+
+export function logSession(driverKey, obj){
+  const reqURL = "session";
+
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': driverKey,
+    }
+  };
+  
+  axios.post(reqURL, obj, config);
+}
+
+export function getDriverPolicies(driverKey) {
+  const reqURL = "driverPolicies";
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': driverKey,
+    }
+  };
+
+  return axios.get(reqURL, config);
 }
 
 
