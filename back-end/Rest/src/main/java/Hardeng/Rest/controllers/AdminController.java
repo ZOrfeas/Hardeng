@@ -61,22 +61,33 @@ public class AdminController {
         return adminService.getUserInfo(username);
     }
 
-
+    public static class RequestDriverMini {
+        private String driverName;
+        private String email;
+  
+        public String getDriverName() {return this.driverName;}
+        public String getEmail() {return this.email;}
+        
+        public void setDriverName(String driverName) {this.driverName = driverName;}
+        public void setEmail(String email) {this.email = email;}
+       
+     }
     @PostMapping(value = "/usermod/{username}/{password}", 
-                produces = {"application/json", "text/csv"}, consumes = {"application/json"})
-    public StatusObject addOrModifyUser(@RequestBody String driverName,
+                produces = {"application/json", "text/csv"}, consumes=MediaType.APPLICATION_JSON_VALUE)
+    public StatusObject addOrModifyUser(
                                         @PathVariable(required = false) String username,
                                         @PathVariable(required = false) String password,
                                         @AuthenticationPrincipal CustomUserPrincipal logedUser,
-                                        @RequestBody String email 
-                                        ){
+                                        
+                                        @RequestBody RequestDriverMini driver)
+                                        {
         log.info("Usermod requested...");
-        if (username == null || password == null) throw new BadRequestException();
+        if (username == null || password == null || driver.getEmail() == null ) throw new BadRequestException();
         if(logedUser == null) 
         {
-            return adminService.userMod(driverName, username, password, "unregistered", email);
+            return adminService.userMod(username, password, "unregistered", driver.getDriverName(), driver.getEmail());
         }
-        return adminService.userMod(driverName, username, password, logedUser.getRole(), email);
+        return adminService.userMod(username, password, logedUser.getRole(), driver.getDriverName(), driver.getEmail());
     }
 
     @PreAuthorize("hasRole('ROLE_" + SecurityConfig.stationAdminRole + "')")

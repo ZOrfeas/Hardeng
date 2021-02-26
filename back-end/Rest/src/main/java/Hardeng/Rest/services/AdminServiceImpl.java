@@ -223,7 +223,7 @@ public class AdminServiceImpl implements AdminService {
 
     
     @Override
-    public StatusObject userMod(String driverName, String username, String password, String role, String email ) throws BadRequestException
+    public StatusObject userMod(String username, String password, String role, String driverName, String email ) throws BadRequestException
     {
       switch(role)
       {
@@ -233,12 +233,14 @@ public class AdminServiceImpl implements AdminService {
             
         case("unregistered"):
         case(SecurityConfig.stationAdminRole):
+            if(driverName == null){throw new BadRequestException();}
             Optional<Driver> updDriver = driverRepo.findByUsername(username); 
             if(updDriver.isPresent()) {
                driverService.updateDriver(updDriver.get().getID(), 
                 driverName, username, password,
                 email, updDriver.get().getBonusPoints(), updDriver.get().getCardID(), updDriver.get().getWalletID());
-                return new StatusObject("Driver Successfully Update");
+                return new StatusObject("Driver Successfully Updated");
+                
             }
             else{
             Driver newDriver = udsi.makeDriver(driverName, username, password, email);
@@ -251,6 +253,7 @@ public class AdminServiceImpl implements AdminService {
                 adminService.updateAdmin(updAdmin.get().getId(), username, password, email,
                 updAdmin.get().getCompanyName() ,updAdmin.get().getCompanyPhone(), updAdmin.get().getCompanyLocation());
                 return new StatusObject("Admin Successfully Updated");
+               
             }
             Admin newAdmin = udsi.makeAdmin(username, password);
             adminRepo.save(newAdmin);
