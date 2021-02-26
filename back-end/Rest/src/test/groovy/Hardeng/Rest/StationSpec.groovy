@@ -27,7 +27,7 @@ class StationSpec extends Specification {
     @Test
     def "Station Service with id = 0"() {
         when: "should expect Charging Station Not Found exception"
-        SessStationObject res = stationService.sessionsPerStation(0, "20180101", "20191231")
+        stationService.sessionsPerStation(0, "20180101", "20191231")
 
         then:
         def e = thrown(ChargingStationNotFoundException)
@@ -37,7 +37,7 @@ class StationSpec extends Specification {
     @Test
     def "Invalid dateFrom string"() {
         when: "should expect Illegal argument exception"
-        SessStationObject res = stationService.sessionsPerStation(1, "201801", "20191231")
+        stationService.sessionsPerStation(1, "201801", "20191231")
 
         then:
         thrown(IllegalArgumentException)
@@ -46,7 +46,7 @@ class StationSpec extends Specification {
     @Test
     def "Invalid dateTo string"() {
         when: "should expect Illegal argument exception"
-        SessStationObject res = stationService.sessionsPerStation(1, "20180101", "201912")
+        stationService.sessionsPerStation(1, "20180101", "201912")
 
         then:
         thrown(IllegalArgumentException)
@@ -58,7 +58,7 @@ class StationSpec extends Specification {
         StationObject station = stationService.createStation(37.873806, 23.759401, "Venezouelas 1", 2, 2)
 
         when: "should expect No Data exception"
-        SessStationObject res = stationService.sessionsPerStation(station.stationId, "20180101", "20191231")
+        stationService.sessionsPerStation(station.stationId, "20180101", "20191231")
 
         then:
         thrown(NoDataException)
@@ -99,7 +99,7 @@ class StationSpec extends Specification {
     @Test
     def "Nearby stations given small radius"() {
         when: "should expect No Data exception" 
-        List<NearbyStationObject> res = stationService.nearbyStations(37.9838, 23.7275, 0.0001)
+        stationService.nearbyStations(37.9838, 23.7275, 0.0001)
 
         then:
         thrown(NoDataException)
@@ -118,10 +118,95 @@ class StationSpec extends Specification {
     }
 
     @Test
-    def "CRUD new charging station"() {
+    def "Create station with invalid admin"() {
+        when: "should expect Admin Not Found exception"
+        stationService.createStation(37.873806, 23.759401, "Venezouelas 1", 0, 2)
+
+        then:
+        def e = thrown(AdminNotFoundException)
+        e.getMessage() == "Could not find admin 0"
+    }
+
+    @Test
+    def "Create station with invalid energy provider"() {
+        when: "should expect Energy Provider Not Found exception"
+        stationService.createStation(37.873806, 23.759401, "Venezouelas 1", 2, 0)
+
+        then:
+        def e = thrown(EnergyProviderNotFoundException)
+        e.getMessage() == "Could not find Provider 0"
+    }
+
+    @Test
+    def "Read station with id = 0"() {
+        when: "should expect Charging Station Not Found exception"
+        stationService.readStation(0)
+
+        then:
+        def e = thrown(ChargingStationNotFoundException)
+        e.getMessage() == "Could not find charging station 0"
+    }
+
+    @Test
+    def "Update station with invalid admin"() {
+        when: "should expect Admin Not Found exception"
+        stationService.updateStation(1, 37.873806, 23.759401, "Venezouelas 1", 0, 2)
+
+        then:
+        def e = thrown(AdminNotFoundException)
+        e.getMessage() == "Could not find admin 0"
+    }
+
+    @Test
+    def "Update station with invalid energy provider"() {
+        when: "should expect Energy Provider Not Found exception"
+        stationService.updateStation(1, 037.873806, 23.759401, "Venezouelas 1", 2, 0)
+
+        then:
+        def e = thrown(EnergyProviderNotFoundException)
+        e.getMessage() == "Could not find Provider 0"
+    }
+
+    @Test
+    def "Update station with id = 0"() {
+        when: "should expect Charging Station Not Found exception"
+        stationService.updateStation(0, 037.873806, 23.759401, "Venezouelas 1", 2, 2)
+
+        then:
+        def e = thrown(ChargingStationNotFoundException)
+        e.getMessage() == "Could not find charging station 0"
+    }
+
+    @Test
+    def "Delete station with id = 0"() {
+        when: "should expect Charging Station Not Found exception"
+        stationService.deleteStation(0)
+
+        then:
+        def e = thrown(ChargingStationNotFoundException)
+        e.getMessage() == "Could not find charging station 0"
+    }
+
+    @Test
+    def "Delete existing station"() {
+        given: 
+        stationService.deleteStation(1)
+
+        when:
+        stationService.readStation(1)
+
+        then:
+        def e = thrown(ChargingStationNotFoundException)
+        e.getMessage() == "Could not find charging station 1"
+    }
+
+    @Test
+    def "CRU new charging station"() {
         given: 
         StationObject station = stationService.createStation(37.873806, 23.759401, "Venezouelas 1", 2, 2)
-        StationObject updStation = stationService.updateStation(station.stationId, 37.873806, 23.759401, "Venezouelas 2", 2, 2)
+        station = stationService.readStation(station.stationId)
+        stationService.updateStation(station.stationId, 37.873806, 23.759401, "Venezouelas 2", 2, 2)
+        StationObject updStation = stationService.readStation(station.stationId)
 
         when:
         def points = station.nrOfChargingPoints
@@ -138,5 +223,20 @@ class StationSpec extends Specification {
         address == "Venezouelas 1"
 
         updAddress == "Venezouelas 2"
+    }
+
+    @Test
+    def "Delete new station"() {
+        given:
+        StationObject station = stationService.createStation(37.873806, 23.759401, "Venezouelas 1", 2, 2)
+        stationService.deleteStation(station.stationId)
+        
+
+        when:
+        stationService.readStation(station.stationId)
+
+        then:
+        def e = thrown(ChargingStationNotFoundException)
+        e.getMessage() == "Could not find charging station " + station.stationId.toString()
     }
 }
