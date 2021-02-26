@@ -7,6 +7,7 @@ import 'materialize-css/dist/css/materialize.min.css';
 import StationMonitoring from './StationMonitoring';
 import EnergyMonitoring from './EnergyMonitoring';
 import Home from './Home';
+import EditUserInfo from './EditUserInfo';
 
 ReactDOM.render(
   <Router>
@@ -27,6 +28,10 @@ ReactDOM.render(
 
       <Route exact ={true} path="/EnergyMonitoring" render = {() =>(
         <EnergyMonitoring/>
+      )}/>
+
+      <Route exact ={true} path="/EditUserInfo" render = {() =>(
+        <EditUserInfo/>
       )}/>
 
     </React.StrictMode>

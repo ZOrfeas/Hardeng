@@ -40,6 +40,9 @@ class Home extends React.Component{
                         <li><a href="/EnergyMonitoring" className="home-link">
                         Energy Monitoring
                         </a></li>
+                        <li><a href="/EditUserInfo" className="home-link">
+                        Edit Profile
+                        </a></li>
                       </ul>
                       <div class="divider"></div>
                     </div>

@@ -36,11 +36,10 @@ class StationMonitoring extends React.Component {
          data: {},
         onAutocomplete:function(res){
           var temp = res.slice(0,res.length - 7);
-          document.getElementById('drivers-name').value=temp;
+          document.getElementById('policy_id').value=temp;
           // document.getElementById('drivers-email').value=email;
           // document.getElementById('drivers-bonus-points').value=bonus points;
           // document.getElementById('drivers-wallet').value=wallet;
-          
         }    
       };
     
@@ -133,60 +132,36 @@ class StationMonitoring extends React.Component {
                   <div className="input-field col s12">
                     <i className="material-icons prefix"></i>
                     <input type="text" id="autocomplete-input" className="autocomplete"/>
-                    <label for="autocomplete-input">Autocomplete</label>
+                    <label for="autocomplete-input">Search for Policies</label>
                   </div>
                 </div>
                   <div className="row">
                     <div className="col s2" id='res'>
-                      <div className="card blue-grey darken-1 hoverable">
+                      <div className="card medium blue-grey darken-1 hoverable">
                         <div className="card-content white-text">
-                          <span className="card-title">Driver's Info.</span>
+                          <span className="card-title">Price Policy</span>
                         </div>
                         <div className="card-action">
-                          <p>Name</p> 
-                          <input 
-                          type="username" 
-                          placeholder="Drivers Name"
-                          id="drivers-name" 
-                          className="Drivers Name" 
-                          value={this.state.username}
-                          onChange={this.handleUserInput}
-                          />
-                          <p>Email</p> 
-                          <input 
-                          type="username" 
-                          placeholder="Email"
-                          id="email" 
-                          className="email" 
-                          value={this.state.username}
-                          onChange={this.handleUserInput}
-                          />
-                          <p>Bonus Points</p> 
-                          <input 
-                          type="username" 
-                          placeholder="Bonus Points"
-                          id="bonus-points" 
-                          className="bonusPoints" 
-                          value={this.state.username}
-                          onChange={this.handleUserInput}
-                          />
-                          <p>Wallet</p> 
-                          <input 
-                          type="username" 
-                          placeholder="WalletID"
-                          id="wallet-id"
-                          className="walletID" 
-                          value={this.state.username}
-                          onChange={this.handleUserInput}
-                          />
-                        </div>
-                        <div className="right-align">
-                          <button className="waves-effect waves-light btn modal-trigger" 
-                                  type="submit" 
-                                  name="action" 
-                                  id="sumbit-changes" 
-                                  onClick={this.submitChanges}> Save Changes 
-                          </button>
+                          <div class="input-field col s12 right align">
+                            <input placeholder="Id" id="policy_id" type="text" class="validate"/>
+                            <label for="first_name"> Id </label>
+                          </div> 
+                          <div class="input-field col s12 right align">
+                            <input placeholder="Cost Per kWh" id="first_name" type="text" class="validate"/>
+                            <label for="first_name"> Cost Per kWh </label>
+                          </div>  
+                          <div class="input-field col s12 right align">
+                            <input placeholder="Amount of kWh" id="first_name" type="text" class="validate"/>
+                            <label for="first_name"> Amount of kWh </label>
+                          </div>
+                          <div className="right-align">
+                            <button className="waves-effect waves-light btn modal-trigger" 
+                                    type="submit" 
+                                    name="action" 
+                                    id="sumbit-changes" 
+                                    onClick={this.submitChanges}> Save Changes 
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -203,7 +178,7 @@ class StationMonitoring extends React.Component {
           </div>
           <form action="">
             <div className="btn-group" id="btn-group" display="block">
-              <input type="button" className="leftButton" value="View Users" id="lbtn" onClick={this.searchForUsers}/>
+              <input type="button" className="leftButton" value="View Price Policies" id="lbtn" onClick={this.searchForUsers}/>
               <input type="button" className="rightButton" value="View Stations" id="rbtn" onClick={this.searchForStations}/>
             </div>
           </form>
