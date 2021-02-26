@@ -64,11 +64,11 @@ public class AdminController {
 
     @PostMapping(value = "/usermod/{username}/{password}", 
                 produces = {"application/json", "text/csv"}, consumes = {"application/json"})
-    public StatusObject addOrModifyUser(@RequestParam(name = "driverName") String driverName,
+    public StatusObject addOrModifyUser(@RequestBody String driverName,
                                         @PathVariable(required = false) String username,
                                         @PathVariable(required = false) String password,
                                         @AuthenticationPrincipal CustomUserPrincipal logedUser,
-                                        @RequestParam(name = "email") String email 
+                                        @RequestBody String email 
                                         ){
         log.info("Usermod requested...");
         if (username == null || password == null) throw new BadRequestException();
