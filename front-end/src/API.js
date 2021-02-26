@@ -61,4 +61,15 @@ export function getDriverCars(driverKey) {
   return axios.post(reqURL, obj, config);
 }
 
+export function userPay(driverKey, type, credential){
+  const reqURL = "payment";
+  const obj = {
+    apiKey: driverKey,
+    paymentType: type,
+    account: credential,
+  };
+
+  return axios.post(reqURL, obj, config);
+}
+
 
