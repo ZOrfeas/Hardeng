@@ -141,6 +141,8 @@ class EnergyMonitoring extends React.Component{
 }
 
 componentDidMount(){
+  M.AutoInit();
+
   document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.datepicker');
     var instances = M.Datepicker.init(elems, {format: 'yyyy-mm-dd'});
@@ -327,6 +329,11 @@ CalcCostPerRegion (){
                 />
             </div>
           </div>
+          <div className="fixed-action-btn ">
+          <button className="btn-floating tooltipped red pulse" data-position="left" data-tooltip="Click map to select region">
+            !
+          </button>
+        </div>
         </div>
       </div>
     );

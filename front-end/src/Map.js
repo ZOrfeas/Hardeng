@@ -67,6 +67,7 @@ class Map extends React.Component{
       chosenIndex: null,
       zoom: 10,
       error: null,
+      btnIndex: true
     };
     this.setState({
       username: ""  
@@ -74,9 +75,9 @@ class Map extends React.Component{
     this.showMarkers = this.showMarkers.bind(this);
     this.handleLocation = this.handleLocation.bind(this);
     this.showOptions = this.showOptions.bind(this);
-    // this.handleLocation = this.handleLocation.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.handleUserInput = this.handleUserInput.bind(this);
+    this.enableButton = this.enableButton.bind(this);
   }
 
   handleUserInput(e) {
@@ -128,6 +129,11 @@ class Map extends React.Component{
     }
   }
 
+  enableButton(){
+    this.setState({btnIndex: false});
+  }
+
+
   render(){
     return(
       <div>
@@ -162,16 +168,16 @@ class Map extends React.Component{
               </div>
               <div className="card-action">
                 <div class="input-field col s12 right align">
-                  <input placeholder="Address" id="station_address" type="text" class="validate"/>
+                  <input placeholder="Address" id="station_address" type="text" class="validate" onChange={this.enableButton}/>
                   <label for="first_name">  </label>
                 </div> 
                 <div class="input-field col s12 right align">
-                  <input placeholder="Charging Points" id="station_charging_points" type="text" class="validate"/>
+                  <input placeholder="Charging Points" id="station_charging_points" type="text" class="validate" onChange={this.enableButton}/>
                   <label for="first_name">  </label>
                 </div> 
               </div>
               <div className="right-align">
-                <button className="waves-effect waves-light btn modal-trigger" type="submit" name="action" id="sumbit-changes" onClick={this.submitChanges}>Save Changes 
+                <button className="waves-effect waves-light btn modal-trigger" type="submit" name="action" id="sumbit-changes" onClick={this.submitChanges} disabled={this.state.btnIndex}>Save Changes 
                 </button>
               </div>
             </div>

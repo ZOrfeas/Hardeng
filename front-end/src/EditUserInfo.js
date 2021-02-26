@@ -7,6 +7,7 @@ import { AiOutlineSend } from "react-icons/ai";
 import { getStations } from './API';
 import Map from './Map.js';
 import image from './icons/image3.jpg'
+import { BsTriangleHalf } from 'react-icons/bs';
 
 const driversHardcoded = [
   {driver_name: "Kostas", id: 11111, bonus_points: 10, carID: 13,  email: "kostas@kostas.gr", walletID: 12315464758},
@@ -21,11 +22,13 @@ class EditUserInfo extends React.Component {
       username: "",
     });
     this.state = {
+      btnIndex: "true",
       username: driversHardcoded[0]["driver_name"],
       email: driversHardcoded[0]["email"],
       bonusPoints: driversHardcoded[0]["bonus_points"],
       wallet: driversHardcoded[0]["walletID"],
     };
+    this.enableButton = this.enableButton.bind(this);
   }
 
   submitChanges(){
@@ -44,6 +47,10 @@ class EditUserInfo extends React.Component {
     });
   }
   
+  enableButton(){
+    this.setState({btnIndex: false});
+  }
+
    render(){
      return(
       
@@ -66,28 +73,30 @@ class EditUserInfo extends React.Component {
                         </div>
                         <div className="card-action">
                           <div class="input-field col s6">
-                            <input placeholder={this.state.username} id="first_name" type="text" class="validate"/>
+                            <input placeholder={this.state.username} id="first_name" type="text" class="validate" onChange={this.enableButton}/>
                             <label for="first_name"> User Name</label>
                           </div>
                           <div class="input-field col s6">
-                            <input placeholder={this.state.email} id="first_name" type="text" class="validate"/>
+                            <input placeholder={this.state.email} id="first_name" type="text" class="validate" onChange={this.enableButton}/>
                             <label for="first_name"> Email</label>
                           </div>
                           <div class="input-field col s6">
-                            <input placeholder={this.state.bonusPoints} id="first_name" type="text" class="validate"/>
+                            <input placeholder={this.state.bonusPoints} id="first_name" type="text" class="validate" onChange={this.enableButton}/>
                             <label for="first_name"> Bonus Points</label>
                           </div>
                           <div class="input-field col s6">
-                            <input placeholder={this.state.wallet} id="first_name" type="text" class="validate"/>
+                            <input placeholder={this.state.wallet} id="first_name" type="text" class="validate" onChange={this.enableButton} />
                             <label for="first_name"> Wallet</label>
                           </div> 
                         </div>
                         <div className="right-align">
                           <button className="waves-effect waves-light btn modal-trigger" 
+                                  onClick={this.submitChanges}
                                   type="submit" 
                                   name="action" 
-                                  id="sumbit-changes" 
-                                  onClick={this.submitChanges}> Save Changes 
+                                  id="change_user_info" 
+                                  disabled={this.state.btnIndex}
+                                   > Save Changes 
                           </button>
                         </div>
                         

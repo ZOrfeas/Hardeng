@@ -25,7 +25,9 @@ class StationMonitoring extends React.Component {
     this.handleUserInput = this.handleUserInput.bind(this);
     this.ReturnFromViewStations = this.ReturnFromViewStations.bind(this);
     this.searchForStations = this.searchForStations.bind(this);
+    this.enableButton = this.enableButton.bind(this);
     this.state = {
+      btnIndex: "true",
       user: props.user,
       chosenIndex: null,
     };
@@ -103,6 +105,10 @@ class StationMonitoring extends React.Component {
     }
   }
  
+  enableButton(){
+    this.setState({btnIndex: false});
+  }
+
    render(){
      return(
       
@@ -143,15 +149,15 @@ class StationMonitoring extends React.Component {
                         </div>
                         <div className="card-action">
                           <div class="input-field col s12 right align">
-                            <input placeholder="Id" id="policy_id" type="text" class="validate"/>
+                            <input placeholder="Id" id="policy_id" type="text" class="validate" onChange={this.enableButton}/>
                             <label for="first_name"> Id </label>
                           </div> 
                           <div class="input-field col s12 right align">
-                            <input placeholder="Cost Per kWh" id="first_name" type="text" class="validate"/>
+                            <input placeholder="Cost Per kWh" id="first_name" type="text" class="validate" onChange={this.enableButton}/>
                             <label for="first_name"> Cost Per kWh </label>
                           </div>  
                           <div class="input-field col s12 right align">
-                            <input placeholder="Amount of kWh" id="first_name" type="text" class="validate"/>
+                            <input placeholder="Amount of kWh" id="first_name" type="text" class="validate" onChange={this.enableButton}/>
                             <label for="first_name"> Amount of kWh </label>
                           </div>
                           <div className="right-align">
@@ -159,7 +165,8 @@ class StationMonitoring extends React.Component {
                                     type="submit" 
                                     name="action" 
                                     id="sumbit-changes" 
-                                    onClick={this.submitChanges}> Save Changes 
+                                    onClick={this.submitChanges}
+                                    disabled={this.state.btnIndex}> Save Changes 
                             </button>
                           </div>
                         </div>
@@ -173,7 +180,8 @@ class StationMonitoring extends React.Component {
               className="returnbtn" 
               value="Return" 
               id="rtn-btn-users" 
-              onClick={this.ReturnFromViewUsers}/>
+              onClick={this.ReturnFromViewUsers}
+              />
             </form>
           </div>
           <form action="">
