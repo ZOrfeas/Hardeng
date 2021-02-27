@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.services.SessionService;
@@ -94,5 +95,25 @@ public class SessionController {
     log.info("Delete session...");
     if (sessionId == null) throw new BadRequestException();
     return sessionService.deleteSession(sessionId);
+ }
+
+ @PostMapping(value = "/InitiateSession/{stationId}")
+ public ResponseEntity<Object> initiateSession(@PathVariable(name ="stationId") Integer stationId) {
+    log.info("Initiate new session...");
+    if (stationId == null) throw new BadRequestException();
+    return sessionService.initiateSession(stationId);
+ }
+
+ @PostMapping(value = "/FinalizeSession", consumes=MediaType.APPLICATION_JSON_VALUE, produces = {"application/json"})
+ public SessionObject finalizeSession(@RequestBody RequestSession session) {
+   log.info("Create session...");
+   if (session.getStartedOn() == null || session.getFinishedOn() == null || session.getEnergyDelivered() == null ||
+       session.getPayment() == null || session.getChargingPointId() == null || session.getPricePolicyId() == null ||
+       session.getCarId() == null || session.getDriverId() == null) 
+      throw new BadRequestException();
+   sessionService.releasePoint(session.getChargingPointId());
+   return sessionService.createSession(session.getStartedOn(), session.getFinishedOn(), session.getEnergyDelivered(),
+   session.getPayment(), session.getChargingPointId(), session.getPricePolicyId(),
+   session.getCarId(), session.getDriverId());
  }
 }
