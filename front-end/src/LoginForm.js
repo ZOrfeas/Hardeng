@@ -1,8 +1,9 @@
 import React from "react";
 import Popup from "reactjs-popup";
-import { userLogin } from './API';
+import { getUserID, userLogin } from './API';
 import 'reactjs-popup/dist/index.css';
 import './LoginForm.css';
+import M from 'materialize-css';
 
 class LoginForm extends React.Component {
   constructor() {
@@ -44,14 +45,20 @@ class LoginForm extends React.Component {
     else {
       userLogin(username, password, userType)
         .then(res => {
-          localStorage.setItem(userType + 'Key', res.data.key);
+          localStorage.setItem(userType + 'Key', res.data.token);
+          console.log('Fuck ' + res.data.token);
 
-          close();
-          window.location.reload();
+          getUserID(res.data.token)
+            .then(resID =>{
+              localStorage.setItem(userType + 'ID', resID.data);
+
+              close();
+              window.location.reload();
+            });
         })
         .catch(err => {
+          console.log('Serious? ' + err.response);
           if(err.response){
-            console.log(err);
             this.setState({ error: err.response.status });
           }
         });
@@ -71,6 +78,9 @@ class LoginForm extends React.Component {
     this.setState({ password: '' });
     this.setState({ userType: '' });
     this.setState({ error: null });
+  }
+  componentDidMount(){
+    M.AutoInit();
   }
 
   render() {

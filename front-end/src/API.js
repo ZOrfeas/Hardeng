@@ -9,14 +9,37 @@ const config = {
   }
 };
 
+//const driverKey = localStorage.getItem("driverKey");
+//const driverID = localStorage.getItem("driverID");
+const adminKey = localStorage.getItem("adminKey");
+const adminID = localStorage.getItem("adminID")
+
 export function userLogin(user, pass, type) {
-  const reqURL = type;
-  const obj = {
-    username: user,
-    password: pass,
+  var reqURL;
+  type === 'driver' ? reqURL = "login/DRIVER" : reqURL = "login/ADMIN";
+
+  const obj = new URLSearchParams();
+  obj.append('username', user);
+  obj.append('password', pass);
+
+  const urlencoded = {
+    headers: {
+      'content-Type': 'application/x-www-form-urlencoded'
+    }
+  }
+
+  return axios.post(reqURL, obj, urlencoded);
+}
+
+export function getUserID(driverKey){
+  const reqURL = 'Driver/getId';
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': driverKey,
+    }
   };
 
-  return axios.post(reqURL, obj);
+  return axios.get(reqURL, auth);
 }
 
 export function getDriverInfo(driverKey) {
@@ -27,7 +50,7 @@ export function getDriverInfo(driverKey) {
     }
   };
 
-  return axios.post(reqURL, config);
+  return axios.post(reqURL, auth);
 }
 
 export function getAdminInfo(adminKey) {
@@ -38,20 +61,12 @@ export function getAdminInfo(adminKey) {
     }
   };
 
-  return axios.post(reqURL, config);
+  return axios.post(reqURL, auth);
 }
 
-export function getStations(latlng){
+export function getStations(driverKey, latlng){
   const radius = 0.25;
   const reqURL = "NearbyStations/" + latlng["lat"] + "/" + latlng["lng"] + "/" + radius;
-  return axios.get(reqURL, config);
-}
-
-export function postInitiateSession(driverKey, stationID){
-  const reqURL = "Session";
-  const obj = {
-    station_id: stationID
-  };
 
   const auth = {
     headers: {
@@ -59,18 +74,29 @@ export function postInitiateSession(driverKey, stationID){
     }
   };
 
-  return axios.post(reqURL, obj, config);
+  return axios.get(reqURL, auth);
 }
 
-export function getDriverCars(driverKey) {
-  const reqURL = "driverCars";
+export function getDriverCars(driverKey, driverID) {
+  const reqURL = "EVsPerDriver/" + driverID;
   const auth = {
     headers: {
       'X-OBSERVATORY-AUTH': driverKey,
     }
   };
 
-  return axios.get(reqURL, config);
+  return axios.get(reqURL, auth);
+}
+
+export function getDriverPolicies(driverKey, driverID) {
+  const reqURL = "PricePoliciesPerDriver/" + driverID;
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': driverKey,
+    }
+  };
+
+  return axios.get(reqURL, auth);
 }
 
 export function userPay(driverKey, type, credential){
@@ -86,11 +112,23 @@ export function userPay(driverKey, type, credential){
     }
   };
 
-  return axios.post(reqURL, obj, config);
+  return axios.post(reqURL, obj, auth);
+}
+
+export function postInitiateSession(driverKey, stationID){
+  const reqURL = "InitiateSession/" + stationID;
+
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': driverKey,
+    }
+  };
+
+  return axios.post(reqURL, null, auth);
 }
 
 export function logSession(driverKey, obj){
-  const reqURL = "session";
+  const reqURL = "FinalizeSession";
 
   const auth = {
     headers: {
@@ -98,18 +136,9 @@ export function logSession(driverKey, obj){
     }
   };
   
-  axios.post(reqURL, obj, config);
+  return axios.post(reqURL, obj, auth);
 }
 
-export function getDriverPolicies(driverKey) {
-  const reqURL = "driverPolicies";
-  const auth = {
-    headers: {
-      'X-OBSERVATORY-AUTH': driverKey,
-    }
-  };
 
-  return axios.get(reqURL, config);
-}
 
 
