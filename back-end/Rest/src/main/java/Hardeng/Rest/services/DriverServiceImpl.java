@@ -14,6 +14,7 @@ import Hardeng.Rest.config.auth.UserDetailsServiceImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import Hardeng.Rest.exceptions.DriverNotFoundException;
 import Hardeng.Rest.exceptions.NoDataException;
+import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.models.CarDriver;
 import Hardeng.Rest.models.ChargingSession;
 import Hardeng.Rest.models.Driver;
@@ -119,5 +120,12 @@ public class DriverServiceImpl implements DriverService {
 
         driverRepo.deleteById(driverId);
         return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Object> fetchId(String username) throws BadRequestException {
+        log.info("Fetching driver Id...");
+        return ResponseEntity.ok(driverRepo.findByUsername(username).orElseThrow(
+            () -> new BadRequestException()).getID());
     }
 }
