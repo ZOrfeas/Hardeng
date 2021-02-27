@@ -145,4 +145,11 @@ public class AdminController {
     return adminService.deleteAdmin(adminId);
  }
 
+ @GetMapping(value ="/getId", produces = {"application/json"})
+ public ResponseEntity<Object> getId(@AuthenticationPrincipal CustomUserPrincipal loggedInAdmin) {
+     log.info("Logged in admin's Id requested...");
+     if (loggedInAdmin == null || !loggedInAdmin.getRole().equals(SecurityConfig.stationAdminRole))
+        throw new BadRequestException();
+    return adminService.fetchId(loggedInAdmin.getUsername());
+ }
 }
