@@ -34,7 +34,7 @@ public class LoginServiceImpl implements LoginService {
     public static class LoginObject {
         @JsonProperty("token")
         private String token;
-
+        public String getToken() {return this.token;}
         LoginObject(String token){
             this.token = token;
         }
