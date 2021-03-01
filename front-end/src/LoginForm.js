@@ -1,8 +1,9 @@
 import React from "react";
 import Popup from "reactjs-popup";
-import { userLogin } from './API';
+import { getUserID, userLogin } from './API';
 import 'reactjs-popup/dist/index.css';
 import './LoginForm.css';
+import M from 'materialize-css';
 
 class LoginForm extends React.Component {
   constructor() {
@@ -44,14 +45,20 @@ class LoginForm extends React.Component {
     else {
       userLogin(username, password, userType)
         .then(res => {
-          localStorage.setItem(userType + 'Key', res.data.key);
+          localStorage.setItem(userType + 'Key', res.data.token);
+          console.log('Fuck ' + res.data.token);
 
-          close();
-          window.location.reload();
+          getUserID(res.data.token)
+            .then(resID =>{
+              localStorage.setItem(userType + 'ID', resID.data);
+
+              close();
+              window.location.reload();
+            });
         })
         .catch(err => {
+          console.log('Serious? ' + err.response);
           if(err.response){
-            console.log(err);
             this.setState({ error: err.response.status });
           }
         });
@@ -72,14 +79,17 @@ class LoginForm extends React.Component {
     this.setState({ userType: '' });
     this.setState({ error: null });
   }
+  componentDidMount(){
+    M.AutoInit();
+  }
 
   render() {
     return (
       <div>
-        <button onClick={this.handleLogout} className="btn-flat waves-effect waves-light yellow-text"> Logout </button>
+        <button onClick={this.handleLogout} className="btn-flat waves-effect waves-light green-text"> Logout </button>
         <Popup
           onClose={this.handlePopupClose}
-          trigger={open => <button open={open} className="btn-flat yellow waves-effect waves-light"> Login </button>}
+          trigger={open => <button open={open} className="btn-flat green waves-effect waves-light"> Login </button>}
           modal
         >
           {close => (

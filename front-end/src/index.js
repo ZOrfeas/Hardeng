@@ -1,28 +1,40 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {BrowserRouter as Router, Link, Route, Redirect} from 'react-router-dom';
 import ChargingExperience from './ChargingExperience';
 import Header from './Header';
 import 'materialize-css/dist/css/materialize.min.css';
 import StationMonitoring from './StationMonitoring';
-/* Imports */
-import Map from './Map.js';
-
+import EnergyMonitoring from './EnergyMonitoring';
+import Home from './Home';
+import EditUserInfo from './EditUserInfo';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Header />
+  <Router>
+    <React.StrictMode>
+      <Header />
 
-<<<<<<< HEAD
-    {/*<ChargingExperience />*/}
-    <StationMonitoring />
-=======
-    <ChargingExperience />
-    {/*<StationMonitoring />*/}
->>>>>>> 4a0d45923a24129b7ef8fbb392c86254b7177df8
-    {/*<>*/}
-    {/* <Map/> */}
-  </React.StrictMode>,
+      <Route exact ={true} path="/" render = {() =>(
+        <Home/>
+      )}/>
+
+      <Route exact ={true} path="/ChargingExperience" render = {() =>(
+        <ChargingExperience />
+      )}/>
+
+      <Route exact ={true} path="/StationMonitoring" render = {() =>(
+        <StationMonitoring />
+      )}/>
+
+      <Route exact ={true} path="/EnergyMonitoring" render = {() =>(
+        <EnergyMonitoring/>
+      )}/>
+
+      <Route exact ={true} path="/EditUserInfo" render = {() =>(
+        <EditUserInfo/>
+      )}/>
+
+    </React.StrictMode>
+  </Router>,
   document.getElementById('root')
 );
-
-

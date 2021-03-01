@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import UserInfo from './UserInfo';
+import Payment from './Payment';
 import M from 'materialize-css';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
-import { getStations } from './API';
+import { getStations, postInitiateSession, getDriverCars, getDriverPolicies, logSession } from './API';
+import { FaCarBattery, FaCartPlus } from "react-icons/fa";
 import 'leaflet/dist/leaflet.css';
 import "./ChargingExperience.css";
 
@@ -31,13 +33,17 @@ L.Marker.prototype.options.icon = DefaultIcon;
 const Athens = [37.983810, 23.727539];
 const pricesHardcoded = [10, 20, 30, 40, 50, 60];
 const vehiclesHardcoded = [
-  {label:"Honda Civic", id:1},
-  {label:"Renault Scenic", id:2}
+  {BrandName:"Honda Civic", Model: "e-soul", CarID:1},
+  {BrandName:"Renault Scenic", Model:"e-soul", CarID:2}
 ];
 const stationsHardcoded = [
-  { position: [37.983810, 23.727539], label: "Athens", id: 1 },
-  { position: [40.629269, 22.947412], label: "Thessaloniki", id: 2 }
+  { position: [37.983810, 23.727539], label: "Athens", station_id: 1 },
+  { position: [40.629269, 22.947412], label: "Thessaloniki", station_id: 2 }
 ];
+const policiesHardcoded = [
+  {PricePolicyID: 1, KWh: 5, CostPerKWh: 200},
+  {PricePolicyID: 2, KWh: 6, CostPerKWh: 300}
+]
 
 function LocationMarker(props) {
   const [position, setPosition] = useState(null)
@@ -65,27 +71,152 @@ class ChargingExperience extends React.Component {
     super(props);
 
     this.state = {
+      driverKey: localStorage.getItem("driverKey"),
+      driverID: localStorage.getItem("driverID"),
+
       stations: stationsHardcoded,
       prices: pricesHardcoded,
       vehicles: vehiclesHardcoded,
+      policies: policiesHardcoded,
       
       currentPos: null,
       
+      sessionStarted: false,
       chosenIndex: null,
       stationID: null,
       vehicleID: null,
+      stationPointID: null,
+      pricePolicy: null,
+      pricePolicyID: null,
       payment: null,
+      
+      session: {
+        startedOn: null,
+        finishedOn: null,
+        energyDelivered: null,
+        payment: null,
+        chargingPointId: null,
+        pricePolicyId: null,
+        carId: null,
+        driverId: null
+      },
       
       zoom: 10,
       error: null,
+      sessionError: null
     };
 
+    this.getDate = this.getDate.bind(this);
+    this.formatZero = this.formatZero.bind(this);
+    this.initiateSession = this.initiateSession.bind(this);
+    this.finishSession = this.finishSession.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.showMarkers = this.showMarkers.bind(this);
     this.showOptions = this.showOptions.bind(this);
     this.handleLocation = this.handleLocation.bind(this);
   }
 
+  formatZero(xx) {
+    if(xx < 10) {
+      return '0' + xx;
+    }
+    else{
+      return xx;
+    }
+  }
+  getDate(){
+    var time = new Date();
+    
+    var year = time.getFullYear();
+    var month = this.formatZero(time.getMonth() + 1);
+    var day = this.formatZero(time.getDate());
+    var hour = this.formatZero(time.getHours());
+    var minute = this.formatZero(time.getMinutes());
+    var seconds = this.formatZero(time.getSeconds());
+
+    var ans = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + seconds;
+
+    return ans;
+  }
+  finishSession(e, unpaid = false) {
+    e.preventDefault();
+
+    var newSession = this.state.session;
+    newSession.energyDelivered = this.state.payment / this.state.pricePolicy ;
+    newSession.finishedOn = this.getDate();
+
+    if(unpaid){
+      newSession.payment = 'unpaid';
+    }
+
+    console.log(newSession);
+
+    this.setState({
+      session: newSession
+    }, () => {
+      logSession(this.state.driverKey, this.state.session)
+        .then(res => {
+          window.location.reload();
+        })
+        .catch(err => {
+          if(err.response){
+            M.toast({html: 'LogSession Error ' + err.response.status, classes:"purple darken-4 yellow-text"});
+          }
+          else{
+            M.toast({html: 'LogSession Error undefined', classes:"purple darken-4 yellow-text"});
+          }
+        });
+    });
+  }
+  initiateSession(e){
+    e.preventDefault();
+
+    const station = this.state.stationID;
+    const vehicle = this.state.vehicleID;
+    const payment = this.state.payment;
+    const policy = this.state.pricePolicy;
+    var newError = null;
+
+    if(station === null || vehicle === null || payment === null || policy === null) {
+      newError = "All fields required";
+    }
+    else if(this.state.driverKey === null) {
+      newError = "Not logged in";
+    }
+    else {
+      postInitiateSession(this.state.driverKey, station)
+        .then(res => {
+          console.log(res);
+
+          var session = this.state.session;
+          session.startedOn = this.getDate();
+          session.chargingPointId = res.data;
+          session.carId = this.state.vehicleID;
+          session.payment = this.state.payment;
+          session.pricePolicyId = this.state.pricePolicyID;
+          session.driverId = this.state.driverID;
+    
+          this.setState({
+            sessionError: null,
+            sessionStarted: true,
+            session: session,
+          });
+        })
+        .catch(err => {
+          if(err.response) {
+            newError = "Error " + err.response.status;
+          }
+          else{
+            console.log(err);
+          }
+        })
+    }
+
+    if(newError !== null){
+      this.setState({sessionError: newError});
+      M.toast({html: 'InitiateSession ' + newError, classes:"purple darken-4 yellow-text"});
+    }
+  }
   showMarkers() {
     var i = this.state.chosenIndex;
 
@@ -98,13 +229,11 @@ class ChargingExperience extends React.Component {
       return (<Marker key={i} value={station.label} position={station.position}></Marker>);
     }
   }
-
   showOptions() {
     return (
       this.state.stations.map(({ label, id}, index) => <option value={index}> {label} </option>)
     );
   }
-
   handleSelect(e) {
     if(e.target.name === "stationID"){
       if(e.target.value === "all") {
@@ -115,37 +244,67 @@ class ChargingExperience extends React.Component {
         const s = this.state.stations;
         const c = e.target.value;
 
-        this.setState({ stationID: s[c]['id'] });
+        this.setState({ stationID: s[c].station_id });
         
       }
     }
-
+    else if(e.target.name === "pricePolicyID"){
+      const index = e.target.value;
+      this.setState({pricePolicyID: this.state.policies[index].PricePolicyID, pricePolicy: this.state.policies[index].CostPerKWh})
+    }
     else {
       this.setState({[e.target.name]: e.target.value});
     }
   }
-
   handleLocation(latlng) {
     this.setState({
       currentPos: latlng
     }, () => {
-      getStations(latlng)
-        .then(res => { this.setState({ stations: res.data }) })
+      getStations(this.state.driverKey, latlng)
+        .then(res => { 
+          console.log(res.data);
+          this.setState({ stations: res.data }) })
         .catch(err => { 
           if(err.response){
             this.setState({ error: err.response.status });
-            M.toast({html: 'Error ' + this.state.error, classes:"purple darken-4 yellow-text"});
+            M.toast({html: 'GetStations Error ' + this.state.error, classes:"purple darken-4 yellow-text"});
           }
         })
     });
   }
   componentDidMount() {
     M.AutoInit();
+
+    // Fetch user's cars and price policies
+    if(this.state.driverKey !== null){
+      getDriverCars(this.state.driverKey, this.state.driverID)
+        .then(res => {this.setState({vehicles: res.data["Cars"]})})
+        .catch(err => {
+          if(err.response){
+            M.toast({html: 'GetCars Error ' + err.response.status, classes:"purple darken-4 yellow-text"});
+          }
+          else{
+            M.toast({html: 'GetCars Error undefined', classes:"purple darken-4 yellow-text"});
+          }
+        })
+      
+      getDriverPolicies(this.state.driverKey, this.state.driverID)
+        .then(res => {this.setState({policies: res.data["PricePolicies"]})})
+        .catch(err => {
+          if(err.response){
+            M.toast({html: 'GetPolicies Error ' + err.response.status, classes:"purple darken-4 yellow-text"});
+          }
+          else{
+            M.toast({html: 'GetPolicies Error undefined', classes:"purple darken-4 yellow-text"});
+          }
+        })
+    }
   }
 
   render() {
     return (
       <div className="row">
+        {false && <button onClick={e => {console.log(this.state)}}> State </button>}
         <div className="col s2">
           <UserInfo />
         </div>
@@ -163,8 +322,8 @@ class ChargingExperience extends React.Component {
               {this.showMarkers()}
               <LocationMarker setter={this.handleLocation} />
             </MapContainer>
-          
-            <form>
+
+            <form onSubmit={this.initiateSession}>
               <div className="">
                 <select name="stationID" className="browser-default" onChange={this.handleSelect}>
                   <option value="" disabled selected>Choose station ...</option>
@@ -175,23 +334,43 @@ class ChargingExperience extends React.Component {
                   <option value="" disabled selected>Payment amount</option>
                   {this.state.prices.map(price => <option value={price}> {price} </option>)}
                 </select>
-
                 <select name="vehicleID" className="browser-default" onChange={this.handleSelect}>
                   <option value="" disabled selected>Choose car</option>
-                  {this.state.vehicles.map(({label, id}) => <option value={id}> {label} </option>)}
+                  {this.state.vehicles.map(({CarID, BrandName, Model}) => <option value={CarID}> {BrandName + ' ' + Model} </option>)}
                 </select>
-
-                <div className="center-align yellow">
-                <button
-                  className="btn-flat waves-effect waves-light purple-text text-darken-4"
-                  type="submit"
-                  >
-                  Initiate Charging Session
-                </button>
+                <select name="pricePolicyID" className="browser-default" onChange={this.handleSelect}>
+                  <option value="" disabled selected>Choose policy</option>
+                  {this.state.policies.map(({CostPerKWh}, index) => <option value={index}> {CostPerKWh + '€ per KWh'} </option>)}
+                </select>
+                <div className="right-align">
+                  <button
+                    className="btn-flat green-text"
+                    type="submit"
+                    >
+                    Initiate Session <FaCarBattery/> 
+                  </button>
                 </div>
               </div>
             </form>
-          
+
+            <div className="right-align">
+              <Payment 
+                sessionStarted={!this.state.sessionStarted} 
+                payment={this.state.payment}
+                doNext={this.finishSession} 
+              />
+            </div>
+            <div className="right-align">
+              <button 
+                blue-text
+                disabled={!this.state.sessionStarted} 
+                className="btn-flat"
+                onClick={e => {this.finishSession(e, true)}}
+                >
+                Charge Tab <FaCartPlus/>
+              </button>
+            </div>
+            
             {this.state.chosenIndex !== null && false && (
               <table className="centered white">
               <thead>
@@ -215,11 +394,11 @@ class ChargingExperience extends React.Component {
           </div>
         </div>
 
-        <div className="fixed-action-btn">
+        {false &&<div className="fixed-action-btn">
           <button className="btn-floating tooltipped red pulse" data-position="left" data-tooltip="Click map to give location">
             !
           </button>
-        </div>
+        </div>}
       </div>
     )
   }

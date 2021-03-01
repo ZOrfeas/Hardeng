@@ -65,4 +65,6 @@ public interface AdminService {
     String companyName, String companyPhone, String companyLocation) throws NoDataException;
     
     ResponseEntity<Object> deleteAdmin(Integer adminId) throws NoDataException;
+
+    ResponseEntity<Object> fetchId(String username) throws BadRequestException;
 }

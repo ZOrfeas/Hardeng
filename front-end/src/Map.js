@@ -111,15 +111,9 @@ class Map extends React.Component{
   handleLocation(latlng) {
     this.setState({
       currentPos: latlng
-    }, () => {
-      getStations(latlng)
-        .then(res => { this.setState({ stations: res.data }) })
-        .catch(err => { 
-          this.setState({ error: err.response.status });
-          M.toast({html: 'Error ' + this.state.error, classes:"purple darken-4 yellow-text"})
-        })
-    });
-  }
+    } 
+    );
+}
 
   componentDidMount() {
     M.AutoInit();
@@ -137,59 +131,53 @@ class Map extends React.Component{
   render(){
     return(
       <div>
-      <div className="card large" id="cardMap">
-          <MapContainer
-            className="map"
-            center={Athens}
-            zoom={this.state.zoom}
-          >
-            <TileLayer
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            {this.showMarkers()}
-            <LocationMarker setter={this.handleLocation} />
-          </MapContainer>
-          <form>
-              <select className="browser-default" onChange={this.handleSelect}>
-                <option value="" disabled selected>Choose station ...</option>
-                <option value="all">Show all stations</option>
-                {this.showOptions()}
-              </select>
-            </form>
-      </div>
-      <div className="col s12 m6" id='res'>
-        <div className="card blue-grey darken-1" id="cardInfo">
-          <div className="card-content white-text">
-            <span className="card-title">Charging Station's Info</span>
+        <div className="row">
+          <div className="col s9 right align">
+            <div className="card hoverable">
+                <MapContainer
+                  className="map"
+                  center={Athens}
+                  zoom={this.state.zoom}
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                  {this.showMarkers()}
+                  <LocationMarker setter={this.handleLocation} />
+                </MapContainer>
+                <form>
+                    <select className="browser-default" onChange={this.handleSelect}>
+                      <option value="" disabled selected>Choose station ...</option>
+                      <option value="all">Show all stations</option>
+                      {this.showOptions()}
+                    </select>
+                  </form>
+            </div>
           </div>
-          <div className="card-action">
-            <p>Address</p> 
-            <input 
-            type="username" 
-            placeholder="username"
-            id="station-address" 
-            className="station-address" 
-            value={this.state.username}
-            onChange={this.handleUserInput}
-            />
-            <p>Charging Points</p> 
-            <input 
-            type="username" 
-            placeholder="Charging Points"
-            id="Charging-Points" 
-            className="Charging-Points" 
-            value={this.state.username}
-            onChange={this.handleUserInput}
-            />
-          </div>
-          <div className="right-align">
-            <button className="waves-effect waves-light btn modal-trigger" type="submit" name="action" id="sumbit-changes" onClick={this.submitChanges}>Save Changes 
-            </button>
+          <div className="col s3 m3">
+            <div className="card blue-grey darken-1" >
+              <div className="card-content white-text">
+                <span className="card-title">Charging Station's Info</span>
+              </div>
+              <div className="card-action">
+                <div class="input-field col s12 right align">
+                  <input placeholder="Address" id="station_address" type="text" class="validate"/>
+                  <label for="first_name">  </label>
+                </div> 
+                <div class="input-field col s12 right align">
+                  <input placeholder="Charging Points" id="station_charging_points" type="text" class="validate"/>
+                  <label for="first_name">  </label>
+                </div> 
+              </div>
+              <div className="right-align">
+                <button className="waves-effect waves-light btn modal-trigger" type="submit" name="action" id="sumbit-changes" onClick={this.submitChanges}>Save Changes 
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     )
   }
 

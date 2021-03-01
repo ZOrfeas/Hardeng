@@ -300,7 +300,6 @@ public class StationServiceImpl implements StationService {
             rad *= 2;
         } while (nearbyStations.isEmpty() && count != 4);
         if (nearbyStations.isEmpty()) throw new NoDataException();
-        log.info(String.valueOf(nearbyStations.size()));
         return nearbyStations;
     };
 
