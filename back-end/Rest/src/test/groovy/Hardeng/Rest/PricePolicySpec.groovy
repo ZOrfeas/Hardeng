@@ -15,7 +15,6 @@ import Hardeng.Rest.services.PricePolicyService
 import Hardeng.Rest.services.PricePolicyServiceImpl.PricePolicyObject
 import Hardeng.Rest.services.PricePolicyServiceImpl.DriverPolicyObject
 
-
 @SpringBootTest
 @Transactional
 class PricePolicySpec extends Specification {

@@ -16,7 +16,6 @@ import Hardeng.Rest.services.StationServiceImpl.SessStationObject
 import Hardeng.Rest.services.StationServiceImpl.StationObject
 import Hardeng.Rest.services.StationServiceImpl.NearbyStationObject
 
-
 @SpringBootTest
 @Transactional
 class StationSpec extends Specification {
@@ -25,7 +24,7 @@ class StationSpec extends Specification {
     private StationService stationService
 
     @Test
-    def "Station Service with id = 0"() {
+    def "Station with id = 0"() {
         when: "should expect Charging Station Not Found exception"
         stationService.sessionsPerStation(0, "20180101", "20191231")
 
