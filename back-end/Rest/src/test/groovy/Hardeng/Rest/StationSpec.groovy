@@ -54,7 +54,7 @@ class StationSpec extends Specification {
     @Test
     def "Station with no charging points"() {
         given: 
-        StationObject station = stationService.createStation(37.873806, 23.759401, "Venezouelas 1", 2, 2)
+        StationObject station = stationService.createStation(37.873806, 23.759401, "Venezouelas 1", 2, 43)
 
         when: "should expect No Data exception"
         stationService.sessionsPerStation(station.stationId, "20180101", "20191231")
@@ -64,6 +64,7 @@ class StationSpec extends Specification {
     }
 
     @Test
+    // επίσης μάλλον μη ουσιώδες
     def "Station 200 from 01-11-2011 to 31-12-2019"() {
         given: 
         SessStationObject res = stationService.sessionsPerStation(200, "20111101", "20191231")
@@ -84,15 +85,15 @@ class StationSpec extends Specification {
     @Test
     def "Nearby stations given valid input"() {
         given: 
-        List<NearbyStationObject> res = stationService.nearbyStations(37.9838, 23.7275, 0.25)
+        List<NearbyStationObject> res = stationService.nearbyStations(37.924371, -75.354259, 0.25)
 
         when:
         def size = res.size()
         def label1 = res[0].label
 
         then:
-        size == 7
-        label1 == "Athens International Airport Attiki Odos"
+        size == 1
+        label1 == "7058 Maddox Blvd"
     }
 
     @Test
@@ -105,6 +106,7 @@ class StationSpec extends Specification {
     }
 
     @Test
+    // μάλλον χρειάζεται κατάλληλη προσαρμογή
     def "Nearby stations given large radius"() {
         given:
         List<NearbyStationObject> res = stationService.nearbyStations(37.9838, 23.7275, 10)
@@ -149,7 +151,7 @@ class StationSpec extends Specification {
     @Test
     def "Update station with invalid admin"() {
         when: "should expect Admin Not Found exception"
-        stationService.updateStation(1, 37.873806, 23.759401, "Venezouelas 1", 0, 2)
+        stationService.updateStation(27050, 37.873806, 23.759401, "Venezouelas 1", 0, 2)
 
         then:
         def e = thrown(AdminNotFoundException)
@@ -159,7 +161,7 @@ class StationSpec extends Specification {
     @Test
     def "Update station with invalid energy provider"() {
         when: "should expect Energy Provider Not Found exception"
-        stationService.updateStation(1, 037.873806, 23.759401, "Venezouelas 1", 2, 0)
+        stationService.updateStation(27050, 037.873806, 23.759401, "Venezouelas 1", 2, 0)
 
         then:
         def e = thrown(EnergyProviderNotFoundException)
@@ -189,22 +191,22 @@ class StationSpec extends Specification {
     @Test
     def "Delete existing station"() {
         given: 
-        stationService.deleteStation(1)
+        stationService.deleteStation(27050)
 
         when:
-        stationService.readStation(1)
+        stationService.readStation(27050)
 
         then:
         def e = thrown(ChargingStationNotFoundException)
-        e.getMessage() == "Could not find charging station 1"
+        e.getMessage() == "Could not find charging station 27050"
     }
 
     @Test
     def "CRU new charging station"() {
         given: 
-        StationObject station = stationService.createStation(37.873806, 23.759401, "Venezouelas 1", 2, 2)
+        StationObject station = stationService.createStation(37.873806, 23.759401, "Venezouelas 1", 2, 43)
         station = stationService.readStation(station.stationId)
-        stationService.updateStation(station.stationId, 37.873806, 23.759401, "Venezouelas 2", 2, 2)
+        stationService.updateStation(station.stationId, 37.873806, 23.759401, "Venezouelas 2", 2, 43)
         StationObject updStation = stationService.readStation(station.stationId)
 
         when:
@@ -227,7 +229,7 @@ class StationSpec extends Specification {
     @Test
     def "Delete new station"() {
         given:
-        StationObject station = stationService.createStation(37.873806, 23.759401, "Venezouelas 1", 2, 2)
+        StationObject station = stationService.createStation(37.873806, 23.759401, "Venezouelas 1", 2, 43)
         stationService.deleteStation(station.stationId)
         
 

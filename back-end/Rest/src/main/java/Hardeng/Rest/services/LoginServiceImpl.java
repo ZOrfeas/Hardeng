@@ -42,6 +42,8 @@ public class LoginServiceImpl implements LoginService {
     
     private void authenticate(String roleUserString, String password) {
         try {
+            log.info(roleUserString);
+            log.info(password);
             authManager.authenticate(new UsernamePasswordAuthenticationToken(roleUserString, password));
         } catch (DisabledException e) {
             throw new InternalServerErrorException();

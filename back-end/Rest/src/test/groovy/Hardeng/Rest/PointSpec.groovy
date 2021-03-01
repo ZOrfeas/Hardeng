@@ -53,13 +53,14 @@ class PointSpec extends Specification {
     @Test
     def "Point with no charging sessions"() {
         when: "should expect No Data exception"
-        pointService.sessionsPerPoint(1005, "20100304", "20200802")
+        pointService.sessionsPerPoint(42906, "20100304", "20200802")
 
         then:
         thrown(NoDataException)
     }
 
     @Test
+    // Αρκετά σίγουρα αυτό το test δεν εξετάζει κάτι ουσιώδες, νομίζω μπορεί να φύγει
     def "Point 1 from 04-03-2010 to 02-08-2020"() {
         given: 
         SessPointObject res = pointService.sessionsPerPoint(1, "20100304", "20200802")
@@ -103,7 +104,7 @@ class PointSpec extends Specification {
     @Test
     def "Update station with invalid charging station"() {
         when: "should expect Charging Station Not Found exception"
-        pointService.updatePoint(1, 0, 20, false, 1, 0)
+        pointService.updatePoint(42906, 0, 20, false, 1, 0)
 
         then:
         def e = thrown(ChargingStationNotFoundException)
@@ -133,22 +134,22 @@ class PointSpec extends Specification {
     @Test
     def "Delete existing station"() {
         given: 
-        pointService.deletePoint(1)
+        pointService.deletePoint(42906)
 
         when:
-        pointService.readPoint(1)
+        pointService.readPoint(42906)
 
         then:
         def e = thrown(ChargingPointNotFoundException)
-        e.getMessage() == "Could not find charging point 1"
+        e.getMessage() == "Could not find charging point 42906"
     }
 
     @Test
     def "CRU new charging point"() {
         given: 
-        PointObject point = pointService.createPoint(0, 20, false, 1, 1)
+        PointObject point = pointService.createPoint(0, 20, false, 1, 27134)
         point = pointService.readPoint(point.pointId)
-        pointService.updatePoint(point.pointId, 1, 25, true, 2, 2)
+        pointService.updatePoint(point.pointId, 1, 25, true, 2, 27050)
         PointObject updPoint = pointService.readPoint(point.pointId)
 
         when:
@@ -169,19 +170,19 @@ class PointSpec extends Specification {
         maxEnergy == 20
         isOccupied == false
         chargerType == 1
-        stationId == 1
+        stationId == 27134
 
         updCondition == 1
         updMaxEnergy == 25
         updIsOccupied == true
         updChargerType == 2
-        updStationId == 2
+        updStationId == 27050
     }
 
     @Test
     def "Delete new point"() {
         given:
-        PointObject point = pointService.createPoint(0, 20, false, 1, 1)
+        PointObject point = pointService.createPoint(0, 20, false, 1, 27050)
         pointService.deletePoint(point.pointId)
         
 
