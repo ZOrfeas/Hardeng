@@ -4,7 +4,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css'
 import M, { Autocomplete } from 'materialize-css';
 import { AiOutlineSend } from "react-icons/ai";
-import { getStations } from './API';
+import { getStations,getDriverInfo } from './API';
 import Map from './Map.js';
 import image from './icons/image3.jpg'
 

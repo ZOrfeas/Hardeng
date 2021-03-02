@@ -11,10 +11,10 @@ class Payment extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      driverID: localStorage.getItem("driverKey"),
+      driverID: localStorage.getItem("driverID"),
 
       payment: props.payment,
-      disabled: props.sessionStarted,
+      disabled: !props.sessionStarted,
 
       type: '',
       credential: null,
@@ -34,9 +34,9 @@ class Payment extends React.Component {
     }
 
     else{
-      this.props.stateSetter();
+      this.props.finishSession(e);
 
-      userPay(this.state.type, this.state.credential)
+      userPay(this.state.driverID, this.state.type, this.state.credential)
         .then(res => {
           close();
           window.location.reload();
@@ -49,6 +49,7 @@ class Payment extends React.Component {
             this.setState({error: 'Undefined Error'});
           }
         })
+      
       //post payment to backend
     }
 

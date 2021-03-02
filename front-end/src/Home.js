@@ -34,7 +34,7 @@ class Home extends React.Component{
                         <li><a href="/StationMonitoring" className="home-link">
                         Station Monitoring
                         </a></li>
-                        <li><a href="/ChargingExperience" className="home-link">
+                        <li><a href="/ChargingExperience" className="home-link" disabled="true">
                         Charging Experience
                         </a></li>
                         <li><a href="/EnergyMonitoring" className="home-link">

@@ -3,6 +3,7 @@ package Hardeng.Rest.services;
 import java.io.Console;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -18,9 +19,11 @@ import java.text.ParseException;
 import Hardeng.Rest.exceptions.ChargingPointNotFoundException;
 import Hardeng.Rest.exceptions.PricePolicyNotFoundException;
 import Hardeng.Rest.exceptions.DriverNotFoundException;
+import Hardeng.Rest.exceptions.InternalServerErrorException;
 import Hardeng.Rest.exceptions.CarNotFoundException;
 import Hardeng.Rest.exceptions.CarDriverNotFoundException;
 import Hardeng.Rest.exceptions.ChargingSessionNotFoundException;
+import Hardeng.Rest.exceptions.ChargingStationNotFoundException;
 import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.models.Driver;
 import Hardeng.Rest.models.PricePolicy;
@@ -28,12 +31,14 @@ import Hardeng.Rest.models.Car;
 import Hardeng.Rest.models.ChargingPoint;
 import Hardeng.Rest.models.CarDriver;
 import Hardeng.Rest.models.ChargingSession;
+import Hardeng.Rest.models.ChargingStation;
 import Hardeng.Rest.repositories.PricePolicyRepository;
 import Hardeng.Rest.repositories.ChargingPointRepository;
 import Hardeng.Rest.repositories.DriverRepository;
 import Hardeng.Rest.repositories.CarRepository;
 import Hardeng.Rest.repositories.CarDriverRepository;
 import Hardeng.Rest.repositories.ChargingSessionRepository;
+import Hardeng.Rest.repositories.ChargingStationRepository;
 import Hardeng.Rest.services.EVServiceImpl.PricePolicyRef;
 
 @Service
@@ -53,6 +58,8 @@ public class SessionServiceImpl implements SessionService {
     private DriverRepository cDriverRepo;
     @Autowired
     private CarRepository cCarRepo;
+    @Autowired
+    private ChargingStationRepository cStationRepo;
 
     public class SessionObject {
         @JsonProperty("SessionID")
@@ -160,5 +167,37 @@ public class SessionServiceImpl implements SessionService {
         log.info("Deleting Charging Session...");
         cSessRepo.deleteById(sessionId);
         return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Object> initiateSession(Integer stationId) throws InternalServerErrorException {
+        ChargingPoint retPoint = null;
+        ChargingStation cStation = cStationRepo.findById(stationId).orElseThrow(
+            () -> new ChargingStationNotFoundException(stationId));
+        List<ChargingPoint> cPoints = cPointRepo.findBycStation(cStation);
+        // noteworthy: Bar some amazingly sad race conditions, there will
+        // always be a point that is not occupied since this always takes place
+        // after a request on NearbyStations, which fetches only available stations
+        for (ChargingPoint iterPoint : cPoints) {
+            if (!iterPoint.isOccupied()) {
+                retPoint = iterPoint;
+                break;
+            }
+        }
+        // still checking, never hurts, but internal server error is thrown
+        // cause a race condition is most probably at fault
+        if (retPoint == null) throw new InternalServerErrorException();
+        retPoint.setIsOccupied();
+        cPointRepo.save(retPoint);
+        return ResponseEntity.ok(retPoint.getId());
+    }
+
+    @Override 
+    public void releasePoint(Integer pointId) throws InternalServerErrorException {
+        ChargingPoint cPoint = cPointRepo.findById(pointId).orElseThrow(
+            () -> new ChargingPointNotFoundException(pointId));
+        if (!cPoint.isOccupied()) throw new InternalServerErrorException(); //never hurts to check :)
+        cPoint.resetIsOccupied(); // "release" the chargingPoint
+        return;
     }
 }

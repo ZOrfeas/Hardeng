@@ -3,6 +3,7 @@ package Hardeng.Rest.services;
 import org.springframework.http.ResponseEntity;
 
 import Hardeng.Rest.exceptions.NoDataException;
+import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.services.DriverServiceImpl.DriverObject;
 
 public interface DriverService {
@@ -16,4 +17,6 @@ public interface DriverService {
     String email, Integer bonusPoints, Long cardId, Long walletId) throws NoDataException;
     
     ResponseEntity<Object> deleteDriver(Integer driverId) throws NoDataException;
+
+    ResponseEntity<Object> fetchId(String username) throws BadRequestException;
 }

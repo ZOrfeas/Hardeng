@@ -435,5 +435,11 @@ public class AdminServiceImpl implements AdminService {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
+    public ResponseEntity<Object> fetchId(String username) throws BadRequestException {
+        log.info("Fetching admin Id...");
+        return ResponseEntity.ok(adminRepo.findByUsername(username).orElseThrow(
+            () -> new BadRequestException()).getId());
+    }
 }
 

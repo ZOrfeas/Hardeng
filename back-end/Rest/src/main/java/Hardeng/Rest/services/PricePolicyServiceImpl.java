@@ -62,13 +62,13 @@ public class PricePolicyServiceImpl implements PricePolicyService {
         @JsonProperty("DriverID")
         private Integer driverID;
         @JsonProperty("PricePolicies")
-        private List<String> pricePolicies = new ArrayList<>();
+        private List<PricePolicyObject> pricePolicies = new ArrayList<>();
 
         DriverPolicyObject(Driver driver, Set<PricePolicy> pricePolicies) {
             this.driverID = driver.getID(); 
             for (PricePolicy policy: pricePolicies) {
-                PricePolicyRef pRef = new PricePolicyRef(policy);
-                this.pricePolicies.add(pRef.toString());
+                PricePolicyObject pRef = new PricePolicyObject(policy);
+                this.pricePolicies.add(pRef);
             }
         }
     }
