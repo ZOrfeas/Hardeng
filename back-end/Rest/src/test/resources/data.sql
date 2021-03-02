@@ -39,6 +39,7 @@ INSERT INTO `car` VALUES
 
 INSERT INTO `car_driver` VALUES 
 (24,13,1),
+(24,65,1),
 (5,65,2),
 (15,6,3);
 

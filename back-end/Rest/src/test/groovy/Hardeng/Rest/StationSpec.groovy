@@ -64,10 +64,9 @@ class StationSpec extends Specification {
     }
 
     @Test
-    // επίσης μάλλον μη ουσιώδες
-    def "Station 200 from 01-11-2011 to 31-12-2019"() {
+    def "Station 1 from 01-11-2011 to 31-12-2019"() {
         given: 
-        SessStationObject res = stationService.sessionsPerStation(200, "20111101", "20191231")
+        SessStationObject res = stationService.sessionsPerStation(1, "20111101", "20191231")
 
         when:
         def id = res.stationId
@@ -76,16 +75,16 @@ class StationSpec extends Specification {
         def points = res.sessionsSummaryList.size()
 
         then:
-        id == "200"
+        id == "1"
         periodFrom == "2011-11-01 00:00:00"
         periodTo == "2019-12-31 00:00:00"
-        points == 1
+        points == 2
     }
 
     @Test
     def "Nearby stations given valid input"() {
         given: 
-        List<NearbyStationObject> res = stationService.nearbyStations(37.924371, -75.354259, 0.25)
+        List<NearbyStationObject> res = stationService.nearbyStations(37.924371, -122.145904, 0.25)
 
         when:
         def size = res.size()
@@ -93,7 +92,7 @@ class StationSpec extends Specification {
 
         then:
         size == 1
-        label1 == "7058 Maddox Blvd"
+        label1 == "3000 Hanover St"
     }
 
     @Test
@@ -106,16 +105,15 @@ class StationSpec extends Specification {
     }
 
     @Test
-    // μάλλον χρειάζεται κατάλληλη προσαρμογή
     def "Nearby stations given large radius"() {
         given:
-        List<NearbyStationObject> res = stationService.nearbyStations(37.9838, 23.7275, 10)
+        List<NearbyStationObject> res = stationService.nearbyStations(37.9838, -122.145904, 10)
 
         when:
         def size = res.size()
 
         then:
-        size == 285
+        size == 3
     }
 
     @Test
@@ -151,7 +149,7 @@ class StationSpec extends Specification {
     @Test
     def "Update station with invalid admin"() {
         when: "should expect Admin Not Found exception"
-        stationService.updateStation(27050, 37.873806, 23.759401, "Venezouelas 1", 0, 2)
+        stationService.updateStation(1, 37.873806, 23.759401, "Venezouelas 1", 0, 2)
 
         then:
         def e = thrown(AdminNotFoundException)
@@ -161,7 +159,7 @@ class StationSpec extends Specification {
     @Test
     def "Update station with invalid energy provider"() {
         when: "should expect Energy Provider Not Found exception"
-        stationService.updateStation(27050, 037.873806, 23.759401, "Venezouelas 1", 2, 0)
+        stationService.updateStation(1, 037.873806, 23.759401, "Venezouelas 1", 2, 0)
 
         then:
         def e = thrown(EnergyProviderNotFoundException)
@@ -191,14 +189,14 @@ class StationSpec extends Specification {
     @Test
     def "Delete existing station"() {
         given: 
-        stationService.deleteStation(27050)
+        stationService.deleteStation(1)
 
         when:
-        stationService.readStation(27050)
+        stationService.readStation(1)
 
         then:
         def e = thrown(ChargingStationNotFoundException)
-        e.getMessage() == "Could not find charging station 27050"
+        e.getMessage() == "Could not find charging station 1"
     }
 
     @Test

@@ -53,14 +53,13 @@ class PointSpec extends Specification {
     @Test
     def "Point with no charging sessions"() {
         when: "should expect No Data exception"
-        pointService.sessionsPerPoint(42906, "20100304", "20200802")
+        pointService.sessionsPerPoint(4, "20100304", "20200802")
 
         then:
         thrown(NoDataException)
     }
 
     @Test
-    // Αρκετά σίγουρα αυτό το test δεν εξετάζει κάτι ουσιώδες, νομίζω μπορεί να φύγει
     def "Point 1 from 04-03-2010 to 02-08-2020"() {
         given: 
         SessPointObject res = pointService.sessionsPerPoint(1, "20100304", "20200802")
@@ -75,10 +74,12 @@ class PointSpec extends Specification {
         id == "1"
         periodFrom == "2010-03-04 00:00:00"
         periodTo == "2020-08-02 00:00:00"
-        sessions.size() == 3
-        sessions[0].sessionId == "16188"
-        sessions[1].sessionId == "19019"
-        sessions[2].sessionId == "29712"
+        sessions.size() == 5
+        sessions[0].sessionId == "1"
+        sessions[1].sessionId == "2"
+        sessions[2].sessionId == "5"
+        sessions[3].sessionId == "12"
+        sessions[4].sessionId == "13"
     }
 
     @Test
@@ -104,7 +105,7 @@ class PointSpec extends Specification {
     @Test
     def "Update station with invalid charging station"() {
         when: "should expect Charging Station Not Found exception"
-        pointService.updatePoint(42906, 0, 20, false, 1, 0)
+        pointService.updatePoint(1, 0, 20, false, 1, 0)
 
         then:
         def e = thrown(ChargingStationNotFoundException)
@@ -134,22 +135,22 @@ class PointSpec extends Specification {
     @Test
     def "Delete existing station"() {
         given: 
-        pointService.deletePoint(42906)
+        pointService.deletePoint(1)
 
         when:
-        pointService.readPoint(42906)
+        pointService.readPoint(1)
 
         then:
         def e = thrown(ChargingPointNotFoundException)
-        e.getMessage() == "Could not find charging point 42906"
+        e.getMessage() == "Could not find charging point 1"
     }
 
     @Test
     def "CRU new charging point"() {
         given: 
-        PointObject point = pointService.createPoint(0, 20, false, 1, 27134)
+        PointObject point = pointService.createPoint(0, 20, false, 1, 1)
         point = pointService.readPoint(point.pointId)
-        pointService.updatePoint(point.pointId, 1, 25, true, 2, 27050)
+        pointService.updatePoint(point.pointId, 1, 25, true, 2, 2)
         PointObject updPoint = pointService.readPoint(point.pointId)
 
         when:
@@ -170,19 +171,19 @@ class PointSpec extends Specification {
         maxEnergy == 20
         isOccupied == false
         chargerType == 1
-        stationId == 27134
+        stationId == 1
 
         updCondition == 1
         updMaxEnergy == 25
         updIsOccupied == true
         updChargerType == 2
-        updStationId == 27050
+        updStationId == 2
     }
 
     @Test
     def "Delete new point"() {
         given:
-        PointObject point = pointService.createPoint(0, 20, false, 1, 27050)
+        PointObject point = pointService.createPoint(0, 20, false, 1, 1)
         pointService.deletePoint(point.pointId)
         
 

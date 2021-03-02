@@ -124,7 +124,7 @@ class PricePolicySpec extends Specification {
     def "Add extra price policy to driver"() {
         given:
         DriverPolicyObject policies = policyService.getAllPricePolicyDriver(1)
-        policyService.addPricePolicyDriver(1000, 1)
+        policyService.addPricePolicyDriver(1, 1)
         DriverPolicyObject updPolicies = policyService.getAllPricePolicyDriver(1)
         
         when:
