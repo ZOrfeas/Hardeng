@@ -155,4 +155,18 @@ public class PricePolicyServiceImpl implements PricePolicyService {
          .orElseThrow(()-> new DriverNotFoundException(driverId));
         return new DriverPolicyObject(driver, driver.getPricePolicies());
     }
+
+    @Override
+    public List<PricePolicyObject> getAdminPricePolicies(Integer adminId) throws NoDataException {
+        Admin admin = adminRepo.findById(adminId).orElseThrow(
+            () -> new AdminNotFoundException(adminId));
+        List<PricePolicy> queryPolicies = pPolicyRepo.findByAdmin(admin);
+        if (queryPolicies.isEmpty()) throw new NoDataException();
+        List<PricePolicyObject> toRet = new ArrayList<>();
+        for (PricePolicy pPolicy : queryPolicies) {
+            toRet.add(new PricePolicyObject(pPolicy));
+        }
+        return toRet;
+    }
+
 }

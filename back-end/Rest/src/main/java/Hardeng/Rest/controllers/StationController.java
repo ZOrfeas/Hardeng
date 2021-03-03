@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.services.StationService;
 import Hardeng.Rest.services.StationServiceImpl.SessStationObject;
+import Hardeng.Rest.services.StationServiceImpl.EnergySumObject;
 import Hardeng.Rest.services.StationServiceImpl.NearbyStationObject;
 import Hardeng.Rest.services.StationServiceImpl.StationObject;
 
@@ -102,4 +104,23 @@ public class StationController {
       if (stationId == null) throw new BadRequestException();
       return stationService.deleteStation(stationId);
    }
+
+   @GetMapping(value = "/AdminStations/{adminId}")
+   public List<StationObject> getAdminStations(@PathVariable(name = "adminId") Integer adminId) {
+      log.info("Get admin's stations...");
+      if (adminId == null) throw new BadRequestException();
+      return stationService.getAdminStations(adminId);
+   }
+
+
+   @PostMapping(value = "/AdminAreaStationEnergy/{adminId}",consumes=MediaType.APPLICATION_JSON_VALUE,
+   produces = {"application/json"})
+   public EnergySumObject getAreaStationSum(@RequestParam(name = "latitude") Double latitude, 
+      @RequestParam(name = "longitude") Double longitude, @RequestParam(name = "radius") Double radius, 
+      @RequestParam(name = "adminId") Integer adminId, @RequestParam(name = "dateFrom") String dateFrom,
+      @RequestParam(name = "dateTo") String dateTo) {
+         log.info("Get admin's stations in area and sum of energy transactions...");
+         if (latitude == null || longitude == null || radius == null || adminId == null) throw new BadRequestException();
+         return stationService.getAreaStationSum(latitude,longitude,radius,adminId,dateFrom,dateTo);
+      }
 }

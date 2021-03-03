@@ -38,4 +38,16 @@ public interface ChargingStationRepository extends JpaRepository<ChargingStation
     */
 
     List<ChargingStation> findByAdmin(Admin admin);
+
+    /**
+     * Fetch stations in specified area belonging to specific admin
+     * @param latLow latitude lower limit
+     * @param latUp latitude upper liit
+     * @param lonLow longitude lower limit
+     * @param lonUp longitude upperlimit
+     * @param admin Admin in question
+     * @return List of charging stations
+     */
+    List<ChargingStation> findByLatitudeBetweenAndLongitudeBetweenAndAdmin(Double latLow,
+    Double latUp, Double lonLow, Double lonUp, Admin admin);
 }

@@ -1,5 +1,7 @@
 package Hardeng.Rest.services;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 
 import Hardeng.Rest.exceptions.NoDataException;
@@ -21,4 +23,6 @@ public interface PricePolicyService {
     ResponseEntity<Object> removePricePolicyDriver(Integer pPolicyId, Integer driverId) throws NoDataException;
 
     DriverPolicyObject getAllPricePolicyDriver(Integer driverId) throws NoDataException;
+
+    List<PricePolicyObject> getAdminPricePolicies(Integer adminId) throws NoDataException;
 }
