@@ -30,7 +30,7 @@
     /* border-style: rounded; */
     border-radius: 20px;
     text-align: center; 
-    width: 25%;
+    width: 30.5%;
     padding: 1.5% 2.5%;
 }
 
@@ -44,7 +44,7 @@
     border-radius: 20px;
     text-align: center; 
     width: 50%;
-    margin-left: 4.5%;
+    margin-left: 5.5%;
 }
 .chart-energy-per-station {
     height:40%;

@@ -4,16 +4,18 @@ import image from './icons/image4.jpg'
 import "./Map.css";
 import L from 'leaflet'
 import M from 'materialize-css';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents} from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, Circle} from 'react-leaflet'
 import "./EnergyMonitoring.css"
 import { ResponsiveLine } from '@nivo/line'
 import {Line} from 'react-chartjs-2'
-import bxb from './icons/bxb.png'
+import bxb from './icons/bxxb.png'
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import person from './icons/black-marker.png';
 
+
+const fillBlueOptions = { fillColor: 'blue' }
 const Athens = [37.983810, 23.727539];
 const data = [
   {
@@ -114,14 +116,19 @@ function LocationMarker(props) {
 
   return position === null ? null : (
     <Marker position={position} icon={locationIcon}>
-      <Popup> <div style={{ 
-                backgroundImage: `url(${bxb})`,
-                backgroundRepeat: 'no-repeat',
-                height: '50px',
-                backgroundAttachment: 'fixed',
-                backgroundSize: '100% 100%',
-                }}> </div> </Popup>
+      <Popup> 
+        <div style={{ 
+          backgroundImage: `url(${bxb})`,
+          backgroundRepeat: 'no-repeat',
+          height: '50px',
+          backgroundAttachment: 'fixed',
+          backgroundSize: '100% 100%',
+          }}> 
+        </div> 
+      </Popup>
+      <Circle center={position} pathOptions={fillBlueOptions} radius={10000} />
     </Marker>
+    
   )
 }
 
@@ -183,13 +190,14 @@ CalcCostPerRegion (){
                   <MapContainer
                     center={Athens}
                     onClick={this.handleClick}
-                    zoom={20}
+                    zoom={11}
                     style={style.map}
                   >
                     <TileLayer
                       attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
+                    
                     <LocationMarker/>
                   </MapContainer>
                 </div>
