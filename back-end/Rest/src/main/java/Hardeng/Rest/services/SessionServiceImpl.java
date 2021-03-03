@@ -198,6 +198,7 @@ public class SessionServiceImpl implements SessionService {
             () -> new ChargingPointNotFoundException(pointId));
         if (!cPoint.isOccupied()) throw new InternalServerErrorException(); //never hurts to check :)
         cPoint.resetIsOccupied(); // "release" the chargingPoint
+        cPointRepo.save(cPoint); // write changes in database
         return;
     }
 }
