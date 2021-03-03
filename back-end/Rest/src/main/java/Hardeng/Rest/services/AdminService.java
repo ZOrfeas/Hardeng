@@ -45,7 +45,7 @@ public interface AdminService {
       * @return an object containing a status code
       * @throws BadRequestException
       */
-    StatusObject userMod (String driverName, String username, String password, String role,
+    StatusObject userMod (String username, String password, String role, String driverName,
     String email ) throws BadRequestException;
 
     /**
