@@ -16,7 +16,7 @@ const adminID = localStorage.getItem("adminID")
 
 export function userLogin(user, pass, type) {
   var reqURL;
-  type === 'driver' ? reqURL = "login/DRIVER" : reqURL = "login/ADMIN";
+  type === 'driver' ? reqURL = "login/DRIVER" : reqURL = "login/STATION_ADMIN";
 
   const obj = new URLSearchParams();
   obj.append('username', user);
@@ -31,11 +31,14 @@ export function userLogin(user, pass, type) {
   return axios.post(reqURL, obj, urlencoded);
 }
 
-export function getUserID(driverKey){
-  const reqURL = 'Driver/getId';
+export function getUserID(Key,type){
+
+  var reqURL;
+  type === 'driver' ? reqURL = 'Driver/getId' : reqURL = "admin/getId";
+
   const auth = {
     headers: {
-      'X-OBSERVATORY-AUTH': driverKey,
+      'X-OBSERVATORY-AUTH': Key,
     }
   };
 

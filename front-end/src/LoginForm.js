@@ -48,7 +48,7 @@ class LoginForm extends React.Component {
           localStorage.setItem(userType + 'Key', res.data.token);
           console.log('Fuck ' + res.data.token);
 
-          getUserID(res.data.token)
+          getUserID(res.data.token,userType)
             .then(resID =>{
               localStorage.setItem(userType + 'ID', resID.data);
 
