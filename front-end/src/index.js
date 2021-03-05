@@ -31,6 +31,7 @@ ReactDOM.render(
       )}/>
 
       <Route exact ={true} path="/EditUserInfo" render = {() =>(
+
         <EditUserInfo/>
       )}/>
 
