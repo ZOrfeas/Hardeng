@@ -113,8 +113,7 @@ public class StationController {
    }
 
 
-   @PostMapping(value = "/AdminAreaStationEnergy/{adminId}",consumes=MediaType.APPLICATION_JSON_VALUE,
-   produces = {"application/json"})
+   @GetMapping(value = "/AdminAreaStationEnergy", produces = {"application/json"})
    public EnergySumObject getAreaStationSum(@RequestParam(name = "latitude") Double latitude, 
       @RequestParam(name = "longitude") Double longitude, @RequestParam(name = "radius") Double radius, 
       @RequestParam(name = "adminId") Integer adminId, @RequestParam(name = "dateFrom") String dateFrom,
