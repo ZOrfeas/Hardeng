@@ -156,11 +156,20 @@ public class AdminController {
     return adminService.deleteAdmin(adminId);
  }
 
- @GetMapping(value ="/getId", produces = {"application/json"})
+ @GetMapping(value = "/getId", produces = {"application/json"})
  public ResponseEntity<Object> getId(@AuthenticationPrincipal CustomUserPrincipal loggedInAdmin) {
      log.info("Logged in admin's Id requested...");
      if (loggedInAdmin == null || !loggedInAdmin.getRole().equals(SecurityConfig.stationAdminRole))
         throw new BadRequestException();
     return adminService.fetchId(loggedInAdmin.getUsername());
  }
+
+ @GetMapping(value = "/totalEnergy/{adminId}/{dateFrom}/{dateTo}", produces = {"application/json"})
+ public ResponseEntity<Object> getTotalEnergy(@PathVariable(name = "adminId") Integer adminId
+    ,@PathVariable(name = "dateFrom") String dateFrom, @PathVariable(name = "dateTo") String dateTo)
+    {
+        log.info("Admin's total energy consumption requested...");
+        if (adminId == null || dateFrom == null || dateTo == null) throw new BadRequestException();
+        return adminService.getTotalEnergy(adminId, dateFrom, dateTo);
+    }
 }
