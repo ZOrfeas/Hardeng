@@ -18,7 +18,7 @@ exports.builder = {
     role: {
       demandOption: true,
       describe: 'Choose user role',
-      choices: ['admin', 'driver']
+      choices: ['STATION_ADMIN', 'DRIVER']
     }
 }
 
@@ -26,10 +26,10 @@ exports.handler = function(argv) {
 
     if (!tokenFileExists()) {
 
-        axios.post('/login', qs.stringify({
+        axios.post('/login/' + argv.role, qs.stringify({
             username: argv.username,
-            password: argv.passw,
-            role: argv.role
+            password: argv.passw
+            //role: argv.role
             }), {
             headers: {
                 'content-type': 'application/x-www-form-urlencoded'

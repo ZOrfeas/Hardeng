@@ -1,5 +1,7 @@
 const axios = require("axios");
 const { builder } = require("./SessionsPerProvider");
+const qs = require('querystring');
+const { tokenFileExists, createTokenFile, errorHandler, getToken } = require("../utils");
 
 exports.command = 'Admin'
 
@@ -8,14 +10,21 @@ exports.desc = "System Administration"
 exports.builder = {
   usermod:
   {
-    describe: "Create user or change user's password\n'--usermod --username <User's name> --passw <Password>'",
+    describe: "Create user or change user's password\n'--usermod --username <username> --passw <Password> --email<Email> --name<User's name>'",
     
   },
   username: {
-    describe: "User's name"
+    describe: "Username"
   },
   passw: {
-    describe: "User's password"
+    describe: "Password"
+  },
+  email: {
+    describe: "User's email"
+      
+  },
+  name:{
+    describe: "User's name"
   },
   users:
   {
@@ -41,57 +50,29 @@ exports.builder = {
 
 exports.handler = function(argv)
 {
-  var myArgs = process.argv.slice(3)
-  if(myArgs[0] == '--usermod'){
-    if(myArgs[1] != '--username' || myArgs[3] != '--passw')//if myArgs[2] or myArgs[4] == 0 API will return error 400
+  var args = process.argv.slice(3)
+  if(args[0] == '--usermod'){
+    if(args[1] != '--username' || args[3] != '--passw' || args[5] != '--email' || args[7] !='--name')
     {
-      console.log('Please make sure to enter username and password')
-      console.log("For more, type: Admin --help")
+      console.log('Type Admin --help')
     }
     else{
-      console.log('APIkey: ', myArgs[8])
-    }
-  }
-  if(myArgs[0] == '--users'){
-    console.log("Username: ", 'API key')
-  }
-  if(myArgs[0] == '--sessionupd')
-  {
-    if(myArgs[1] != '--source')
-    {
-      console.log("Please add the csv file with sessions you want to upload\nFor more, type: Admin --help")
-    }
-    else{
-      console.log(myArgs[2])
-      
-    }
-  }
-  if(myArgs[0] == '--healthcheck')
-  {
-    axios.get('/admin/healthcheck', {
-      params: {
-          apikey: argv.apikey
-      }
-  })
-    .then(res =>{
-      console.log(res.data);
-  })
-  .catch(err => {
+      axios.post('admin/usermod/'+ args[2]+'/'+args[4], qs.stringify({
+        username: args[2],
+        password: args[4]
+      }),
+      {
+        data:{
+          email: args[6], 
+          driverName: args[8]
+        }
+      })
+      .then(res =>{
+      console.log(res.data.getToken);
+      })
+      .catch(err => {
       console.log(err.response.data)
-  })
-  }
-  if(myArgs[0] == '--resetsessions')
-  {
-    axios.post('/admin/resetsessions', {
-      params: {
-          apikey: argv.apikey
-      }
-  })
-    .then(res =>{
-      console.log(res.data);
-  })
-  .catch(err => {
-      console.log(err.response.data)
-  })
+     })
+    }
   }
 }
