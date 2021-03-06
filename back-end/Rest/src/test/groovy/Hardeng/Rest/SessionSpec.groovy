@@ -23,7 +23,7 @@ class SessionSpec extends Specification{
     @Test
     def "Invalid startedOn String"(){
         when: "Expect illegal argument exception"
-        sessionService.createSession("201807", "20180708", 19.8, "cash", 1, 1199, 13, 1)
+        sessionService.createSession("201807", "20180708", 19.8, "cash", 1, 1431, 1, 110)
 
         then:
         thrown(IllegalArgumentException)
@@ -31,7 +31,7 @@ class SessionSpec extends Specification{
     @Test
     def "invalid finishedOn String"(){
         when: "Expect illegal argument exception"
-        sessionService.createSession("20180708", "201807", 19.8, "cash", 1, 1199, 13, 1)
+        sessionService.createSession("20180708", "201807", 19.8, "cash", 1, 1431, 1, 110)
 
         then:
         thrown(IllegalArgumentException)
@@ -39,7 +39,7 @@ class SessionSpec extends Specification{
     @Test
     def "Charging Point with 0 Id"(){
         when: "Expect Charging Point Not Found"
-        sessionService.createSession("20180708", "20180708", 19.8, "cash", 0, 1199, 13, 1)
+        sessionService.createSession("20180708", "20180708", 19.8, "cash", 0, 1431, 1, 110)
 
         then:
         thrown(ChargingPointNotFoundException)
@@ -47,7 +47,7 @@ class SessionSpec extends Specification{
     @Test
     def "Price Policy with 0 Id"(){
         when: "Expect Price Policy Not Found"
-        sessionService.createSession("20180708", "20180708", 19.8, "cash", 1, 0, 13, 1)
+        sessionService.createSession("20180708", "20180708", 19.8, "cash", 1, 0, 1, 110)
 
         then:
         thrown(PricePolicyNotFoundException)
@@ -55,7 +55,7 @@ class SessionSpec extends Specification{
     @Test
     def "Car with 0 Id"(){
         when: "Expect Car Not Found"
-        sessionService.createSession("20180708", "20180708", 19.8, "cash", 1, 1199, 0, 1)
+        sessionService.createSession("20180708", "20180708", 19.8, "cash", 1, 1431, 0, 110)
 
         then:
         thrown(CarNotFoundException)
@@ -63,9 +63,17 @@ class SessionSpec extends Specification{
     @Test
     def "Driver with 0 Id"(){
         when: "Expect Driver Not Found"
-        sessionService.createSession("20180708", "20180708", 19.8, "cash", 1, 1199, 13, 0)
+        sessionService.createSession("20180708", "20180708", 19.8, "cash", 1, 1431, 1, 0)
 
         then:
          thrown(DriverNotFoundException)
+    }
+    @Test
+    def "Read Session with 0 Id"(){
+        when: "Expect Session Not Found"
+        sessionService.readSession(0)
+
+        then:
+        thrown(ChargingSessionNotFoundException)
     }
 }
