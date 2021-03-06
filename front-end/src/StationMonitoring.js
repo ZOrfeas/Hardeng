@@ -4,7 +4,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css'
 import M, { Autocomplete } from 'materialize-css';
 import { AiOutlineSend } from "react-icons/ai";
-import { getStations,getDriverInfo } from './API';
+import { getAdminPolicies } from './API';
 import Map from './Map.js';
 import image from './icons/image3.jpg'
 
@@ -27,12 +27,23 @@ class StationMonitoring extends React.Component {
     this.searchForStations = this.searchForStations.bind(this);
     this.enableButton = this.enableButton.bind(this);
     this.state = {
+      adminKey: localStorage.getItem("adminKey"),
+      adminID: localStorage.getItem("adminID"),
       btnIndex: "true",
       user: props.user,
       chosenIndex: null,
+      stations: null,
     };
   }
   componentDidMount(){
+
+    getAdminPolicies(this.state.adminKey,this.state.adminID).then(res =>{
+      console.log(res)
+    })
+    .catch(() => {
+      console.log("wellllllll")
+    })
+
     document.addEventListener('DOMContentLoaded', function() {
       var options = {
          data: {},

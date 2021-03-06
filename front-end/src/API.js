@@ -153,6 +153,15 @@ export function logSession(driverKey, obj){
   return axios.post(reqURL, obj, auth);
 }
 
+export function getAdminPolicies(adminKey, adminID) {
+  const reqURL = "AdminPricePolicies/" + adminID;
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': adminKey,
+    }
+  };
 
+  return axios.get(reqURL, auth);
+}
 
 
