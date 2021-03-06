@@ -2,6 +2,7 @@ package Hardeng.Rest.services;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -440,6 +441,17 @@ public class AdminServiceImpl implements AdminService {
         log.info("Fetching admin Id...");
         return ResponseEntity.ok(adminRepo.findByUsername(username).orElseThrow(
             () -> new BadRequestException()).getId());
+    }
+
+    @Override
+    public ResponseEntity<Object> getTotalEnergy(Integer adminId, String dateFrom, String dateTo)
+        throws NoDataException {
+        Admin admin = adminRepo.findById(adminId).orElseThrow(
+            () -> new AdminNotFoundException(adminId));
+        Timestamp queryDateFrom = Utilities.timestampFromString(dateFrom, Utilities.DATE_FORMAT);
+        Timestamp queryDateTo = Utilities.timestampFromString(dateTo, Utilities.DATE_FORMAT);
+        Float totalSum = adminRepo.totalEnergyConsumed(queryDateFrom, queryDateTo, admin);
+        return (totalSum == null) ? ResponseEntity.ok(0.0f) : ResponseEntity.ok(totalSum);
     }
 }
 

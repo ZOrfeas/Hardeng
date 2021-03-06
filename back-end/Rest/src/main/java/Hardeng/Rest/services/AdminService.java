@@ -67,4 +67,7 @@ public interface AdminService {
     ResponseEntity<Object> deleteAdmin(Integer adminId) throws NoDataException;
 
     ResponseEntity<Object> fetchId(String username) throws BadRequestException;
+
+    ResponseEntity<Object> getTotalEnergy(Integer adminId, String dateFrom, String dateTo) 
+      throws NoDataException;
 }
