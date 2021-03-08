@@ -23,7 +23,7 @@ exports.builder = {
     describe: "User's email"
       
   },
-  name:{
+  driverName:{
     describe: "User's name"
   },
   users:
@@ -50,29 +50,62 @@ exports.builder = {
 
 exports.handler = function(argv)
 {
-  var args = process.argv.slice(3)
-  if(args[0] == '--usermod'){
-    if(args[1] != '--username' || args[3] != '--passw' || args[5] != '--email' || args[7] !='--name')
-    {
-      console.log('Type Admin --help')
-    }
-    else{
-      axios.post('admin/usermod/'+ args[2]+'/'+args[4], qs.stringify({
-        username: args[2],
-        password: args[4]
-      }),
+  var args = process.argv.slice(3);
+  //console.log(args[0]);
+  const token = getToken();
+  switch(args[0])
+  {
+    case '--usermod':
       {
-        data:{
-          email: args[6], 
-          driverName: args[8]
+        if(args[1] != '--username' || args[3] != '--passw' || args[5] != '--email' || args[7] != '--driverName')
+        {
+          console.log('Wrong input, please type Admin --help')
         }
-      })
-      .then(res =>{
-      console.log(res.data.getToken);
+        else
+        {
+          axios.post('/admin/usermod'+argv.username+'/'+argv.passw, {
+            params:{
+              driverName: argv.driverName,
+              email: argv.email
+            },
+            headers: {
+              'X-OBSERVATORY-AUTH': token.toString()
+            }            
+          })
+          .then(res => {
+            console.log(res.data);
+          })
+          .catch(err => {
+            errorHandler(err);
+          })
+        }
+      }
+    case '--users':
+    {
+      break;
+    }
+    case '--sessionsupd':
+      {
+        break;
+      }
+    case '--healthcheck':
+    {
+        axios.get('/admin/healthcheck',{
+          headers: {
+            'X-OBSERVATORY-AUTH': token.toString()
+        }
+        })
+      .then(res => {
+          console.log(res.data);
       })
       .catch(err => {
-      console.log(err.response.data)
-     })
+          errorHandler(err);
+      })
     }
+    case '--resetsessions':
+      {
+        break;
+      }
   }
+
 }

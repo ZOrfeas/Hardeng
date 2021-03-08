@@ -58,7 +58,6 @@ function errorHandler (err) {
     else
         console.log(err.response.data);
 }
-
 module.exports = { isValidApikey,
                    isValidDate,
                    createTokenFile,
