@@ -30,7 +30,7 @@ exports.builder = {
   {
     describe: "User's Activity"
   },
-  sessionupd:
+  sessionsupd:
   {
     describe: "Add new sessions from a csv file\n --sessionupd --source <Filename.csv>"
   },
@@ -63,17 +63,20 @@ exports.handler = function(argv)
         }
         else
         {
-          axios.post('/admin/usermod'+argv.username+'/'+argv.passw, {
-            params:{
+          axios.post('/admin/usermod/'+argv.username+'/'+argv.passw,{
+            
               driverName: argv.driverName,
               email: argv.email
-            },
+            },{
             headers: {
               'X-OBSERVATORY-AUTH': token.toString()
-            }            
+            }    
+            
           })
+          
           .then(res => {
             console.log(res.data);
+            console.log(token);
           })
           .catch(err => {
             errorHandler(err);
@@ -82,11 +85,34 @@ exports.handler = function(argv)
       }
     case '--users':
     {
-      break;
+      axios.get('/admin/users/'+argv.users,{
+        headers:{
+          'X-OBSERVATORY-AUTH': token.toString()
+        }
+      })
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch(err => {
+        errorHandler(err);
+      })
     }
     case '--sessionsupd':
       {
-        break;
+        axios.post('/admin/system/sessionsupd', {
+          file: argv.source
+        },      
+        {
+          headers:{
+            'X-OBSERVATORY-AUTH': token.toString()
+          }
+        })
+        .then(res => {
+          console.log(res.data);
+        })
+        .catch(err => {
+          errorHandler(err);
+        })
       }
     case '--healthcheck':
     {
@@ -103,9 +129,19 @@ exports.handler = function(argv)
       })
     }
     case '--resetsessions':
-      {
-        break;
-      }
+    {
+        axios.post('/admin/resetsessions', {
+          headers: {
+              'X-OBSERVATORY-AUTH': token.toString()
+          }
+      })
+      .then(res => {
+          console.log(res.data);
+      })
+      .catch(err => {
+          errorHandler(err);
+      })
+    }
   }
 
 }
