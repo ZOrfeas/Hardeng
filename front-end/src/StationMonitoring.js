@@ -6,7 +6,7 @@ import M, { Autocomplete } from 'materialize-css';
 import { AiOutlineSend } from "react-icons/ai";
 import { getAdminPolicies } from './API';
 import Map from './Map.js';
-import image from './icons/image3.jpg'
+import image from './icons/image4.jpg'
 
 const driversHardcoded = [
   {driver_name: "Kostas", id: 11111, bonus_points: 10, carID: 13,  email: "kostas@kostas.gr", walletID: 12315464758},
@@ -124,13 +124,14 @@ class StationMonitoring extends React.Component {
      return(
       
       <div className="a">
-        <div style={{ 
+        {/* <div style={{ 
               backgroundImage: `url(${image})`,
               width:'100%',
               backgroundRepeat: 'no-repeat',
               height: '1000px',
               backgroundSize: 'cover',
-              }} className = "background">
+              backgroundSize: '100% 100%',
+              }} className = "background"> */}
           {this.state.chosenIndex !== null && (
             <div className="stationsMap" id="stationsMap">
               
@@ -195,14 +196,16 @@ class StationMonitoring extends React.Component {
               />
             </form>
           </div>
-          <form action="">
-            <div className="btn-group" id="btn-group" display="block">
-              <input type="button" className="leftButton" value="View Price Policies" id="lbtn" onClick={this.searchForUsers}/>
-              <input type="button" className="rightButton" value="View Stations" id="rbtn" onClick={this.searchForStations}/>
-            </div>
-          </form>
+          <div className="row">
+            <form action="">
+              <div className="btn-group" id="btn-group" display="block">
+                <input type="button" className="leftButton" value="View Price Policies" id="lbtn" onClick={this.searchForUsers}/>
+                <input type="button" className="rightButton" value="View Stations" id="rbtn" onClick={this.searchForStations}/>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
+      // </div>
     );
   }
 }

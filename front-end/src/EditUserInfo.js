@@ -85,6 +85,7 @@ class EditUserInfo extends React.Component {
       // this.setState({password: res.data["Password"]})
       this.setState({DriverName: res.data["DriverName"]})
       this.setState({CardId: res.data["CardId"]})
+      // console.log(this.DriverName);
     })
     .catch(() => {
       console.log("Oops, exases")

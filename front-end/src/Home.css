@@ -1,6 +1,6 @@
 body {
     background-color:#555;
-    overflow: hidden;  /*Hide scrollbars*/
+    /* overflow: hidden;  Hide scrollbars */
 }
 .navbar-fixed {
     position: absolute;z-index:999999999;

@@ -3,7 +3,7 @@ import UserInfo from './UserInfo';
 import M from 'materialize-css';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
-import { getStations } from './API';
+import { getAdminStations,updateAdminStation } from './API';
 import 'leaflet/dist/leaflet.css';
 import "./Map.css";
 
@@ -32,8 +32,8 @@ L.Marker.prototype.options.icon = DefaultIcon;
 const Athens = [37.983810, 23.727539];
 
 const stationsHardcoded = [
-  { position: [37.983810, 23.727539], label: "Athens", time: "10 minutes", condition: "Available" },
-  { position: [40.629269, 22.947412], label: "Thessaloniki", time: "5 minutes", condition: "Maintenance" }
+  { Longitude:37.983810, Latitude: 23.727539, AddressLine: "Athens", time: "10 minutes", condition: "Available" },
+  {  Longitude:40.629269, Latitude: 22.947412, AddressLine: "Thessaloniki", time: "5 minutes", condition: "Maintenance" }
 ];
 
 function LocationMarker(props) {
@@ -62,22 +62,33 @@ class Map extends React.Component{
     super(props);
 
     this.state = {
+      adminKey: localStorage.getItem("adminKey"),
+      adminID: localStorage.getItem("adminID"),
+      stationID: null,
       stations: stationsHardcoded,
       currentPos: null,
       chosenIndex: null,
-      zoom: 10,
+      zoom: 3,
       error: null,
-      btnIndex: true
+      btnIndex: true,
+      address: null,
+      chargingPoints: null,
+      providerID: null,
+      lat: null,
+      lot: null,
     };
     this.setState({
       username: ""  
     })
+    this.submitChanges = this.submitChanges.bind(this);
     this.showMarkers = this.showMarkers.bind(this);
     this.handleLocation = this.handleLocation.bind(this);
     this.showOptions = this.showOptions.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.handleUserInput = this.handleUserInput.bind(this);
     this.enableButton = this.enableButton.bind(this);
+    this.handleUserInputAddress = this.handleUserInputAddress.bind(this);
+    this.handleUserInputProviderID = this.handleUserInputProviderID.bind(this);
   }
 
   handleUserInput(e) {
@@ -90,23 +101,31 @@ class Map extends React.Component{
     var i = this.state.chosenIndex;
 
     if (i === null) {
-      return (this.state.stations.map(({ position, label }, index) => <Marker key={index} value={label} position={position}></Marker>));
+      return (this.state.stations.map(({ Longitude, Latitude, AddressLine }, index) => <Marker key={index} value={AddressLine} position={[Latitude,Longitude]}></Marker>));
     }
-
     else {
       var station = this.state.stations[i];
-      return (<Marker key={i} value={station.label} position={station.position}></Marker>);
+      return (<Marker key={i} value={station.AddressLine} position={[station.Longitude,station.Latitude]}></Marker>);
     }
   }
 
   showOptions() {
     return (
-      this.state.stations.map(({ position, label }, index) => <option value={index}> {label} </option>)
+      this.state.stations.map(({ Longitude, Latitude, AddressLine }, index) => <option value={index}> {AddressLine} </option>)
     );
   }
 
   handleSelect(e) {
     e.target.value === "all" ? this.setState({ chosenIndex: null }) : this.setState({ chosenIndex: e.target.value });
+    console.log(e.target.value)
+    console.log(this.state.stations[e.target.value]["AddressLine"])
+    console.log(this.state.stations[e.target.value]["TotalChargingPoints"])
+    this.setState({address: this.state.stations[e.target.value]["AddressLine"]})
+    this.setState({chargingPoints: this.state.stations[e.target.value]["TotalChargingPoints"]})
+    this.setState({providerID: this.state.stations[e.target.value]["EnergyProviderID"]})
+    this.setState({lot: this.state.stations[e.target.value]["Longitude"]})
+    this.setState({lat: this.state.stations[e.target.value]["Latitude"]})
+    this.setState({stationID: this.state.stations[e.target.value]["StationID"]})
   }
 
   handleLocation(latlng) {
@@ -117,12 +136,41 @@ class Map extends React.Component{
 }
 
   componentDidMount() {
-    M.AutoInit();
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('.dropdown-trigger');
+      var instances = M.Dropdown.init(elems, {});
+    });
+
+    // M.AutoInit();
+
+    getAdminStations(this.state.adminKey,this.state.adminID)
+    .then(res => {
+      console.log(res)
+      this.setState({stations: res.data})
+    })
+    .catch(() => {
+  
+    })
+
   }
 
   submitChanges(){
     if (window.confirm("U sur?????")) {
-        //get driver with id and change info
+      const obj = {
+      "lat" : this.state.lat,
+      "lon" : this.state.lot,
+      "address" : this.state.address,
+      "adminId" : this.state.adminID,
+      "providerId" : this.state.providerID,
+      }
+      updateAdminStation(this.state.adminKey,this.state.stationID,obj)
+      .then(res => {
+        console.log(res)
+        window.location.reload();
+      })
+      .catch(error => {
+        console.log(error.response)
+      })
     } 
     else {
         //do nothing
@@ -133,6 +181,15 @@ class Map extends React.Component{
     this.setState({btnIndex: false});
   }
 
+  handleUserInputProviderID (e){
+    this.setState({btnIndex: false});
+    this.setState({providerID: e.target.value})
+  }
+
+  handleUserInputAddress (e){
+    this.setState({btnIndex: false});
+    this.setState({address: e.target.value})
+  }
 
   render(){
     return(
@@ -168,12 +225,16 @@ class Map extends React.Component{
               </div>
               <div className="card-action">
                 <div class="input-field col s12 right align">
-                  <input placeholder="Address" id="station_address" type="text" class="validate" onChange={this.enableButton}/>
-                  <label for="first_name">  </label>
+                  <input placeholder="Address" id="station_address" value ={this.state.address} type="text" class="validate" onChange={this.handleUserInputAddress}/>
+                  <label for="station_address">  </label>
                 </div> 
                 <div class="input-field col s12 right align">
-                  <input placeholder="Charging Points" id="station_charging_points" type="text" class="validate" onChange={this.enableButton}/>
-                  <label for="first_name">  </label>
+                  <input placeholder="Charging Points" id="station_charging_points" value={this.state.chargingPoints} type="text" class="validate"/>
+                  <label for="station_charging_points">  </label>
+                </div> 
+                <div class="input-field col s12 right align">
+                  <input placeholder="Energy Provider ID" id="provider_id" value={this.state.providerID} type="text" class="validate" onChange={this.handleUserInputProviderID}/>
+                  <label for="provider_id"> </label>
                 </div> 
               </div>
               <div className="right-align">

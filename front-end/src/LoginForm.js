@@ -96,6 +96,9 @@ class LoginForm extends React.Component {
   }
   componentDidMount(){
     M.AutoInit();
+
+  
+
   }
 
   renderRedirect = () => {

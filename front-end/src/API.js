@@ -164,4 +164,67 @@ export function getAdminPolicies(adminKey, adminID) {
   return axios.get(reqURL, auth);
 }
 
+export function updateAdminPolicies(adminKey,PricePolicyID,obj) {
+  const reqURL = "PricePolicy/" + PricePolicyID;
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': adminKey
+    }
+  };
 
+  return axios.put(reqURL, obj, auth); 
+}
+
+
+export function getAdminStations(adminKey, adminID) {
+  const reqURL = "AdminStations/" + adminID;
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': adminKey,
+    }
+  };
+
+  return axios.get(reqURL, auth);
+}
+
+export function updateAdminStation(adminKey,stationID,obj) {
+  const reqURL = "Station/" + stationID;
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': adminKey
+    }
+  };
+
+  return axios.put(reqURL, obj, auth); 
+}
+
+export function getAdminAreaStationEnergy(adminKey, adminID, latlng,radius,dateFrom,dateTo){
+
+  const reqURL = "AdminAreaStationEnergy/";
+
+  const headers= {
+    'X-OBSERVATORY-AUTH': adminKey
+  }
+  const params = {
+    "latitude": latlng["lat"],
+    "longitude": latlng["lng"],
+    "radius": radius,
+    "dateFrom": dateFrom,
+    "dateTo": dateTo,
+    "adminId": adminID,
+    
+  }
+  return axios.get(reqURL, {params, headers});
+}
+
+export function getAdminTotalEnergy(adminKey, adminID, dateFrom, dateTo){
+
+const reqURL = "admin/totalEnergy/" + adminID + "/" + dateFrom + "/" + dateTo;
+
+const auth = {
+  headers: {
+    'X-OBSERVATORY-AUTH': adminKey
+  }
+};
+  return axios.get(reqURL, auth);
+}

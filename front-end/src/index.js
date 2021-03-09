@@ -16,6 +16,7 @@ ReactDOM.render(
 
       <Route exact ={true} path="/" render = {() =>(
         <Home/>
+        // <EnergyMonitoring/>
       )}/>
 
       <Route exact ={true} path="/ChargingExperience" render = {() =>(
