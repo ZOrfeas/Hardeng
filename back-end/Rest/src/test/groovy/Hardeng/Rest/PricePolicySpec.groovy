@@ -207,4 +207,23 @@ class PricePolicySpec extends Specification {
         def e = thrown(DriverNotFoundException)
         e.getMessage() == "Could not find driver 0" 
     }
+
+    @Test
+    def "Get admin price policies of invalid admin"() {
+        when: "should expect Admin Not Found exception"
+        policyService.getAdminPricePolicies(0)
+
+        then:
+        def e = thrown(AdminNotFoundException)
+        e.getMessage() == "Could not find admin 0" 
+    }
+
+    @Test
+    def "Get none admin price policies"() {
+        when: "should expect No Data exception"
+        policyService.getAdminPricePolicies(50)
+
+        then:
+        thrown(NoDataException)
+    }
 }

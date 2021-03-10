@@ -238,4 +238,60 @@ class StationSpec extends Specification {
         def e = thrown(ChargingStationNotFoundException)
         e.getMessage() == "Could not find charging station " + station.stationId.toString()
     }
+
+    @Test
+    def "GetAdminStations with invalid admin"() {
+        when:
+        stationService.getAdminStations(0)        
+
+        then:
+        def e = thrown(AdminNotFoundException)
+        e.getMessage() == "Could not find admin 0"
+    }
+
+    @Test
+    def "GetAreaStationsSum with no Stations"() {
+        when:
+        stationService.getAdminStations(1)        
+
+        then:
+        thrown(NoDataException)
+    }
+
+    @Test
+    def "GetAreaStationsSum with invalid admin"() {
+        when:
+        stationService.getAreaStationSum(37.873806, 23.759401, 1, 0, "20180101", "20191231")        
+
+        then:
+        def e = thrown(AdminNotFoundException)
+        e.getMessage() == "Could not find admin 0"
+    }
+
+    @Test
+    def "GetAreaStationsSum with no Stations"() {
+        when:
+        stationService.getAreaStationSum(37.873806, 23.759401, 1, 1, "20180101", "20191231")        
+
+        then:
+        thrown(NoDataException)
+    }
+
+    @Test
+    def "GetAreaStationsSum with invalid dateFrom"() {
+        when:
+        stationService.getAreaStationSum(34.050745, -118.081014, 1, 191, "20180", "20191231")        
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
+    @Test
+    def "GetAreaStationsSum with invalid dateTo"() {
+        when:
+        stationService.getAreaStationSum(34.050745, -118.081014, 1, 191, "20180101", "20191")        
+
+        then:
+        thrown(IllegalArgumentException)
+    }
 }
