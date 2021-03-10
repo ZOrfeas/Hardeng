@@ -1,5 +1,7 @@
 package Hardeng.Rest.controllers;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -93,5 +95,12 @@ public class PricePolicyController {
     public DriverPolicyObject getAllPricePolicyDriver(@PathVariable(name = "driverId") Integer driverId) {
         log.info("Get all price policies of  a driver...");
         return pPolicyService.getAllPricePolicyDriver(driverId);
+    }
+
+    @GetMapping(value = "/AdminPricePolicies/{adminId}", produces = {"application/json"})
+    public List<PricePolicyObject> getAdminPricePolicies(@PathVariable(name = "adminId") Integer adminId) {
+        log.info("Get admin's price policies...");
+        if (adminId == null) throw new BadRequestException();
+        return pPolicyService.getAdminPricePolicies(adminId);
     }
 }

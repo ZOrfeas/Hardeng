@@ -11,8 +11,8 @@ const config = {
 
 //const driverKey = localStorage.getItem("driverKey");
 //const driverID = localStorage.getItem("driverID");
-const adminKey = localStorage.getItem("adminKey");
-const adminID = localStorage.getItem("adminID")
+//const adminKey = localStorage.getItem("adminKey");
+//const adminID = localStorage.getItem("adminID")
 
 export function userLogin(user, pass, type) {
   var reqURL;

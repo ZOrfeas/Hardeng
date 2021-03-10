@@ -1,5 +1,6 @@
 package Hardeng.Rest.repositories;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -34,5 +35,10 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
      */
     Optional<Admin> findByUsernameAndPassword(String username, String password);
 
-
+    @Query("SELECT SUM(sess.energyDelivered) FROM ChargingSession sess " +
+           "WHERE sess.startedOn >= :dateFrom AND sess.finishedOn <= :dateTo " + 
+           "AND sess.chargingPoint IN (SELECT point.id FROM ChargingPoint point " +
+           "WHERE point.cStation IN (SELECT stat.id FROM ChargingStation stat " +
+           "WHERE stat.admin = :admin))")
+    Float totalEnergyConsumed(Timestamp dateFrom, Timestamp dateTo, Admin admin);
 }
