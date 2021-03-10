@@ -119,7 +119,7 @@ class DriverSpec extends Specification {
     }
 
     @Test
-    def "Fetch if of invalid driver"() {
+    def "Fetch id of invalid driver"() {
         when:
         driverService.fetchId("driver500")
 
