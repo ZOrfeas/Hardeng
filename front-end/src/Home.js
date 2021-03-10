@@ -31,14 +31,11 @@ class Home extends React.Component{
                     <div className="nav-wrapper">
                       <a href="" className="home-brand-logo">Logo Placeholder</a>
                       <ul id="nav-mobile" className="right hide-on-med-and-down">
-                        <li><a href="/StationMonitoring" className="home-link">
-                        Station Monitoring
-                        </a></li>
                         <li><a href="/ChargingExperience" className="home-link" disabled="true">
                         Charging Experience
                         </a></li>
                         <li><a href="/EnergyMonitoring" className="home-link">
-                        Energy Monitoring
+                        Station Monitoring
                         </a></li>
                         <li><a href="/EditUserInfo" className="home-link">
                         Edit Profile

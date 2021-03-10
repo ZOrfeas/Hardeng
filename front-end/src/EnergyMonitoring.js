@@ -6,7 +6,8 @@ import L from 'leaflet'
 import M from 'materialize-css';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, Circle} from 'react-leaflet'
 import "./EnergyMonitoring.css"
-import { ResponsiveLine } from '@nivo/line'
+import { ResponsiveLine} from '@nivo/line'
+import { ResponsiveStream } from '@nivo/stream'
 import bxb from './icons/bxxb.png'
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
@@ -15,7 +16,50 @@ import person from './icons/black-marker.png';
 import Map from './Map.js';
 import { getAdminPolicies, updateAdminPolicies, getAdminAreaStationEnergy, getAdminTotalEnergy} from './API';
 
-
+const data = [
+  {
+    "2019-10-01": Math.floor(Math.random() * 10), 
+    "2020-02-01": 20, 
+    "2020-06-01": 30, 
+    "2020-10-01": 15, 
+    "2021-02-01": 40,
+  },
+  {
+    "2019-10-01": 5, 
+    "2020-02-01": 10, 
+    "2020-06-01": 25, 
+    "2020-10-01": 35, 
+    "2021-02-01": 10,
+  },
+  {
+    "2019-10-01": 20, 
+    "2020-02-01": 39, 
+    "2020-06-01": 41, 
+    "2020-10-01": 16, 
+    "2021-02-01": 28,
+  },
+  {
+    "2019-10-01": 39, 
+    "2020-02-01": 19, 
+    "2020-06-01": 28, 
+    "2020-10-01": 9, 
+    "2021-02-01": 13,
+  },
+  {
+    "2019-10-01": 10, 
+    "2020-02-01": 20, 
+    "2020-06-01": 30, 
+    "2020-10-01": 15, 
+    "2021-02-01": 40,
+  },
+  {
+    "2019-10-01": 10, 
+    "2020-02-01": 20, 
+    "2020-06-01": 30, 
+    "2020-10-01": 15, 
+    "2021-02-01": 40,
+  },
+]
 
 const fillBlueOptions = { fillColor: 'blue' }
 const Athens = [37.983810, 23.727539];
@@ -109,22 +153,18 @@ class EnergyMonitoring extends React.Component{
     costPerkWh: null,
     kWhAmount: null,
     sela: {},
-    datafirst: 0,
-    datasecond: 0,
-    datathird: 0,
-    datafourth: 0,
-    datafifth: 0,
+    datastream: [],
+    totalsum: null,
+    PricePolicy: null,
     graphTotalEnergy: [
       {
-        "id": "Total Energy Consumption",
+        "id": "Energy Consumption",
         "color": "hsl(160, 70%, 50%)",
         "data": [
         ]
       }
     ]
   };
-
-
 
   this.ReturnFromViewStations = this.ReturnFromViewStations.bind(this);
   this.searchForStations = this.searchForStations.bind(this);
@@ -149,7 +189,6 @@ componentDidMount(){
     var instances = M.Datepicker.init(elems, {format: 'yyyy-mm-dd'});
   });
 
-
   window.onload = function() {
     this.showGraphs();
   }.bind(this);
@@ -162,9 +201,8 @@ componentDidMount(){
     var instances = M.Autocomplete.init(elems, {
       onAutocomplete:function(res){
         var temp = res.slice(13);
-
         for (const i in this.state.PricePolicy){
-          if (this.state.PricePolicy[i]["PricePolicyID"] === temp){
+          if (this.state.PricePolicy[i]["PricePolicyID"] == temp){
             this.setState({PricePolicyID: temp});
             this.setState({costPerkWh: this.state.PricePolicy[i]["CostPerKWh"]});
             this.setState({kWhAmount: this.state.PricePolicy[i]["KWh"]});
@@ -187,7 +225,6 @@ componentDidMount(){
   })
 }
 
-
 async getEnergy(){
   const kostas = await Promise.all([
     getAdminTotalEnergy(this.state.adminKey, this.state.adminID, "2019-06-01", "2019-10-01"),
@@ -197,68 +234,19 @@ async getEnergy(){
     getAdminTotalEnergy(this.state.adminKey, this.state.adminID, "2020-10-01","2021-02-01"),
   ]);
 
-  listsela.push({"x": "2019-10-01","y":kostas[0].data});
-  listsela.push({"x": "2020-2-01","y":kostas[1].data});
-  listsela.push({"x": "2020-6-01","y":kostas[2].data});
-  listsela.push({"x": "2020-10-01","y":kostas[3].data});
-  listsela.push({"x": "2021-2-01","y":kostas[4].data});
+  listsela.push({"x": "2019-10-01","y":kostas[0].data/1000000});
+  listsela.push({"x": "2020-2-01","y":kostas[1].data/1000000});
+  listsela.push({"x": "2020-6-01","y":kostas[2].data/1000000});
+  listsela.push({"x": "2020-10-01","y":kostas[3].data/1000000});
+  listsela.push({"x": "2021-2-01","y":kostas[4].data/1000000});
+  this.setState({totalsum: (kostas[0].data+kostas[1].data+kostas[2].data+kostas[3].data+kostas[4].data)/5000000})
   console.log(listsela,"kostas sela");
-//   listsela.push({
-//     "x":10,"y":10000000
-//   },
-// {
-//   "x":11,"y":10000000
-// },
-// {
-//   "x":12,"y":10000000
-// },)
   this.setGraph();
 }
 
-
-
 showGraphs(){
-
   this.getEnergy();
-    
-
   console.log(listsela);
-
-  
-  // getAdminTotalEnergy(this.state.adminKey, this.state.adminID, "2020-2-1", "2020-6-1").then(res => {
-  //   this.setState({datathird: res.data})
-  //   third = this.state.datathird
-
-  // })
-  // .catch(error => {
-  //   console.log(error.response)
-  // })
-
-  // getAdminTotalEnergy(this.state.adminKey, this.state.adminID, "2020-6-1", "2020-10-1").then(res => {
-
-  //   this.setState({datafourth: res.data})
-  //   fourth = this.state.datafourth
-
-  // })
-  // .catch(error => {
-  //   console.log(error.response)
-  // })
-
-  // getAdminTotalEnergy(this.state.adminKey, this.state.adminID, "2020-10-1", "2021-2-1").then(res => {
-
-  //   this.setState({datafifth: res.data})
-  //   fifth = this.state.datafifth
-  //   // console.log(first,second,third,fourth,fifth);
-  // })
-  // .catch(error => {
-  //   console.log(error.response)
-  // })
-
-
-
-
-
-  // console.log(first,second,third,fourth,fifth);
   return null;
 }
 
@@ -266,24 +254,47 @@ setGraph(){
   console.log(listsela,"sela2");
   this.setState({graphTotalEnergy: [
     {
-      "id": "Total Energy Consumption",
+      "id": "Consumption",
       "color": "hsl(160, 70%, 50%)",
       "data": listsela,
     },
+  ]})
+  let kostas = this.state.totalsum;
+  this.setState({datastream: [
     {
-      "id": "sela",
-      "color": "hsl(99, 70%, 50%)",
-      "data": [
-        {
-          "x":10,"y":10000000
-        },
-        {
-          "x":11,"y":10000000
-        },
-        {
-          "x":12,"y":10000000
-        },
-    ],
+      "2021-03-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50), 
+      "2021-04-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50),
+      "2021-05-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50), 
+      "2021-06-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50), 
+      "2021-07-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50),
+    },
+    {
+      "2021-03-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50), 
+      "2021-04-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50),
+      "2021-05-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50), 
+      "2021-06-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50), 
+      "2021-07-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50),
+    },
+    {
+      "2021-03-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50), 
+      "2021-04-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50),
+      "2021-05-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50), 
+      "2021-06-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50), 
+      "2021-07-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50),
+    },
+    {
+      "2021-03-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50), 
+      "2021-04-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50),
+      "2021-05-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50), 
+      "2021-06-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50), 
+      "2021-07-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50),
+    },
+    {
+      "2021-03-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50), 
+      "2021-04-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50),
+      "2021-05-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50), 
+      "2021-06-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50), 
+      "2021-07-01": Math.abs(kostas + Math.floor(Math.random() * 100)-50),
     },
   ]})
 }
@@ -292,10 +303,12 @@ handleUserInputPricePolicyID (e){
   this.setState({btnIndex: false});
   this.setState({PricePolicyID: e.target.value})
 }
+
 handleUserInputCostPerkWh (e){
   this.setState({btnIndex: false});
   this.setState({costPerkWh: e.target.value})
 }
+
 handleUserInputkWhAmount (e){
   this.setState({btnIndex: false});
   this.setState({kWhAmount: e.target.value})
@@ -518,7 +531,7 @@ CalcCostPerRegion (){
                       tickSize: 5,
                       tickPadding: 5,
                       tickRotation: 0,
-                      legend: 'Charging Stations',
+                      legend: 'Date',
                       legendOffset: 36,
                       legendPosition: 'middle'
                   }}
@@ -527,7 +540,7 @@ CalcCostPerRegion (){
                       tickSize: 5,
                       tickPadding: 5,
                       tickRotation: 0,
-                      legend: 'Energy Consumption',
+                      legend: 'GWh',
                       legendOffset: -40,
                       legendPosition: 'middle'
                   }}
@@ -572,65 +585,84 @@ CalcCostPerRegion (){
               <div className="card hoverable medium blue-grey darken-1">
                 <div className="card-content">
                   <div className="chart-energy-per-day">
-            <ResponsiveLine
-                  data={this.state.graphTotalEnergy}
-                  margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-                  xScale={{ type: 'point' }}
-                  yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
-                  yFormat=" >-.2f"
-                  axisTop={null}
-                  axisRight={null}
-                  axisBottom={{
-                      orient: 'bottom',
-                      tickSize: 5,
-                      tickPadding: 5,
-                      tickRotation: 0,
-                      legend: 'Day',
-                      legendOffset: 36,
-                      legendPosition: 'middle'
-                  }}
-                  axisLeft={{
-                      orient: 'left',
-                      tickSize: 5,
-                      tickPadding: 5,
-                      tickRotation: 0,
-                      legend: 'Energy Consumption',
-                      legendOffset: -40,
-                      legendPosition: 'middle'
-                  }}
-                  pointSize={10}
-                  pointColor={{ theme: 'background' }}
-                  pointBorderWidth={2}
-                  pointBorderColor={{ from: 'serieColor' }}
-                  pointLabelYOffset={-12}
-                  useMesh={true}
-                  legends={[
-                      {
+                    <ResponsiveStream
+                      data={this.state.datastream}
+                      keys={[ "2021-03-01", "2021-04-01", "2021-05-01", "2021-06-01", "2021-07-01" ]}
+                      margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+                      axisTop={null}
+                      axisRight={null}
+                      axisBottom={{
+                          orient: 'bottom',
+                          tickSize: 5,
+                          tickPadding: 5,
+                          tickRotation: 0,
+                          legend: '',
+                          legendOffset: 36
+                      }}
+                      axisLeft={{ orient: 'left', tickSize: 5, tickPadding: 5, tickRotation: 0, legend: '', legendOffset: -40 }}
+                      offsetType="silhouette"
+                      colors={{ scheme: 'nivo' }}
+                      fillOpacity={0.85}
+                      borderColor={{ theme: 'background' }}
+                      defs={[
+                          {
+                              id: 'dots',
+                              type: 'patternDots',
+                              background: 'inherit',
+                              color: '#2c998f',
+                              size: 4,
+                              padding: 2,
+                              stagger: true
+                          },
+                          {
+                              id: 'squares',
+                              type: 'patternSquares',
+                              background: 'inherit',
+                              color: '#e4c912',
+                              size: 6,
+                              padding: 2,
+                              stagger: true
+                          }
+                      ]}
+                      fill={[
+                          {
+                              match: {
+                                  id: 'Paul'
+                              },
+                              id: 'dots'
+                          },
+                          {
+                              match: {
+                                  id: 'Marcel'
+                              },
+                              id: 'squares'
+                          }
+                      ]}
+                      dotSize={8}
+                      dotColor={{ from: 'color' }}
+                      dotBorderWidth={2}
+                      dotBorderColor={{ from: 'color', modifiers: [ [ 'darker', 0.7 ] ] }}
+                      legends={[
+                        {
                           anchor: 'bottom-right',
                           direction: 'column',
-                          justify: false,
                           translateX: 100,
-                          translateY: 0,
-                          itemsSpacing: 0,
-                          itemDirection: 'left-to-right',
                           itemWidth: 80,
                           itemHeight: 20,
-                          itemOpacity: 0.75,
+                          itemTextColor: '#999999',
                           symbolSize: 12,
                           symbolShape: 'circle',
-                          symbolBorderColor: 'rgba(0, 0, 0, .5)',
                           effects: [
-                              {
-                                  on: 'hover',
-                                  style: {
-                                      itemBackground: 'rgba(0, 0, 0, .03)',
-                                      itemOpacity: 1
-                                  }
+                            {
+                              on: 'hover',
+                              style: {
+                                  itemTextColor: '#000000'
                               }
+                            }
                           ]
-                      }
-                  ]}
-                />
+                        }
+                      ]}
+                    />
             </div>
                 </div>
               </div>

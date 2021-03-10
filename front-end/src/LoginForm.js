@@ -14,15 +14,12 @@ class LoginForm extends React.Component {
       password: '',
       userType: '',    /* "admin" or "driver" */
       error: null,
-      redirectAdmin: false,
-      redirectDriver: false,
     };
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.handlePopupClose = this.handlePopupClose.bind(this);
-    this.renderRedirect = this.renderRedirect.bind(this);
   }
 
   handleSelect(e) {
@@ -55,12 +52,7 @@ class LoginForm extends React.Component {
           getUserID(res.data.token,userType)
             .then(resID =>{
               localStorage.setItem(userType + 'ID', resID.data);
-              if (userType == 'driver'){
-                this.setState({redirectDriver: true})
-              }
-              else{
-                this.setState({redirectAdmin: true})
-              }
+
               close();
               window.location.reload();
               
@@ -101,16 +93,6 @@ class LoginForm extends React.Component {
 
   }
 
-  renderRedirect = () => {
-    if (this.state.redirectAdmin) {
-      console.log("apo admin")
-      return <Redirect to='/StationMonitoring'/>
-    }
-    else if (this.state.redirectDriver){
-      console.log("apo driver")
-      return <Redirect to='/EnergyMonitoring'/>
-    }
-  }
   render() {
     return (
       <div>
@@ -150,7 +132,6 @@ class LoginForm extends React.Component {
                       <option value="admin">Admin</option>
                     </select>
                   </div>
-                  {this.renderRedirect()}
                   <div className="row">
                     <div className="red-text col s7">
                       {this.state.error != null ? this.state.error : ''}
