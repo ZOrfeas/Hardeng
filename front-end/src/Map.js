@@ -105,7 +105,7 @@ class Map extends React.Component{
     }
     else {
       var station = this.state.stations[i];
-      return (<Marker key={i} value={station.AddressLine} position={[station.Longitude,station.Latitude]}></Marker>);
+      return (<Marker key={i} value={station.AddressLine} position={[station.Latitude,station.Longitude]}></Marker>);
     }
   }
 
