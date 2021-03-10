@@ -8,21 +8,23 @@ class UserInfo extends React.Component {
     super(props);
     this.state = {
       driverKey: localStorage.getItem("driverKey"),
-      info: [],
+      driverID: localStorage.getItem("driverID"),
+      info: {},
+      importantInfo: ["DriverName", "Username", "Email", "BonusPoints"],
       error: null
     }
 
-    if (this.state.driverKey !== null) {
-      getDriverInfo(this.state.driverKey)
+    if (this.state.driverKey !== null && this.state.driverID !== null) {
+      getDriverInfo(this.state.driverKey, this.state.driverID)
         .then(res => {
-          this.state.info= res.data;
+          this.setState({info: res.data});
         })
         .catch(err => {
-          this.error = err.response.value;
+          this.setState({error: err.response.value})
         });
     }
     else {
-      this.state.error= "Guest";
+      this.state.error = "Guest";
     }
 
     this.showInfo = this.showInfo.bind(this);
@@ -35,7 +37,11 @@ class UserInfo extends React.Component {
   showInfo() {
     const info = this.state.info;
 
-    return Object.keys(info).map((key) => (<div>{String(key) + ": " + String(info.key)}</div>));
+    //return Object.keys(info).map(key => {return <div>{String(key) + ": " + info[key]}</div>});
+    
+    return(
+      this.state.importantInfo.map(key => {return <div>{info[key]}</div>})
+    )
   }
 
   render() {
@@ -44,7 +50,7 @@ class UserInfo extends React.Component {
       <ul className="collapsible">
         <li className="active">
           <div className="collapsible-header">
-            <h5 className="purple-text text-darken-4">
+            <h5 className="black-text">
               <Person style={{ verticalAlign: "bottom" }} /> &nbsp; User Info
             </h5>
           </div>
@@ -52,8 +58,8 @@ class UserInfo extends React.Component {
             <div className="collapsible-body red-text"> {this.state.error} </div>
           )}
           {this.state.error === null && this.state.driverKey !== null && (
-            <div className="collapsible-body purple-text text-darken-4">
-              {this.showInfo}
+            <div className="collapsible-body green-text text-darken-2">
+              {this.showInfo()}
             </div>
           )}
         </li>

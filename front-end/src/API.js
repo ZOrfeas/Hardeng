@@ -42,15 +42,15 @@ export function getUserID(driverKey){
   return axios.get(reqURL, auth);
 }
 
-export function getDriverInfo(driverKey) {
-  const reqURL = "driver";
+export function getDriverInfo(driverKey, driverID) {
+  const reqURL = "Driver/" + driverID;
   const auth = {
     headers: {
       'X-OBSERVATORY-AUTH': driverKey
     }
   };
 
-  return axios.post(reqURL, auth);
+  return axios.get(reqURL, auth);
 }
 
 export function getAdminInfo(adminKey) {

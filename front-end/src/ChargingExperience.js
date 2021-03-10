@@ -7,7 +7,7 @@ import L from 'leaflet'
 import { getStations, postInitiateSession, getDriverCars, getDriverPolicies, logSession } from './API';
 import { FaCarBattery, FaCartPlus } from "react-icons/fa";
 import 'leaflet/dist/leaflet.css';
-import "./ChargingExperience.css";
+import './ChargingExperience.css';
 
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
@@ -316,7 +316,7 @@ class ChargingExperience extends React.Component {
         <div className="col s10">
           <div className="card">
             <MapContainer
-              className="map"
+              className='map'
               center={Athens}
               zoom={this.state.zoom}
             >

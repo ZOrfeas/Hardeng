@@ -3,8 +3,8 @@ body {
     overflow: hidden;  /*Hide scrollbars*/
 }
 .navbar-fixed {
-    position: absolute;z-index:999999999;
-    
+    /*position: absolute;
+    z-index:999999999;*/
 }
 
 #home-nav {
