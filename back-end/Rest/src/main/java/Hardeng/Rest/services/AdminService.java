@@ -45,7 +45,7 @@ public interface AdminService {
       * @return an object containing a status code
       * @throws BadRequestException
       */
-    StatusObject userMod (String driverName, String username, String password, String role,
+    StatusObject userMod (String username, String password, String role, String driverName,
     String email ) throws BadRequestException;
 
     /**
@@ -67,4 +67,7 @@ public interface AdminService {
     ResponseEntity<Object> deleteAdmin(Integer adminId) throws NoDataException;
 
     ResponseEntity<Object> fetchId(String username) throws BadRequestException;
+
+    ResponseEntity<Object> getTotalEnergy(Integer adminId, String dateFrom, String dateTo) 
+      throws NoDataException;
 }

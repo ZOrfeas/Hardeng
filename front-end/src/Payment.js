@@ -13,8 +13,8 @@ class Payment extends React.Component {
     this.state = {
       driverID: localStorage.getItem("driverID"),
 
-      payment: props.payment,
-      disabled: !props.sessionStarted,
+      payment: this.props.payment,
+      disabled: this.props.disabled,
 
       type: '',
       credential: null,
@@ -26,6 +26,11 @@ class Payment extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
   }
 
+  componentDidUpdate(prevProps) {
+    if(prevProps.disabled !== this.props.disabled) {
+      this.setState({disabled: this.props.disabled});
+    }
+  }
   handleSubmit(e, close){
     e.preventDefault();
 
@@ -34,8 +39,9 @@ class Payment extends React.Component {
     }
 
     else{
-      this.props.finishSession(e);
+      this.props.doNext(e, this.state.type);
 
+      /*
       userPay(this.state.driverID, this.state.type, this.state.credential)
         .then(res => {
           close();
@@ -48,14 +54,14 @@ class Payment extends React.Component {
           else{
             this.setState({error: 'Undefined Error'});
           }
-        })
+        })*/
+
       
       //post payment to backend
     }
 
     
   }
-
   handleSelect(e) {
     this.setState({type: e.target.value});
   }
@@ -86,8 +92,8 @@ class Payment extends React.Component {
                   </div>
                   <select className="browser-default" onChange={this.handleSelect}>
                     <option value="" disabled selected>Choose payment method </option>
-                    <option value="Credit Card" class="left">Credit Card </option>
-                    <option value="E-Wallet" class="left">E-Wallet </option>
+                    <option value="credit card" class="left">Credit Card </option>
+                    <option value="wallet" class="left">E-Wallet </option>
                   </select>
                   <div className="row">
                     <div className="red-text col s7">

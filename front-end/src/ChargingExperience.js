@@ -110,6 +110,7 @@ class ChargingExperience extends React.Component {
     this.formatZero = this.formatZero.bind(this);
     this.initiateSession = this.initiateSession.bind(this);
     this.finishSession = this.finishSession.bind(this);
+    this.setPayment = this.setPayment.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.showMarkers = this.showMarkers.bind(this);
     this.showOptions = this.showOptions.bind(this);
@@ -138,16 +139,13 @@ class ChargingExperience extends React.Component {
 
     return ans;
   }
-  finishSession(e, unpaid = false) {
+  finishSession(e, payment_type) {
     e.preventDefault();
 
     var newSession = this.state.session;
     newSession.energyDelivered = this.state.payment / this.state.pricePolicy ;
     newSession.finishedOn = this.getDate();
-
-    if(unpaid){
-      newSession.payment = 'unpaid';
-    }
+    newSession.payment = payment_type;
 
     console.log(newSession);
 
@@ -192,7 +190,7 @@ class ChargingExperience extends React.Component {
           session.startedOn = this.getDate();
           session.chargingPointId = res.data;
           session.carId = this.state.vehicleID;
-          session.payment = this.state.payment;
+          //session.payment = this.state.payment;
           session.pricePolicyId = this.state.pricePolicyID;
           session.driverId = this.state.driverID;
     
@@ -216,6 +214,13 @@ class ChargingExperience extends React.Component {
       this.setState({sessionError: newError});
       M.toast({html: 'InitiateSession ' + newError, classes:"purple darken-4 yellow-text"});
     }
+  }
+  setPayment(p){
+    var newSession = this.state.session;
+
+    newSession.payment = p;
+
+    this.setState({session: newSession});
   }
   showMarkers() {
     var i = this.state.chosenIndex;
@@ -342,7 +347,7 @@ class ChargingExperience extends React.Component {
                   <option value="" disabled selected>Choose policy</option>
                   {this.state.policies.map(({CostPerKWh}, index) => <option value={index}> {CostPerKWh + '€ per KWh'} </option>)}
                 </select>
-                <div className="right-align">
+                <div className="center-align">
                   <button
                     className="btn-flat green-text"
                     type="submit"
@@ -353,19 +358,19 @@ class ChargingExperience extends React.Component {
               </div>
             </form>
 
-            <div className="right-align">
+            <div className="center-align">
               <Payment 
-                sessionStarted={!this.state.sessionStarted} 
+                disabled={!this.state.sessionStarted} 
                 payment={this.state.payment}
-                doNext={this.finishSession} 
+                doNext={(e, t) => this.finishSession(e, t)} 
               />
             </div>
-            <div className="right-align">
+            <div className="center-align">
               <button 
                 blue-text
                 disabled={!this.state.sessionStarted} 
                 className="btn-flat"
-                onClick={e => {this.finishSession(e, true)}}
+                onClick={e => {this.finishSession(e, 'unpaid')}}
                 >
                 Charge Tab <FaCartPlus/>
               </button>

@@ -366,4 +366,53 @@ public class StationServiceImpl implements StationService {
         cStationRepo.deleteById(stationId);
         return ResponseEntity.noContent().build();
     }
+
+    @Override
+    public List<StationObject> getAdminStations(Integer adminId) throws NoDataException {
+        List<StationObject> toRet = new ArrayList<>();
+        Admin admin = cAdminRepo.findById(adminId).orElseThrow(
+            () -> new AdminNotFoundException(adminId));
+        List<ChargingStation> queryStations = cStationRepo.findByAdmin(admin);
+        if (queryStations.isEmpty()) throw new NoDataException();
+        for (ChargingStation cStation : queryStations) {
+            toRet.add(new StationObject(cStation));
+        }
+        return toRet;        
+    }
+
+    public class EnergySumObject {
+        @JsonProperty("energySum")
+        private Float sum;
+        @JsonProperty("stationList")
+        private List<NearbyStationObject> stations;
+
+        EnergySumObject (Float sum, List<NearbyStationObject> nearStations) {
+            this.sum = sum; this.stations = nearStations;
+        }
+    }
+
+    @Override
+    public EnergySumObject getAreaStationSum(Double latitude, Double longitude, Double rad, Integer adminId,
+    String dateFrom, String dateTo) 
+    throws NoDataException {
+        Admin admin = cAdminRepo.findById(adminId).orElseThrow(() -> new AdminNotFoundException(adminId));
+        List<ChargingStation> queryStations = cStationRepo.findByLatitudeBetweenAndLongitudeBetweenAndAdmin(
+            latitude - rad, latitude + rad, longitude - rad, longitude + rad, admin);
+        if (queryStations.isEmpty()) throw new NoDataException();
+        List<NearbyStationObject> toRetList = new ArrayList<>();
+        Float sum = 0.0f, tempEnergy;
+        Timestamp queryDateFrom = Utilities.timestampFromString(dateFrom, Utilities.DATE_FORMAT);
+        Timestamp queryDateTo = Utilities.timestampFromString(dateTo, Utilities.DATE_FORMAT);
+        List<ChargingPoint> tempPoints;
+        for (ChargingStation cStation : queryStations) {
+            toRetList.add(new NearbyStationObject(cStation));
+            tempPoints = cPointRepo.findBycStation(cStation);
+            for (ChargingPoint cPoint : tempPoints) {
+                tempEnergy = cSessRepo.totalEnergyDelivered(queryDateFrom, queryDateTo, cPoint); 
+                sum = tempEnergy == null ? sum : sum + tempEnergy;     
+            }
+        }
+        return new EnergySumObject(sum, toRetList);
+    }
+
 }

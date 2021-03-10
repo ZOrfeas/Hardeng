@@ -2,6 +2,7 @@ package Hardeng.Rest.services;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +50,8 @@ import Hardeng.Rest.repositories.ChargingSessionRepository;
 import Hardeng.Rest.repositories.ChargingStationRepository;
 import Hardeng.Rest.repositories.DriverRepository;
 import Hardeng.Rest.repositories.PricePolicyRepository;
+import Hardeng.Rest.services.DriverService;
+import Hardeng.Rest.services.AdminService;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -74,6 +77,10 @@ public class AdminServiceImpl implements AdminService {
     private ChargingStationRepository cStationRepo;
     @Autowired
     private PasswordEncoder encoder;
+    @Autowired
+    private DriverService driverService;
+    @Autowired
+    private AdminService adminService;
 
     public static class StatusObject implements CsvObject{
         @JsonProperty("status")
@@ -217,7 +224,7 @@ public class AdminServiceImpl implements AdminService {
 
     
     @Override
-    public StatusObject userMod(String driverName, String username, String password, String role, String email ) throws BadRequestException
+    public StatusObject userMod(String username, String password, String role, String driverName, String email ) throws BadRequestException
     {
       switch(role)
       {
@@ -227,13 +234,28 @@ public class AdminServiceImpl implements AdminService {
             
         case("unregistered"):
         case(SecurityConfig.stationAdminRole):
-            
-            if(driverRepo.findByUsername(username).isPresent()) throw new BadRequestException();
+            if(driverName == null){throw new BadRequestException();}
+            Optional<Driver> updDriver = driverRepo.findByUsername(username); 
+            if(updDriver.isPresent()) {
+               driverService.updateDriver(updDriver.get().getID(), 
+                driverName, username, password,
+                email, updDriver.get().getBonusPoints(), updDriver.get().getCardID(), updDriver.get().getWalletID());
+                return new StatusObject("Driver Successfully Updated");
+                
+            }
+            else{
             Driver newDriver = udsi.makeDriver(driverName, username, password, email);
             driverRepo.save(newDriver);
+            }
             break;
         case(SecurityConfig.masterAdminRole):
-            if(adminRepo.findByUsername(username).isPresent()) throw new BadRequestException();
+            Optional<Admin> updAdmin = adminRepo.findByUsername(username);
+            if(updAdmin.isPresent()){
+                adminService.updateAdmin(updAdmin.get().getId(), username, password, email,
+                updAdmin.get().getCompanyName() ,updAdmin.get().getCompanyPhone(), updAdmin.get().getCompanyLocation());
+                return new StatusObject("Admin Successfully Updated");
+               
+            }
             Admin newAdmin = udsi.makeAdmin(username, password);
             adminRepo.save(newAdmin);
             break;
@@ -440,6 +462,17 @@ public class AdminServiceImpl implements AdminService {
         log.info("Fetching admin Id...");
         return ResponseEntity.ok(adminRepo.findByUsername(username).orElseThrow(
             () -> new BadRequestException()).getId());
+    }
+
+    @Override
+    public ResponseEntity<Object> getTotalEnergy(Integer adminId, String dateFrom, String dateTo)
+        throws NoDataException {
+        Admin admin = adminRepo.findById(adminId).orElseThrow(
+            () -> new AdminNotFoundException(adminId));
+        Timestamp queryDateFrom = Utilities.timestampFromString(dateFrom, Utilities.DATE_FORMAT);
+        Timestamp queryDateTo = Utilities.timestampFromString(dateTo, Utilities.DATE_FORMAT);
+        Float totalSum = adminRepo.totalEnergyConsumed(queryDateFrom, queryDateTo, admin);
+        return (totalSum == null) ? ResponseEntity.ok(0.0f) : ResponseEntity.ok(totalSum);
     }
 }
 
