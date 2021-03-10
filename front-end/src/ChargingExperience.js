@@ -9,6 +9,7 @@ import { FaCarBattery, FaCartPlus } from "react-icons/fa";
 import 'leaflet/dist/leaflet.css';
 import './ChargingExperience.css';
 
+import image from './icons/ChargingExperience.jpg';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -308,7 +309,15 @@ class ChargingExperience extends React.Component {
 
   render() {
     return (
-      <div className="row">
+      <div 
+      className="row"
+      style={{ 
+        backgroundImage: `url(${image})`,
+        backgroundRepeat: 'no-repeat',
+        height: '1000px',
+        backgroundAttachment: 'fixed',
+        backgroundSize: '100% 100%',}}
+      >
         {false && <button onClick={e => {console.log(this.state)}}> State </button>}
         <div className="col s2">
           <UserInfo />

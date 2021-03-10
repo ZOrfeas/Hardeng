@@ -139,6 +139,18 @@ export function logSession(driverKey, obj){
   return axios.post(reqURL, obj, auth);
 }
 
+export function postPricePolicy(driverKey, driverID, PricePolicyID){
+  const reqURL = "/AddPricePolicy/" + PricePolicyID + "/" + driverID;
+
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': driverKey,
+    }
+  };
+  
+  return axios.post(reqURL, null, auth);
+}
+
 
 
 
