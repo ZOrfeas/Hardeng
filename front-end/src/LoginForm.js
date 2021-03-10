@@ -1,4 +1,5 @@
 import React from "react";
+import {Redirect} from 'react-router-dom';
 import Popup from "reactjs-popup";
 import { getUserID, userLogin } from './API';
 import 'reactjs-popup/dist/index.css';
@@ -48,13 +49,16 @@ class LoginForm extends React.Component {
           localStorage.setItem(userType + 'Key', res.data.token);
           console.log('Fuck ' + res.data.token);
 
-          getUserID(res.data.token)
+          getUserID(res.data.token,userType)
             .then(resID =>{
               localStorage.setItem(userType + 'ID', resID.data);
 
               close();
               window.location.reload();
+              
             });
+         
+          
         })
         .catch(err => {
           console.log('Serious? ' + err.response);
@@ -63,14 +67,17 @@ class LoginForm extends React.Component {
           }
         });
     }
+    
   }
 
   handleLogout() {
     this.setState({ username: '' });
     this.setState({ password: '' });
-
+    this.setState({redirectAdmin: false});
+    this.setState({redirectDriver: false});
     localStorage.clear();
     window.location.reload();
+    window.location.assign("/")
   }
 
   handlePopupClose() {
@@ -81,12 +88,15 @@ class LoginForm extends React.Component {
   }
   componentDidMount(){
     M.AutoInit();
+
+  
+
   }
 
   render() {
     return (
       <div>
-        <button onClick={this.handleLogout} className="btn-flat waves-effect waves-light green-text"> Logout </button>
+        <button onClick={this.handleLogout}  className="btn-flat waves-effect waves-light green-text"> Logout </button>
         <Popup
           onClose={this.handlePopupClose}
           trigger={open => <button open={open} className="btn-flat green waves-effect waves-light"> Login </button>}

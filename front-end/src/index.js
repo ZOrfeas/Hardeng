@@ -4,7 +4,6 @@ import {BrowserRouter as Router, Link, Route, Redirect} from 'react-router-dom';
 import ChargingExperience from './ChargingExperience';
 import Header from './Header';
 import 'materialize-css/dist/css/materialize.min.css';
-import StationMonitoring from './StationMonitoring';
 import EnergyMonitoring from './EnergyMonitoring';
 import Home from './Home';
 import EditUserInfo from './EditUserInfo';
@@ -16,14 +15,11 @@ ReactDOM.render(
 
       <Route exact ={true} path="/" render = {() =>(
         <Home/>
+        // <EnergyMonitoring/>
       )}/>
 
       <Route exact ={true} path="/ChargingExperience" render = {() =>(
         <ChargingExperience />
-      )}/>
-
-      <Route exact ={true} path="/StationMonitoring" render = {() =>(
-        <StationMonitoring />
       )}/>
 
       <Route exact ={true} path="/EnergyMonitoring" render = {() =>(
@@ -31,6 +27,7 @@ ReactDOM.render(
       )}/>
 
       <Route exact ={true} path="/EditUserInfo" render = {() =>(
+
         <EditUserInfo/>
       )}/>
 

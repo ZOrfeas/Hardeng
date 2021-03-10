@@ -16,7 +16,7 @@ const config = {
 
 export function userLogin(user, pass, type) {
   var reqURL;
-  type === 'driver' ? reqURL = "login/DRIVER" : reqURL = "login/ADMIN";
+  type === 'driver' ? reqURL = "login/DRIVER" : reqURL = "login/STATION_ADMIN";
 
   const obj = new URLSearchParams();
   obj.append('username', user);
@@ -31,11 +31,14 @@ export function userLogin(user, pass, type) {
   return axios.post(reqURL, obj, urlencoded);
 }
 
-export function getUserID(driverKey){
-  const reqURL = 'Driver/getId';
+export function getUserID(Key,type){
+
+  var reqURL;
+  type === 'driver' ? reqURL = 'Driver/getId' : reqURL = "admin/getId";
+
   const auth = {
     headers: {
-      'X-OBSERVATORY-AUTH': driverKey,
+      'X-OBSERVATORY-AUTH': Key,
     }
   };
 
@@ -50,7 +53,18 @@ export function getDriverInfo(driverKey, driverID) {
     }
   };
 
-  return axios.get(reqURL, auth);
+  return axios.get(reqURL, auth); 
+}
+
+export function updateDriverInfo(driverKey,driverID,obj) {
+  const reqURL = "Driver/" + driverID;
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': driverKey
+    }
+  };
+
+  return axios.put(reqURL, obj, auth); 
 }
 
 export function getAdminInfo(adminKey) {
@@ -151,6 +165,78 @@ export function postPricePolicy(driverKey, driverID, PricePolicyID){
   return axios.post(reqURL, null, auth);
 }
 
+export function getAdminPolicies(adminKey, adminID) {
+  const reqURL = "AdminPricePolicies/" + adminID;
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': adminKey,
+    }
+  };
+
+  return axios.get(reqURL, auth);
+}
+
+export function updateAdminPolicies(adminKey,PricePolicyID,obj) {
+  const reqURL = "PricePolicy/" + PricePolicyID;
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': adminKey
+    }
+  };
+
+  return axios.put(reqURL, obj, auth); 
+}
 
 
+export function getAdminStations(adminKey, adminID) {
+  const reqURL = "AdminStations/" + adminID;
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': adminKey,
+    }
+  };
 
+  return axios.get(reqURL, auth);
+}
+
+export function updateAdminStation(adminKey,stationID,obj) {
+  const reqURL = "Station/" + stationID;
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': adminKey
+    }
+  };
+
+  return axios.put(reqURL, obj, auth); 
+}
+
+export function getAdminAreaStationEnergy(adminKey, adminID, latlng,radius,dateFrom,dateTo){
+
+  const reqURL = "AdminAreaStationEnergy/";
+
+  const headers= {
+    'X-OBSERVATORY-AUTH': adminKey
+  }
+  const params = {
+    "latitude": latlng["lat"],
+    "longitude": latlng["lng"],
+    "radius": radius,
+    "dateFrom": dateFrom,
+    "dateTo": dateTo,
+    "adminId": adminID,
+    
+  }
+  return axios.get(reqURL, {params, headers});
+}
+
+export function getAdminTotalEnergy(adminKey, adminID, dateFrom, dateTo){
+
+const reqURL = "admin/totalEnergy/" + adminID + "/" + dateFrom + "/" + dateTo;
+
+const auth = {
+  headers: {
+    'X-OBSERVATORY-AUTH': adminKey
+  }
+};
+  return axios.get(reqURL, auth);
+}
