@@ -48,7 +48,7 @@ jobs:
         with:
           recursive: true
           local: "/home/runner/work/TL20-11/TL20-11/back-end/Rest/build/reports/tests/test"
-          remote: "/var/www/html/"
+          remote: "/var/www/html/testReport"
           host: "snf-880282.vm.okeanos.grnet.gr"
           username: "hardeng"
           password: "12345"
