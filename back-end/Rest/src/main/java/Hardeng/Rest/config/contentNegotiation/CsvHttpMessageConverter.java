@@ -56,7 +56,7 @@ public class CsvHttpMessageConverter extends AbstractHttpMessageConverter<Object
         }
     }
 
-    /** Properly calls serializer and outputs object by checking if it's a List<> or not */
+    /** Properly calls serializer and outputs object by checking if it's a List or not */
     @Override
     @SuppressWarnings("unchecked")
     protected void writeInternal(Object t, HttpOutputMessage outputMessage) 

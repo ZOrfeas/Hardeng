@@ -45,7 +45,7 @@ public interface ChargingSessionRepository extends JpaRepository<ChargingSession
      * to {@code dateTo}
      * @param dateFrom start date
      * @param dateTo end date
-     * @param cPointId ChargingPoint in question
+     * @param cPoint ChargingPoint in question
      * @return Float returns total energy delivered
      */
     @Query("SELECT SUM(s.energyDelivered) FROM ChargingSession s " + 
