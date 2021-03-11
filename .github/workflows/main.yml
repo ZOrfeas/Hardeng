@@ -43,7 +43,17 @@ jobs:
       # possible issue, remember to check
       #- name: Ensure .jar creation
       #  run: ./gradlew
-      
+      - name: Send report to server
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          recursive: true
+          local: "/home/runner/work/TL20-11/TL20-11/back-end/Rest/build/reports/tests/test"
+          remote: "/var/www/html/"
+          host: "snf-880282.vm.okeanos.grnet.gr"
+          username: "hardeng"
+          password: "12345"
+
+        
       # need to be hardcoded cause we don't have access to this repo's github.secrets
       - name: Send to server
         uses: garygrossgarten/github-action-scp@release
