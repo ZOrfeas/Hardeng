@@ -234,8 +234,21 @@ public class PointServiceImpl implements PointService {
         log.info("Updating Charging Point...");
         ChargingPoint point = cPointRepo.findById(pointId)
          .orElseThrow(()-> new ChargingPointNotFoundException(pointId));
-        ChargingStation station = cStatRepo.findById(point.getCStation().getId())
-         .orElseThrow(()-> new ChargingStationNotFoundException(point.getCStation().getId()));
+        ChargingStation station = cStatRepo.findById(stationId)
+         .orElseThrow(()-> new ChargingStationNotFoundException(stationId));
+
+        /* Check if charging station update is requested */
+        if (point.getCStation().getId() != stationId)
+        {
+            //Update old charging station
+            point.getCStation().setNrOfChargingPoints(point.getCStation().getNrOfChargingPoints()-1);
+            cStatRepo.save(point.getCStation());
+
+            //Update new charging station
+            station.setNrOfChargingPoints(station.getNrOfChargingPoints()+1);
+            cStatRepo.save(station);
+        }
+
         point.setConditionInt(condition);
         point.setMaxOutput(maxEnergy);
         if (isOccupied == true) {point.setIsOccupied();}
