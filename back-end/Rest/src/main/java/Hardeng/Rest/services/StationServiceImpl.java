@@ -33,7 +33,6 @@ import Hardeng.Rest.repositories.ChargingPointRepository;
 import Hardeng.Rest.repositories.ChargingSessionRepository;
 import Hardeng.Rest.repositories.AdminRepository;
 import Hardeng.Rest.repositories.EnergyProviderRepository;
-import Hardeng.Rest.services.PointServiceImpl;
 
 @Service
 public class StationServiceImpl implements StationService {

@@ -6,6 +6,7 @@ import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.services.DriverServiceImpl.DriverObject;
 
+/** Driver controller business logic definitions */
 public interface DriverService {
 
     DriverObject createDriver(String driverName, String username, String password, String email,

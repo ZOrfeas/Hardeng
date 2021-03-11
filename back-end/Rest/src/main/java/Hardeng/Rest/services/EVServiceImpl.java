@@ -346,7 +346,7 @@ public class EVServiceImpl implements EVService {
          .orElseThrow(()-> new DriverNotFoundException(driverId));
         Car queryCar = cCarRepo.findById(carId)
          .orElseThrow(()-> new CarNotFoundException(carId));
-        CarDriver queryEV = cCarDriverRepo.findByDriverAndCar(queryDriver, queryCar)
+        /**CarDriver queryEV = */cCarDriverRepo.findByDriverAndCar(queryDriver, queryCar)
         .orElseThrow(()-> new CarDriverNotFoundException(queryDriver.getID(), queryCar.getId()));
 
         /* Set car & driver ids in charging sessions to null before deleting */

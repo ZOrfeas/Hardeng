@@ -9,6 +9,7 @@ import Hardeng.Rest.services.StationServiceImpl.EnergySumObject;
 import Hardeng.Rest.services.StationServiceImpl.NearbyStationObject;
 import Hardeng.Rest.services.StationServiceImpl.StationObject;
 
+/** Charging Station controller business logic definitions */
 public interface StationService {
     
     SessStationObject sessionsPerStation(Integer stationId,

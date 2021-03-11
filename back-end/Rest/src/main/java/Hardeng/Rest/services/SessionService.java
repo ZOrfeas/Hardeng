@@ -6,6 +6,7 @@ import Hardeng.Rest.exceptions.InternalServerErrorException;
 import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.services.SessionServiceImpl.SessionObject;
 
+/** Charging Session controller business logic definitions */
 public interface SessionService {
 
     SessionObject createSession(String startedOn, String finishedOn, Float energyDelivered,

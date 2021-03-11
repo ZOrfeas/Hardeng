@@ -6,6 +6,7 @@ import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.services.PointServiceImpl.SessPointObject;
 import Hardeng.Rest.services.PointServiceImpl.PointObject;
 
+/** Charging Point controller business logic definitions */
 public interface PointService {
     
     /**

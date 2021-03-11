@@ -7,6 +7,7 @@ import Hardeng.Rest.services.EVServiceImpl.SessEVObject;
 import Hardeng.Rest.services.EVServiceImpl.EVObject;
 import Hardeng.Rest.services.EVServiceImpl.DriverCarObject;
 
+/** EV controller business logic definitions */
 public interface EVService {
     
     SessEVObject sessionsPerEV(Integer driverId, Integer carId,

@@ -13,6 +13,7 @@ import Hardeng.Rest.services.AdminServiceImpl.StatusObject;
 import Hardeng.Rest.services.AdminServiceImpl.UserObject;
 import Hardeng.Rest.services.AdminServiceImpl.AdminObject;
 
+/** Admin controller business logic definitions */
 public interface AdminService {
     
     /**

@@ -8,6 +8,7 @@ import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.services.PricePolicyServiceImpl.PricePolicyObject;
 import Hardeng.Rest.services.PricePolicyServiceImpl.DriverPolicyObject;
 
+/** Price Policy controller business logic definitions */
 public interface PricePolicyService {
 
     PricePolicyObject createPricePolicy(Integer kWh, Float costPerKWh, Integer adminId) throws NoDataException;
