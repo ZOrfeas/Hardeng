@@ -113,7 +113,7 @@ class StationSpec extends Specification {
         def size = res.size()
 
         then:
-        size == 3
+        size == 2
     }
 
     @Test

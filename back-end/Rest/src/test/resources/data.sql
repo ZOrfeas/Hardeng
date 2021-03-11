@@ -93,7 +93,7 @@ INSERT INTO `charging_point` VALUES
 (1,1,3,false,1,1),
 (2,2,0,false,3,1),
 (3,2,3,false,3,2),
-(4,2,0,false,3,3);
+(4,2,0,true,3,3);
 
  INSERT INTO `charging_session` VALUES
 (1,112.065,'2018-10-09 00:00:02.000000','credit card','2018-10-08 13:01:34.000000',13,1,1,26),

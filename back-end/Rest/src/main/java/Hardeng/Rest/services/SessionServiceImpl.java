@@ -165,6 +165,8 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public ResponseEntity<Object> deleteSession(Integer sessionId) throws NoDataException {
         log.info("Deleting Charging Session...");
+        ChargingSession querySession = cSessRepo.findById(sessionId)
+         .orElseThrow(()-> new ChargingSessionNotFoundException(sessionId));
         cSessRepo.deleteById(sessionId);
         return ResponseEntity.noContent().build();
     }
