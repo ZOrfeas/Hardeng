@@ -7,9 +7,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import Hardeng.Rest.models.Driver;
 import Hardeng.Rest.models.Admin;
 
+/** Admin model interface */
 @Repository
 public interface AdminRepository extends JpaRepository<Admin, Integer> {
     
@@ -35,6 +35,12 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
      */
     Optional<Admin> findByUsernameAndPassword(String username, String password);
 
+    /** Counts and returns an admin's total energy consumption during specified timeframe
+     * @param dateFrom Timeframe begin datetime
+     * @param dateTo Timeframe end datetime
+     * @param admin Admin in question
+     * @return Total energy consumption
+     */
     @Query("SELECT SUM(sess.energyDelivered) FROM ChargingSession sess " +
            "WHERE sess.startedOn >= :dateFrom AND sess.finishedOn <= :dateTo " + 
            "AND sess.chargingPoint IN (SELECT point.id FROM ChargingPoint point " +

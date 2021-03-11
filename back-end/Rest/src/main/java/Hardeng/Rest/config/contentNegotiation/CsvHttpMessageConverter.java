@@ -24,6 +24,7 @@ import Hardeng.Rest.Utilities.CsvObject;
 import Hardeng.Rest.exceptions.InternalServerErrorException;
 import Hardeng.Rest.exceptions.NoDataException;
 
+/** Csv serializer class */
 public class CsvHttpMessageConverter extends AbstractHttpMessageConverter<Object>{
     // private static final Logger log = LoggerFactory.getLogger(CsvHttpMessageConverter.class);
     public CsvHttpMessageConverter() {
@@ -35,6 +36,10 @@ public class CsvHttpMessageConverter extends AbstractHttpMessageConverter<Object
         return true;
     }
     
+    /** Writes List into response body as CSV
+     * @param t List to be serialized into CSV
+     * @param stream output stream of response body
+     */
     private void writeList(List<Object> t, OutputStreamWriter stream) {
         
         HeaderColumnNameMappingStrategy<Object> strategy = new HeaderColumnNameMappingStrategy<>();
@@ -51,6 +56,7 @@ public class CsvHttpMessageConverter extends AbstractHttpMessageConverter<Object
         }
     }
 
+    /** Properly calls serializer and outputs object by checking if it's a List<> or not */
     @Override
     @SuppressWarnings("unchecked")
     protected void writeInternal(Object t, HttpOutputMessage outputMessage) 
@@ -63,6 +69,7 @@ public class CsvHttpMessageConverter extends AbstractHttpMessageConverter<Object
         outputStream.close();
     }
 
+    /** Implements text/csv consumption functionality */
     @Override
     protected Object readInternal(Class<? extends Object> clazz, HttpInputMessage inputMessage)
      throws IOException, HttpMessageNotReadableException {

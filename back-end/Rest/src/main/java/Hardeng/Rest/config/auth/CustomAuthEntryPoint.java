@@ -10,6 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
+/** Defines behaviour in case of unauthorized access to auth-protected endpoint */
 @Component
 public class CustomAuthEntryPoint implements AuthenticationEntryPoint, Serializable {
 

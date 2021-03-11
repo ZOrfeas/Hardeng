@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 
+/** Car persistent data model */
 @Entity
 public class Car {
     @Id

@@ -29,7 +29,6 @@ import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.exceptions.CarDriverNotFoundException;
 import Hardeng.Rest.exceptions.CarNotFoundException;
 import Hardeng.Rest.exceptions.ChargingPointNotFoundException;
-//import Hardeng.Rest.exceptions.BadRequestException;
 import Hardeng.Rest.exceptions.DriverNotFoundException;
 import Hardeng.Rest.exceptions.AdminNotFoundException;
 import Hardeng.Rest.exceptions.InternalServerErrorException;
@@ -50,8 +49,6 @@ import Hardeng.Rest.repositories.ChargingSessionRepository;
 import Hardeng.Rest.repositories.ChargingStationRepository;
 import Hardeng.Rest.repositories.DriverRepository;
 import Hardeng.Rest.repositories.PricePolicyRepository;
-import Hardeng.Rest.services.DriverService;
-import Hardeng.Rest.services.AdminService;
 
 @Service
 public class AdminServiceImpl implements AdminService {

@@ -16,6 +16,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.FetchType;
 import javax.persistence.CascadeType;
 
+/** Driver user persistent data model */
 @Entity
 public class Driver {
 

@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 
+/** Charging Session persistent data model */
 @Entity
 public class ChargingSession {
 

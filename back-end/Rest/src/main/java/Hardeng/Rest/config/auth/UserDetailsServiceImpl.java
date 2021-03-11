@@ -13,6 +13,7 @@ import Hardeng.Rest.repositories.AdminRepository;
 import Hardeng.Rest.repositories.DriverRepository;
 import Hardeng.Rest.Utilities.SecurityConstants;
 
+/** Service supplying necessary functionality for connection of auth filter and related database */
 @Service
 public class UserDetailsServiceImpl implements  UserDetailsService {
 
@@ -24,6 +25,7 @@ public class UserDetailsServiceImpl implements  UserDetailsService {
     @Autowired
     private PasswordEncoder encoder;
 
+    /** Called when user validation is requested by username, returns valid UserDetails object if successful */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         
