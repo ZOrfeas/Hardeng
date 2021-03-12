@@ -47,6 +47,7 @@ public class EVServiceImpl implements EVService {
     @Autowired
     private ChargingSessionRepository cSessRepo;
     
+    /** Helper class for Price Policy info string creation */
     public static class PricePolicyRef {
         private String companyName;
         private Integer kWh;
@@ -65,6 +66,7 @@ public class EVServiceImpl implements EVService {
         }
     }
 
+    /** DTO with Session information */
     public static class SessionObject {
         @JsonProperty("SessionIndex")
         private Integer sessionIndex;
@@ -98,6 +100,7 @@ public class EVServiceImpl implements EVService {
         }
     }
     
+    /** CSV-serializable DTO with SessionsPerEV information */
     public class CsvSessEVObject {
         @CsvBindByName
         private String vehicleID;
@@ -162,6 +165,7 @@ public class EVServiceImpl implements EVService {
 
     }
     
+    /** DTO with SessionsPerEV information */
     public class SessEVObject implements CsvObject {
         @JsonProperty("VehicleID")
         private String vehicleID;
@@ -209,6 +213,7 @@ public class EVServiceImpl implements EVService {
         }
     }
     
+    /** DTO for EV model interaction */
     public class EVObject {
         @JsonProperty("DriverID")
         private Integer driverId;
@@ -224,6 +229,7 @@ public class EVServiceImpl implements EVService {
         }
     }
 
+    /** DTO for Driver EV relation interaction */
     public class DriverCarObject {
         @JsonProperty("DriverID")
         private Integer driverId;

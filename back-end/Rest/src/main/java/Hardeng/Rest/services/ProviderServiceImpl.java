@@ -38,6 +38,7 @@ public class ProviderServiceImpl implements ProviderService{
     @Autowired
     private ChargingPointRepository CpointRepo;
 
+    /** Helper class for PricePolicy info string creation */
     public static class PricePolicyRef {
         private String companyName;
         private Integer kWh;
@@ -56,6 +57,7 @@ public class ProviderServiceImpl implements ProviderService{
         }
     }
 
+    /** CSV-serializable DTO with SessionsPerProvider information */
     public static class SessProvObject
     {
         @JsonProperty("ProviderId")

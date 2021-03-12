@@ -34,6 +34,7 @@ public class PricePolicyServiceImpl implements PricePolicyService {
     @Autowired
     private DriverRepository driverRepo;
 
+    /** DTO for PricePolicy model data interactions */
     public class PricePolicyObject {
         @JsonProperty("PricePolicyID")
         private Integer pPolicyId;
@@ -57,6 +58,7 @@ public class PricePolicyServiceImpl implements PricePolicyService {
         }
     }
 
+    /** DTO with Driver-PricePolicy relation information */
     public class DriverPolicyObject {
         @JsonProperty("DriverID")
         private Integer driverID;

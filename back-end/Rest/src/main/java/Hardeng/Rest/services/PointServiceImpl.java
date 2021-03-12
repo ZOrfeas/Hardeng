@@ -40,6 +40,7 @@ public class PointServiceImpl implements PointService {
     @Autowired
     private ChargingStationRepository cStatRepo;
 
+    /** DTO with Charging Session information */
     public static class SessionObject {
         @JsonProperty("SessionIndex")
         private Integer sessionIndex;
@@ -71,6 +72,7 @@ public class PointServiceImpl implements PointService {
 
     }
 
+    /** CSV-serializable DTO with SessionsPerPoint information */
     public static class CsvSessPointObject {
         @CsvBindByName
         private String point;
@@ -125,6 +127,7 @@ public class PointServiceImpl implements PointService {
 
     }
     
+    /** DTO with SessionsPerPoint information */
     public static class SessPointObject implements CsvObject {
         @JsonProperty("Point")
         private String point;
@@ -164,6 +167,7 @@ public class PointServiceImpl implements PointService {
         }
     }
     
+    /** DTO for ChargingPoint model interaction */
     public class PointObject {
         @JsonProperty("PointID")
         private Integer pointId;

@@ -57,6 +57,7 @@ public class SessionServiceImpl implements SessionService {
     @Autowired
     private ChargingStationRepository cStationRepo;
 
+    /** DTO for ChargingSession model data interactions */
     public class SessionObject {
         @JsonProperty("SessionID")
         private Integer sessionId;

@@ -79,6 +79,7 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private AdminService adminService;
 
+    /** DTO for command return status */
     public static class StatusObject implements CsvObject{
         @JsonProperty("status")
         @CsvBindByName
@@ -136,6 +137,7 @@ public class AdminServiceImpl implements AdminService {
         return new StatusObject("OK");
     }
 
+    /** DTO with car information */
     public static class CarObject {
         @JsonProperty("CarId")
         private Integer id;
@@ -151,6 +153,7 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    /** CSV-serializable DTO with User information */
     public static class CsvUserObject {
         @CsvBindByName(column = "Username")
         private String username;
@@ -181,6 +184,7 @@ public class AdminServiceImpl implements AdminService {
             this.model = co.model;
         }
     }
+    /** DTO with Driver information */
     public static class UserObject implements CsvObject{
         @JsonProperty("Username")
         private String username;
@@ -262,6 +266,7 @@ public class AdminServiceImpl implements AdminService {
 
     }
 
+    /** DTO with Session import statistics */
     public static class SessionStatsObject {
         @JsonProperty("SessionsInUploadedFile")
         private Integer sessionsInUploadedFile;
@@ -282,6 +287,7 @@ public class AdminServiceImpl implements AdminService {
 
     }
 
+    /** DTO for charging session importing from CSV */
     public static class SessionsImportObject {
         @CsvBindByName(column = "startedOn")
         private String startedOn;
@@ -317,13 +323,6 @@ public class AdminServiceImpl implements AdminService {
         public void setPricePolicyId(Integer newId) {this.pricePolicyId = newId;}
         public void setCarId(Integer newId) {this.carId = newId;}
         public void setDriverId(Integer newId) {this.driverId = newId;}
-        // public ChargingSession transformChargingSession() {
-        //     CarDriver cDriver;
-        //     ChargingPoint cPoint = cPointRepo.findById();
-        //     PricePolicy pPolicy;
-        //     return new ChargingSession(this.startedOn, this.finishedOn, this.energyDelivered, this.payment, 
-        //                                this.chargingPointId, this.pricePolicyId, carDriver)
-        // }
     }
 
     // A semi-beautiful mess, if anyone feels up to it, feel free to make it normal,
@@ -366,6 +365,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     /* CRUD for Admin */
+    /** DTO for Admin model data interactions */
     public class AdminObject {
         @JsonProperty("AdminID")
         private Integer adminId;
