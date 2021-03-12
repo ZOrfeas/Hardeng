@@ -13,6 +13,7 @@ import Hardeng.Rest.repositories.AdminRepository;
 import Hardeng.Rest.repositories.DriverRepository;
 import Hardeng.Rest.Utilities.SecurityConstants;
 
+/** Service supplying necessary functionality for connection of auth filter and related database */
 @Service
 public class UserDetailsServiceImpl implements  UserDetailsService {
 
@@ -24,6 +25,7 @@ public class UserDetailsServiceImpl implements  UserDetailsService {
     @Autowired
     private PasswordEncoder encoder;
 
+    /** Called when user validation is requested by username, returns valid UserDetails object if successful */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         
@@ -59,7 +61,7 @@ public class UserDetailsServiceImpl implements  UserDetailsService {
         return toRet;
     }
     /**
-     * {@link Hardeng.Rest.models.Driver#Driver(String, String, String, String, Integer, Long, Long) Driver}
+     * @see Hardeng.Rest.models.Driver#Constructor(String, String, String, String, Integer, Long, Long)
      * @return created Driver Object with encrypted password
      */
     public Driver makeDriver(String driverName, String username, String password, String email, Integer bonusPoints, Long cardID, Long walletID) {
@@ -72,7 +74,7 @@ public class UserDetailsServiceImpl implements  UserDetailsService {
     }
 
     /**
-     * {@link Hardeng.Rest.models#Admin(String, String, String, String, String, String, String) Admin}
+     * @see Hardeng.Rest.models.Admin#Constructor(String, String, String, String, String, String, String)
      * @return created Admin Object with encrypted password
      */
     public Admin makeAdmin(String username, String password, String email, String companyName, String companyPhone, String companyLocation) {

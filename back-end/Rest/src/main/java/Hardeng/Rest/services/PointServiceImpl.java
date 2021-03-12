@@ -40,6 +40,7 @@ public class PointServiceImpl implements PointService {
     @Autowired
     private ChargingStationRepository cStatRepo;
 
+    /** DTO with Charging Session information */
     public static class SessionObject {
         @JsonProperty("SessionIndex")
         private Integer sessionIndex;
@@ -71,6 +72,7 @@ public class PointServiceImpl implements PointService {
 
     }
 
+    /** CSV-serializable DTO with SessionsPerPoint information */
     public static class CsvSessPointObject {
         @CsvBindByName
         private String point;
@@ -125,6 +127,7 @@ public class PointServiceImpl implements PointService {
 
     }
     
+    /** DTO with SessionsPerPoint information */
     public static class SessPointObject implements CsvObject {
         @JsonProperty("Point")
         private String point;
@@ -164,6 +167,7 @@ public class PointServiceImpl implements PointService {
         }
     }
     
+    /** DTO for ChargingPoint model interaction */
     public class PointObject {
         @JsonProperty("PointID")
         private Integer pointId;
@@ -234,8 +238,21 @@ public class PointServiceImpl implements PointService {
         log.info("Updating Charging Point...");
         ChargingPoint point = cPointRepo.findById(pointId)
          .orElseThrow(()-> new ChargingPointNotFoundException(pointId));
-        ChargingStation station = cStatRepo.findById(point.getCStation().getId())
-         .orElseThrow(()-> new ChargingStationNotFoundException(point.getCStation().getId()));
+        ChargingStation station = cStatRepo.findById(stationId)
+         .orElseThrow(()-> new ChargingStationNotFoundException(stationId));
+
+        /* Check if charging station update is requested */
+        if (point.getCStation().getId() != stationId)
+        {
+            //Update old charging station
+            point.getCStation().setNrOfChargingPoints(point.getCStation().getNrOfChargingPoints()-1);
+            cStatRepo.save(point.getCStation());
+
+            //Update new charging station
+            station.setNrOfChargingPoints(station.getNrOfChargingPoints()+1);
+            cStatRepo.save(station);
+        }
+
         point.setConditionInt(condition);
         point.setMaxOutput(maxEnergy);
         if (isOccupied == true) {point.setIsOccupied();}

@@ -1,7 +1,5 @@
 package Hardeng.Rest.services;
 
-import java.io.Console;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
 
 import java.text.SimpleDateFormat;
-import java.text.ParseException;
 
 import Hardeng.Rest.exceptions.ChargingPointNotFoundException;
 import Hardeng.Rest.exceptions.PricePolicyNotFoundException;
@@ -39,7 +36,6 @@ import Hardeng.Rest.repositories.CarRepository;
 import Hardeng.Rest.repositories.CarDriverRepository;
 import Hardeng.Rest.repositories.ChargingSessionRepository;
 import Hardeng.Rest.repositories.ChargingStationRepository;
-import Hardeng.Rest.services.EVServiceImpl.PricePolicyRef;
 
 @Service
 public class SessionServiceImpl implements SessionService {
@@ -61,6 +57,7 @@ public class SessionServiceImpl implements SessionService {
     @Autowired
     private ChargingStationRepository cStationRepo;
 
+    /** DTO for ChargingSession model data interactions */
     public class SessionObject {
         @JsonProperty("SessionID")
         private Integer sessionId;
@@ -165,6 +162,8 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public ResponseEntity<Object> deleteSession(Integer sessionId) throws NoDataException {
         log.info("Deleting Charging Session...");
+        /**ChargingSession querySession = */cSessRepo.findById(sessionId)
+         .orElseThrow(()-> new ChargingSessionNotFoundException(sessionId));
         cSessRepo.deleteById(sessionId);
         return ResponseEntity.noContent().build();
     }

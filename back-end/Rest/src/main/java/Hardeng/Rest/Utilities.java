@@ -7,16 +7,14 @@ import java.util.List;
 
 // import org.springframework.beans.factory.annotation.Value;
 
-/**
- * This is probably the best way to group some globals to
- * allow for easier future changes, should the need arise.
- */
+/** Utility methods, constants and classes for ease of use access and editting */
 public class Utilities {
     public static final String BASEURL = "/evcharge/api";
     public static final String[] FORMATS = {"application/json", "text/csv"};
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
     public static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    /** A very bad practice hardcoded INTO code security constant declaration group that should have been changed */
     public static class SecurityConstants {
         public static final long validity_time = 5*60*60;
         public static final long a_long_time = 60*60*24*365;
@@ -31,6 +29,11 @@ public class Utilities {
 
     }
 
+    /** Utility method parsing string into timestamp
+     * @param orgString string to parse
+     * @param timestampFormat format to fit it too
+     * @return timestamp object if string format is correct
+     */
     public static Timestamp timestampFromString(String orgString, SimpleDateFormat timestampFormat) {
         try {
             return new Timestamp(timestampFormat.parse(orgString).getTime());
@@ -39,7 +42,11 @@ public class Utilities {
         }
     }
 
+    /** Any class that wants to be serialized into CSV needs to implement this */
     public static interface CsvObject {
+        /** This will be a list of simple csv-able objects to serialize into response body
+         * @return the list of beans to output
+         */
         List<Object> getList();
     }
 

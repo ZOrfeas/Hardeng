@@ -6,6 +6,7 @@ import java.util.List;
 import Hardeng.Rest.models.Admin;
 import Hardeng.Rest.models.PricePolicy;
 
+/** Price Policy model interface */
 @Repository
 public interface PricePolicyRepository extends JpaRepository<PricePolicy, Integer> {
 
@@ -14,6 +15,5 @@ public interface PricePolicyRepository extends JpaRepository<PricePolicy, Intege
      * @param admin Admin in question
      * @return List of price policies
     */
-
     List<PricePolicy> findByAdmin(Admin admin);
 }

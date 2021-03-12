@@ -11,8 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-
-
+/** Charging point persistent data model */
 @Entity
 public class ChargingPoint {
     @Id
@@ -41,12 +40,12 @@ public class ChargingPoint {
         private Condition(Integer value) {this.value = value;}
         /** This runs once and populates the lookup table from Integer to Condition */
         static {for (Condition c: values()) {BY_LABEL.put(c.value, c);}}
+        @Override
+        public String toString() {return this.name();}
         /** Translates code to Condition type 
          * @param code The value to be translated 
          * @return The corresponding Condition 
          */
-        @Override
-        public String toString() {return this.name();}
         public static Condition meaningOfCode(Integer code) {return BY_LABEL.get(code);}
     }
 
@@ -66,7 +65,7 @@ public class ChargingPoint {
     }
     /** 
      * Overload of the {@link #ChargingPoint(Integer, Integer, ChargingStation)} 
-     * method with default {@code condition=0}(OPERATIONAL)
+     * method with default {@code condition=0}
      * and {@code isOccupied=false}
      */
     public ChargingPoint(Integer maxOutput, Integer chargerType, ChargingStation cStation) {

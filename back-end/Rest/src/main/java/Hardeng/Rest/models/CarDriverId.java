@@ -4,6 +4,7 @@ import java.util.*;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/** Embedable congregation object necessary for manual ManyToOne between Driver and Car models */
 @Embeddable
 @SuppressWarnings("serial")
 public class CarDriverId implements Serializable {

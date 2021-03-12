@@ -1,3 +1,4 @@
+  
 package Hardeng.Rest.services;
 
 import java.sql.Timestamp;
@@ -32,7 +33,6 @@ import Hardeng.Rest.repositories.ChargingPointRepository;
 import Hardeng.Rest.repositories.ChargingSessionRepository;
 import Hardeng.Rest.repositories.AdminRepository;
 import Hardeng.Rest.repositories.EnergyProviderRepository;
-import Hardeng.Rest.services.PointServiceImpl;
 
 @Service
 public class StationServiceImpl implements StationService {
@@ -49,6 +49,7 @@ public class StationServiceImpl implements StationService {
     @Autowired
     private EnergyProviderRepository cEnergyProviderRepo;
 
+    /** DTO with ChargingPoint info */
     public class PointObject {
         @JsonProperty("PointID")
         @CsvBindByName
@@ -68,7 +69,7 @@ public class StationServiceImpl implements StationService {
             this.energyDelivered =  eDeliv == null ? 0.0f : eDeliv;
         }
     }
-    
+    /** CSV-serializable DTO with SessionsPerEv information */
     public static class CsvSessStationObject {
         @CsvBindByName
         private String stationId;
@@ -114,6 +115,7 @@ public class StationServiceImpl implements StationService {
 
     }
     
+    /** DTO with SessionsPerStation information */
     public class SessStationObject implements CsvObject {
         @JsonProperty("StationID")
         private String stationId;
@@ -151,16 +153,6 @@ public class StationServiceImpl implements StationService {
                 this.nrOfChargingSessions = this.nrOfChargingSessions + pointObject.pointSessions;
             }
         }
-        /*
-        public String getStationId() {return this.stationId;}
-        public String getOperator() {return this.operator;}
-        public String getRequestTimeStamp() {return this.requestTimeStamp;}
-        public String getPeriodFrom() {return this.periodFrom;}
-        public String getPeriodTo() {return this.periodTo;}
-        public Float getTotalEnergyDelivered() {return this.totalEnergyDelivered;}
-        public Integer getNrOfActivePoints() {return this.nrOfActivePoints;}
-        @JsonIgnore
-        public String getSessionsSummaryList() {return this.sessionsSummaryList.toString();}*/
         @Override
         @JsonIgnore
         public List<Object> getList() {
@@ -172,6 +164,7 @@ public class StationServiceImpl implements StationService {
         }
     }
     
+    /** DTO with info about stations within an area */
     public class NearbyStationObject {
         @JsonProperty("position")
         private List<Double> pos;
@@ -234,6 +227,7 @@ public class StationServiceImpl implements StationService {
         }
     }
 
+    /** DTO for ChargingStation model data interactions */
     public class StationObject {
         @JsonProperty("StationID")
         private Integer stationId;
@@ -379,6 +373,7 @@ public class StationServiceImpl implements StationService {
         return toRet;        
     }
 
+    /** DTO with info about energy consumption of stations within an area */
     public class EnergySumObject {
         @JsonProperty("energySum")
         private Float sum;

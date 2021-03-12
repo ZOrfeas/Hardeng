@@ -3,6 +3,7 @@ package Hardeng.Rest.models;
 import java.util.*;
 import javax.persistence.*;
 
+/** Station administrator persistent data model */
 @Entity
 public class Admin {
     @Id
