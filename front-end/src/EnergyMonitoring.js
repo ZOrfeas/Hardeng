@@ -589,7 +589,9 @@ CalcCostPerRegion (){
                       data={this.state.datastream}
                       keys={[ "2021-03-01", "2021-04-01", "2021-05-01", "2021-06-01", "2021-07-01" ]}
                       margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-                      axisTop={null}
+                      axisTop={
+                        null
+                      }
                       axisRight={null}
                       axisBottom={{
                           orient: 'bottom',
@@ -599,7 +601,13 @@ CalcCostPerRegion (){
                           legend: '',
                           legendOffset: 36
                       }}
-                      axisLeft={{ orient: 'left', tickSize: 5, tickPadding: 5, tickRotation: 0, legend: '', legendOffset: -40 }}
+                      axisLeft={{ 
+                        orient: 'left', 
+                        tickSize: 5, 
+                        tickPadding: 5, 
+                        tickRotation: 0, 
+                        legend: 'Estimated Future Energy Consumption (GWh)', 
+                        legendOffset: -40 }}
                       offsetType="silhouette"
                       colors={{ scheme: 'nivo' }}
                       fillOpacity={0.85}
