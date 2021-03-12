@@ -111,7 +111,7 @@ exports.handler = function(argv)
         }
       })
       .then(res => {
-        console.log(res);
+        console.log(res.data);
       })
       .catch(err => {
         errorHandler(err);
