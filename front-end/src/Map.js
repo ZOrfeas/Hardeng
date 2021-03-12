@@ -38,17 +38,17 @@ const stationsHardcoded = [
 
 function LocationMarker(props) {
   const [position, setPosition] = useState(null)
-  const map = useMapEvents({
-    click() {
-      map.locate();
-    },
+  // const map = useMapEvents({
+  //   click() {
+  //     map.locate();
+  //   },
 
-    locationfound(e) {
-      setPosition(e.latlng);
-      props.setter(e.latlng);
-      map.flyTo(e.latlng, map.getZoom());
-    },
-  })
+  //   // locationfound(e) {
+  //   //   setPosition(e.latlng);
+  //   //   props.setter(e.latlng);
+  //   //   map.flyTo(e.latlng, map.getZoom());
+  //   // },
+  // })
 
   return position === null ? null : (
     <Marker position={position} icon={locationIcon}>
@@ -101,11 +101,19 @@ class Map extends React.Component{
     var i = this.state.chosenIndex;
 
     if (i === null) {
-      return (this.state.stations.map(({ Longitude, Latitude, AddressLine }, index) => <Marker key={index} value={AddressLine} position={[Latitude,Longitude]}></Marker>));
+      return (this.state.stations.map(({ Longitude, Latitude, AddressLine }, index) => <Marker key={index} value={AddressLine} position={[Latitude,Longitude]}>
+        <Popup>
+        {AddressLine}.<br /> 
+        </Popup>
+      </Marker>));
     }
     else {
       var station = this.state.stations[i];
-      return (<Marker key={i} value={station.AddressLine} position={[station.Latitude,station.Longitude]}></Marker>);
+      return (<Marker key={i} value={station.AddressLine} position={[station.Latitude,station.Longitude]}>
+        <Popup>
+        {station.AddressLine}.<br /> 
+        </Popup>
+      </Marker>);
     }
   }
 
