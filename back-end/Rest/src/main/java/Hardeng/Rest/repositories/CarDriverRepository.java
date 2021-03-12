@@ -10,6 +10,7 @@ import Hardeng.Rest.models.CarDriverId;
 import Hardeng.Rest.models.Driver;
 import Hardeng.Rest.models.Car;
 
+/** CarDriver relation model interface */
 @Repository
 public interface CarDriverRepository extends JpaRepository<CarDriver, CarDriverId> {
     /**

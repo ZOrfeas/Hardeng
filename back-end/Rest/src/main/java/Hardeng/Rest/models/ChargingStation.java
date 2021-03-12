@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 
 import org.springframework.data.geo.Point;
 
+/** Charging Station persistent data models */
 @Entity
 public class ChargingStation {
     @Id

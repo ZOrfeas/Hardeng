@@ -22,7 +22,6 @@ import Hardeng.Rest.models.Driver;
 import Hardeng.Rest.repositories.PricePolicyRepository;
 import Hardeng.Rest.repositories.AdminRepository;
 import Hardeng.Rest.repositories.DriverRepository;
-import Hardeng.Rest.services.ProviderServiceImpl.PricePolicyRef;
 
 @Service
 public class PricePolicyServiceImpl implements PricePolicyService {
@@ -35,6 +34,7 @@ public class PricePolicyServiceImpl implements PricePolicyService {
     @Autowired
     private DriverRepository driverRepo;
 
+    /** DTO for PricePolicy model data interactions */
     public class PricePolicyObject {
         @JsonProperty("PricePolicyID")
         private Integer pPolicyId;
@@ -58,6 +58,7 @@ public class PricePolicyServiceImpl implements PricePolicyService {
         }
     }
 
+    /** DTO with Driver-PricePolicy relation information */
     public class DriverPolicyObject {
         @JsonProperty("DriverID")
         private Integer driverID;
@@ -132,7 +133,7 @@ public class PricePolicyServiceImpl implements PricePolicyService {
          .orElseThrow(()-> new DriverNotFoundException(driverId));
         driver.addPricePolicy(policy);
         driverRepo.save(driver);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /* Remove PricePolicy to Driver */
@@ -145,7 +146,7 @@ public class PricePolicyServiceImpl implements PricePolicyService {
          .orElseThrow(()-> new DriverNotFoundException(driverId));
         driver.removePricePolicy(policy);
         driverRepo.save(driver);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /* Get all Price Policies of a driver */

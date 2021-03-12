@@ -9,6 +9,7 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/** Content negotiation configurer class enabling Csv response functionality */
 @Configuration
 @EnableWebMvc
 public class ResponseConfig implements WebMvcConfigurer{

@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.GenerationType;
 
+/** Energy Provider persistent data model */
 @Entity
 public class EnergyProvider {
     @Id

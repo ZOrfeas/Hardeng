@@ -19,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import Hardeng.Rest.Utilities.SecurityConstants;
 import io.jsonwebtoken.ExpiredJwtException;
 
+/** HttpFilter implementing authorization/authentication for incoming requests */
 @Component
 public class CustomFilter extends OncePerRequestFilter {
 	private static Logger log = LoggerFactory.getLogger(CustomFilter.class);
@@ -28,6 +29,11 @@ public class CustomFilter extends OncePerRequestFilter {
     @Autowired
     private TokenUtil tokenUtil;
     
+    /** Checks and validates token in header, if it exists
+     * @param request the incoming request
+     * @param response the response object being manipulated
+     * @param chain the filter chain of which this is part of 
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response, FilterChain chain) 

@@ -7,7 +7,7 @@ import Hardeng.Rest.models.Admin;
 import Hardeng.Rest.models.ChargingStation;
 import Hardeng.Rest.models.EnergyProvider;
 
-
+/** Charging Station model interface */
 @Repository
 public interface ChargingStationRepository extends JpaRepository<ChargingStation, Integer> {
     /** 
@@ -15,7 +15,6 @@ public interface ChargingStationRepository extends JpaRepository<ChargingStation
      * @param eProvider Energy Provider in question
      * @return List of charging stations
     */
-
     List<ChargingStation> findByeProvider(EnergyProvider eProvider);
 
     /** 
@@ -27,7 +26,6 @@ public interface ChargingStationRepository extends JpaRepository<ChargingStation
      * @param lonUp longitude upperlimit
      * @return List of charging stations
      */
-
     List<ChargingStation> findByLatitudeBetweenAndLongitudeBetween(Double latLow,
     Double latUp, Double lonLow, Double lonUp);
 
@@ -36,7 +34,6 @@ public interface ChargingStationRepository extends JpaRepository<ChargingStation
      * @param admin Admin in question
      * @return List of charging stations
     */
-
     List<ChargingStation> findByAdmin(Admin admin);
 
     /**

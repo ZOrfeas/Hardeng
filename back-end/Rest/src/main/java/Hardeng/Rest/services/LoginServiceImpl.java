@@ -31,6 +31,7 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private TokenUtil tokenUtil;
 
+    /** DTO for returning JWT after successful login */
     public static class LoginObject {
         @JsonProperty("token")
         private String token;
