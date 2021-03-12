@@ -375,7 +375,7 @@ CalcCostPerRegion (){
       console.log(latlng2["lat"]);
       console.log(typeof from.value)
       console.log(to.value)
-      getAdminAreaStationEnergy(this.state.adminKey,this.state.adminID,latlng2,100000,from.value,to.value)
+      getAdminAreaStationEnergy(this.state.adminKey,this.state.adminID,latlng2,10,from.value,to.value)
       .then(res => {
         console.log(res)
         let temp = document.getElementById('energy-cost-per-region');

@@ -11,7 +11,19 @@ import image from './icons/image4.jpg'
 class Home extends React.Component{
   constructor(props){
     super(props);
+
+    this.state = {
+      driverKey: localStorage.getItem("driverKey"),
+      adminKey: localStorage.getItem("adminKey"),
+    }
+
+    this.choosePage = this.choosePage.bind(this);
   }
+
+  choosePage(e){
+    window.location = e.target.value;
+  }
+
   render(){
     return(
       <div>
@@ -31,15 +43,42 @@ class Home extends React.Component{
                     <div className="nav-wrapper">
                       <a href="" className="home-brand-logo">Logo Placeholder</a>
                       <ul id="nav-mobile" className="right hide-on-med-and-down">
-                        <li><a href="/ChargingExperience" className="home-link" disabled="true">
-                        Charging Experience
-                        </a></li>
-                        <li><a href="/EnergyMonitoring" className="home-link">
-                        Station Monitoring
-                        </a></li>
-                        <li><a href="/EditUserInfo" className="home-link">
-                        Edit Profile
-                        </a></li>
+                        <li>
+                          <button 
+                          onClick={this.choosePage}
+                          value="\StationMonitoring"
+                          className="btn-flat"
+                          disabled={this.state.adminKey === null}>
+                            Station Monitoring
+                          </button>
+                        </li>
+                        <li>
+                          <button 
+                          onClick={this.choosePage}
+                          value="\ChargingExperience"
+                          className="btn-flat"
+                          disabled={this.state.driverKey === null}>
+                            Charging Experience
+                          </button>
+                        </li>
+                        <li>
+                          <button 
+                          onClick={this.choosePage}
+                          value="\EnergyMonitoring"
+                          className="btn-flat"
+                          disabled={this.state.adminKey === null}>
+                            Energy Monitoring
+                          </button>
+                        </li>
+                        <li>
+                          <button 
+                          onClick={this.choosePage}
+                          value="\EditUserInfo"
+                          className="btn-flat"
+                          disabled={this.state.driverKey === null}>
+                            Edit Profile
+                          </button>
+                        </li>
                       </ul>
                       <div class="divider"></div>
                     </div>

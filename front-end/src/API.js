@@ -45,7 +45,7 @@ export function getUserID(Key,type){
   return axios.get(reqURL, auth);
 }
 
-export function getDriverInfo(driverKey,driverID) {
+export function getDriverInfo(driverKey, driverID) {
   const reqURL = "Driver/" + driverID;
   const auth = {
     headers: {
@@ -151,6 +151,18 @@ export function logSession(driverKey, obj){
   };
   
   return axios.post(reqURL, obj, auth);
+}
+
+export function postPricePolicy(driverKey, driverID, PricePolicyID){
+  const reqURL = "/AddPricePolicy/" + PricePolicyID + "/" + driverID;
+
+  const auth = {
+    headers: {
+      'X-OBSERVATORY-AUTH': driverKey,
+    }
+  };
+  
+  return axios.post(reqURL, null, auth);
 }
 
 export function getAdminPolicies(adminKey, adminID) {
