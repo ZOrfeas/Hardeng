@@ -2,7 +2,6 @@ const axios = require("axios");
 const FormData = require("form-data");
 const { builder } = require("./SessionsPerProvider");
 const qs = require('querystring');
-const FormData = require('form-data');
 const fs = require('fs');
 const { tokenFileExists, createTokenFile, errorHandler, getToken } = require("../utils");
 const { help } = require("yargs");
