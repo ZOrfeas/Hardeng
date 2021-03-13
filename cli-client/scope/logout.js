@@ -8,7 +8,7 @@ exports.desc = 'Logout user'
 exports.handler = function(argv) {
 
     if (tokenFileExists()) {
-        const token = getToken();
+        /*const token = getToken();
 
         axios.post('/logout', null, {
             headers: {
@@ -20,7 +20,8 @@ exports.handler = function(argv) {
         })
         .catch(err => {
             errorHandler(err);
-        })
+        })*/
+        deleteTokenFile();
     }
     else {
         console.log('You are not logged in. Please log in first');

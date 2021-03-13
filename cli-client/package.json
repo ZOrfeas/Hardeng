@@ -8,12 +8,16 @@
   },
   "author": "",
   "license": "ISC",
+  "bin": {
+    "ev_group11": "./index.js"
+  },
   "dependencies": {
     "axios": "^0.21.1",
     "dotenv": "^8.2.0",
+    "form-data": "^4.0.0",
     "yargs": "^16.2.0"
   },
   "devDependencies": {
-    "mocha": "^8.2.1"
+    "mocha": "^8.3.2"
   }
 }

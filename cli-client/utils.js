@@ -1,13 +1,8 @@
 const fs = require('fs');
 
-function isValidApikey (apikey) {
-    const regex = RegExp('([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})');
-    return regex.test(apikey);
-}
-
 function isValidDate(date) {
     const regex = RegExp('[0-9]{8}');
-    return regex.test(date);
+    return regex.test(date) && date.length == 8;
 }
 
 function createTokenFile(token) {
@@ -59,8 +54,7 @@ function errorHandler (err) {
         console.log(err.response.data);
 }
 
-module.exports = { isValidApikey,
-                   isValidDate,
+module.exports = { isValidDate,
                    createTokenFile,
                    deleteTokenFile,
                    tokenFileExists,

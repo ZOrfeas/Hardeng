@@ -1,5 +1,10 @@
 const axios = require("axios");
+const FormData = require("form-data");
 const { builder } = require("./SessionsPerProvider");
+const qs = require('querystring');
+const fs = require('fs');
+const { tokenFileExists, createTokenFile, errorHandler, getToken } = require("../utils");
+const { help } = require("yargs");
 
 exports.command = 'Admin'
 
@@ -8,14 +13,21 @@ exports.desc = "System Administration"
 exports.builder = {
   usermod:
   {
-    describe: "Create user or change user's password\n'--usermod --username <User's name> --passw <Password>'",
+    describe: "Create user or change user's password\n'--usermod --username <username> --passw <Password> --email<Email> --name<User's name>'",
     
   },
   username: {
-    describe: "User's name"
+    describe: "Username"
   },
   passw: {
-    describe: "User's password"
+    describe: "Password"
+  },
+  email: {
+    describe: "User's email"
+      
+  },
+  driverName:{
+    describe: "User's name"
   },
   users:
   {
@@ -41,57 +53,125 @@ exports.builder = {
 
 exports.handler = function(argv)
 {
-  var myArgs = process.argv.slice(3)
-  if(myArgs[0] == '--usermod'){
-    if(myArgs[1] != '--username' || myArgs[3] != '--passw')//if myArgs[2] or myArgs[4] == 0 API will return error 400
+  var args = process.argv.slice(3);
+  //console.log(args[0]);
+  const token = getToken();
+  if(tokenFileExists())
+  {
+    switch(args[0])
     {
-      console.log('Please make sure to enter username and password')
-      console.log("For more, type: Admin --help")
-    }
-    else{
-      console.log('APIkey: ', myArgs[8])
-    }
-  }
-  if(myArgs[0] == '--users'){
-    console.log("Username: ", 'API key')
-  }
-  if(myArgs[0] == '--sessionupd')
-  {
-    if(myArgs[1] != '--source')
-    {
-      console.log("Please add the csv file with sessions you want to upload\nFor more, type: Admin --help")
-    }
-    else{
-      console.log(myArgs[2])
-      
-    }
-  }
-  if(myArgs[0] == '--healthcheck')
-  {
-    axios.get('/admin/healthcheck', {
-      params: {
-          apikey: argv.apikey
+    case '--usermod':
+      if(args[1] != '--username' || args[3] != '--passw' || args[5] != '--email' || args[7] != '--driverName')
+      {
+        console.log('Wrong input, please type Admin --help')
       }
-  })
-    .then(res =>{
-      console.log(res.data);
-  })
-  .catch(err => {
-      console.log(err.response.data)
-  })
-  }
-  if(myArgs[0] == '--resetsessions')
-  {
-    axios.post('/admin/resetsessions', {
-      params: {
-          apikey: argv.apikey
+      else
+      {
+        axios.post('/admin/usermod/'+argv.username+'/'+argv.passw,{
+          
+            driverName: argv.driverName,
+            email: argv.email
+          },{
+          headers: {
+            'X-OBSERVATORY-AUTH': token.toString()
+          }    
+          
+        })
+        
+        .then(res => {
+          console.log(res.data);
+          console.log(token);
+        })
+        .catch(err => {
+          errorHandler(err);
+        })
       }
-  })
-    .then(res =>{
-      console.log(res.data);
-  })
-  .catch(err => {
-      console.log(err.response.data)
-  })
+      break;
+
+    case '--users':
+      axios.get('/admin/users/'+argv.users,{
+        headers:{
+          'X-OBSERVATORY-AUTH': token.toString()
+        }
+      })
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch(err => {
+        errorHandler(err);
+      })
+      break;
+
+    case '--sessionsupd':
+      const form = new FormData();
+      form.append('file',  fs.createReadStream(argv.source));
+      axios.post('/admin/system/sessionsupd', form,      
+      {
+        headers:{
+          'X-OBSERVATORY-AUTH': token.toString(),
+          'Content-Type': `multipart/form-data; boundary=${form._boundary}`
+        }
+      })
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch(err => {
+        errorHandler(err);
+      })
+      break;
+
+    case '--healthcheck':
+      axios.get('/admin/healthcheck',{
+        headers: {
+          'X-OBSERVATORY-AUTH': token.toString()
+      }
+      })
+      .then(res => {
+          console.log(res.data);
+      })
+      .catch(err => {
+          errorHandler(err);
+      })
+      break;
+
+    case '--resetsessions':
+      axios.post('/admin/resetsessions', {
+        headers: {
+            'X-OBSERVATORY-AUTH': token.toString()
+        }
+      })
+      .then(res => {
+          console.log(res.data);
+      })
+      .catch(err => {
+          errorHandler(err);
+      })
+      break;
+    
+
+    default: 
+    const helpMessage = `index.js Admin
+    \r
+    \rSystem Administration
+    \r
+    \rOptions:
+    \r  --version   Show version number                                      [boolean]
+    \r  --help      Show help                                                [boolean]
+    \r  --usermod        Create user or change user's password
+    \r                     '--usermod --username <username> --passw <Password>
+    \r                      --email<Email> --name<User's name>'
+    \r  --username       Username
+    \r  --passw          Password
+    \r  --email          User's email
+    \r  --driverName     User's name
+    \r  --users          User's Activity
+    \r  --sessionsupd    Add new sessions from a csv file
+    \r                    --sessionupd --source <Filename.csv>
+    \r  --source         File to upload
+    \r  --healthcheck    Check user-database connection
+    \r  --resetsessions  Initialize charging events & default admin account`;
+    console.log(helpMessage);
   }
+}
+
 }
