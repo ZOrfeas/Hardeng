@@ -1,4 +1,5 @@
 const axios = require("axios");
+const FormData = require("form-data");
 const { builder } = require("./SessionsPerProvider");
 const qs = require('querystring');
 const FormData = require('form-data');
@@ -33,7 +34,7 @@ exports.builder = {
   {
     describe: "User's Activity"
   },
-  sessionsupd:
+  sessionupd:
   {
     describe: "Add new sessions from a csv file\n --sessionupd --source <Filename.csv>"
   },
@@ -56,8 +57,10 @@ exports.handler = function(argv)
   var args = process.argv.slice(3);
   //console.log(args[0]);
   const token = getToken();
-  switch(args[0])
+  if(tokenFileExists())
   {
+    switch(args[0])
+    {
     case '--usermod':
       if(args[1] != '--username' || args[3] != '--passw' || args[5] != '--email' || args[7] != '--driverName')
       {
@@ -145,6 +148,7 @@ exports.handler = function(argv)
           errorHandler(err);
       })
       break;
+    
 
     default: 
     const helpMessage = `index.js Admin
@@ -169,5 +173,6 @@ exports.handler = function(argv)
     \r  --resetsessions  Initialize charging events & default admin account`;
     console.log(helpMessage);
   }
+}
 
 }
