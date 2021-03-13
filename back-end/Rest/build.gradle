@@ -2,6 +2,14 @@ plugins {
 	id 'org.springframework.boot' version '2.4.1'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
 	id 'java'
+	id 'groovy'
+}
+sourceSets {
+	test {
+		groovy {
+			srcDir 'src/test/groovy'
+		}
+	}
 }
 
 group = 'Hardeng'
@@ -16,13 +24,28 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	runtimeOnly 'mysql:mysql-connector-java'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	
 	implementation 'com.opencsv:opencsv:4.6'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.security:spring-security-test'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.spockframework:spock-core:1.3-groovy-2.5'
+	// testImplementation 'org.spockframework:spock-spring:1.3-groovy-2.5' // provides @SpringBean annotation for testing
+	testImplementation 'junit:junit:4.13'
+	testImplementation 'org.codehaus.groovy:groovy-all:2.5.12'
+	testImplementation 'com.h2database:h2:1.4.200'
+	// testImplementation 'org.mockito:mockito-core:3.8.0'
+	// testImplementation 'org.mockito:mockito-junit-jupiter:3.8.0'
+
 }
 
 test {
 	useJUnitPlatform()
+	// remove this
+	// testLogging {
+	// 	showStandardStreams = true
+	// }
+	// siht evomer
 }

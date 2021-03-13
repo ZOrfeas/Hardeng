@@ -46,15 +46,6 @@ class Home extends React.Component{
                         <li>
                           <button 
                           onClick={this.choosePage}
-                          value="\StationMonitoring"
-                          className="btn-flat"
-                          disabled={this.state.adminKey === null}>
-                            Station Monitoring
-                          </button>
-                        </li>
-                        <li>
-                          <button 
-                          onClick={this.choosePage}
                           value="\ChargingExperience"
                           className="btn-flat"
                           disabled={this.state.driverKey === null}>

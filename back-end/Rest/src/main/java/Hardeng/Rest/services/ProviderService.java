@@ -5,6 +5,7 @@ import java.util.List;
 import Hardeng.Rest.exceptions.NoDataException;
 import Hardeng.Rest.services.ProviderServiceImpl.SessProvObject;
 
+/** Energy provider controller business logic definitions */
 public interface ProviderService {
     /**
      * Fetch sessions per provider within specific date time

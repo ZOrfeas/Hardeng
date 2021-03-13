@@ -7,6 +7,6 @@ import org.springframework.http.HttpStatus;
 @ResponseStatus(HttpStatus.PAYMENT_REQUIRED)
 public class PricePolicyNotFoundException extends RuntimeException{
     public PricePolicyNotFoundException(Integer id) {
-        super("Could not find charging point " + id);
+        super("Could not find price policy " + id);
     }
 }

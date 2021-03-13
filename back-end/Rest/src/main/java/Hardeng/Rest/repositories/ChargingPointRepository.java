@@ -8,6 +8,7 @@ import java.util.List;
 import Hardeng.Rest.models.ChargingPoint;
 import Hardeng.Rest.models.ChargingStation;
 
+/** Charging Point model interface */
 @Repository
 public interface ChargingPointRepository extends JpaRepository<ChargingPoint, Integer> {
 

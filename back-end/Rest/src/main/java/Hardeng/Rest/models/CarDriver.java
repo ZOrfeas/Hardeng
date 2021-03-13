@@ -3,6 +3,7 @@ package Hardeng.Rest.models;
 import java.util.*;
 import javax.persistence.*;
 
+/** Car-Driver relation data model */
 @Entity
 public class CarDriver {
 

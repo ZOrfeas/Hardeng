@@ -34,6 +34,7 @@ public class DriverServiceImpl implements DriverService {
     @Autowired
     private PasswordEncoder encoder;
     
+    /** DTO for Driver model data interactions */
     public class DriverObject {
         @JsonProperty("DriverID")
         private Integer driverId;

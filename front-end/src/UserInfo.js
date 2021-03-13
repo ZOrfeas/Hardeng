@@ -29,7 +29,9 @@ class UserInfo extends React.Component {
           this.setState({info: res.data});
         })
         .catch(err => {
-          this.setState({error: err.response.value})
+          if (err.response){
+            this.setState({error: err.response.value})
+          }
         });
     }
     else {

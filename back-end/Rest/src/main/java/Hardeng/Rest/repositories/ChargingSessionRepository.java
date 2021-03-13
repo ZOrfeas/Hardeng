@@ -11,6 +11,7 @@ import Hardeng.Rest.models.ChargingPoint;
 import Hardeng.Rest.models.ChargingSession;
 import Hardeng.Rest.models.CarDriver;
 
+/** Charging Session model interface */
 @Repository
 public interface ChargingSessionRepository extends JpaRepository<ChargingSession, Integer> {
     
@@ -44,16 +45,30 @@ public interface ChargingSessionRepository extends JpaRepository<ChargingSession
      * to {@code dateTo}
      * @param dateFrom start date
      * @param dateTo end date
-     * @param cPointId ChargingPoint in question
+     * @param cPoint ChargingPoint in question
      * @return Float returns total energy delivered
      */
     @Query("SELECT SUM(s.energyDelivered) FROM ChargingSession s " + 
             "WHERE s.startedOn >= :dateFrom AND s.finishedOn <= :dateTo AND s.chargingPoint = :cPoint")
     Float totalEnergyDelivered(Timestamp dateFrom, Timestamp dateTo, ChargingPoint cPoint);
 
+    /** Queries for charging sessions within specified timeframe by specified driver and car
+     * @param dateFrom Timeframe begin date
+     * @param dateTo Timeframe end date
+     * @param carDriver carDriver in question
+     * @return List of charging sessions
+     */
     List<ChargingSession> findByStartedOnBetweenAndCarDriver(Timestamp dateFrom, Timestamp dateTo, CarDriver carDriver);
 
+    /** Queries for charging sessions by specified driver and car
+     * @param carDriver carDriver in question
+     * @return List of charging sessions
+     */
     List<ChargingSession> findByCarDriver(CarDriver carDriver);
 
+    /** Queries for charging sessions by specified charging point
+     * @param cPoint charging point in question
+     * @return List of charging sessions
+     */
     List<ChargingSession> findByChargingPoint(ChargingPoint cPoint);
 }

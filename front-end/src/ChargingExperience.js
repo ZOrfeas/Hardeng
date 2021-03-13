@@ -75,7 +75,7 @@ class ChargingExperience extends React.Component {
       driverKey: localStorage.getItem("driverKey"),
       driverID: localStorage.getItem("driverID"),
 
-      stations: stationsHardcoded,
+      stations: [],
       prices: pricesHardcoded,
       vehicles: vehiclesHardcoded,
       policies: policiesHardcoded,

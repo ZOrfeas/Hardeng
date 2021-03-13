@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import "./EditUserInfo.css";
 import 'leaflet/dist/leaflet.css'
-import M from 'materialize-css';
+import M, { toast } from 'materialize-css';
 import { getDriverInfo, updateDriverInfo } from './API';
 import image from './icons/image3.jpg'
 
@@ -40,40 +40,39 @@ class EditUserInfo extends React.Component {
   }
 
   submitChanges(){
-    if (window.confirm("Save Changes")) {
-      //get driver with id and change info
-      this.setState({btnIndex: true});
-      const obj = {
-        "driverName": this.state.DriverName,
-        "username": this.state.username,
-        "password": this.state.password,
-        "email": this.state.email,
-        "bonusPoints": this.state.bonusPoints,
-        "cardId": this.state.CardId,
-        "walletId": this.state.walletID
+    if (this.state.password != ""){
+      if (window.confirm("Save Changes")) {
+        //get driver with id and change info
+        this.setState({btnIndex: true});
+        const obj = {
+          "driverName": this.state.DriverName,
+          "username": this.state.username,
+          "password": this.state.password,
+          "email": this.state.email,
+          "bonusPoints": this.state.bonusPoints,
+          "cardId": this.state.CardId,
+          "walletId": this.state.walletID
+        }
+        updateDriverInfo(this.state.driverKey,300,obj).then(res => {
+          console.log(res)
+        })
+        .catch(error => {
+          console.log(error.response)
+        })
+      } 
+      else {
+          //do nothing
       }
-      // const obj = {
-      //   "driverName": "Tome Treadwelll",
-      //   "username": "driver500",
-      //   "password": "driver500",
-      //   "email": "driver500@hardeng.com",
-      //   "bonusPoints": 79,
-      //   "cardId": 510017170629215,
-      //   "walletId": null
-      // }
-      updateDriverInfo(this.state.driverKey,500,obj).then(res => {
-        console.log(res)
-      })
-      .catch(error => {
-        console.log(error.response)
-      })
-    } 
-    else {
-        //do nothing
     }
+    else {
+      return M.toast({html: 'Please Enter your Password' })
+    }
+    
   }
  
   componentDidMount(){
+    M.AutoInit();
+
     const key = this.state.driverKey
     const id = this.state.driverID
     getDriverInfo(key,id).then(res => {
@@ -82,7 +81,7 @@ class EditUserInfo extends React.Component {
       this.setState({email: res.data["Email"]})
       this.setState({bonusPoints: res.data["BonusPoints"]})
       this.setState({walletID: res.data["WalletId"]})
-      // this.setState({password: res.data["Password"]})
+      // this.setState({password: res.data["Username"]})
       this.setState({DriverName: res.data["DriverName"]})
       this.setState({CardId: res.data["CardId"]})
       // console.log(this.DriverName);
@@ -180,7 +179,7 @@ class EditUserInfo extends React.Component {
                           </div>
                           <div class="input-field col s6">
                             <input placeholder={this.state.password} value={this.state.password}  type="text" class="validate" onChange={this.handleinputPassword}/>
-                            <label for="first_name"> Set New Password </label>
+                            <label for="first_name"> Enter Old or New Password </label>
                           </div>
 
                           <div className="right-align">
