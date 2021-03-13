@@ -1,6 +1,8 @@
 const axios = require("axios");
+const FormData = require("form-data");
 const { builder } = require("./SessionsPerProvider");
 const qs = require('querystring');
+const fs = require('fs');
 const { tokenFileExists, createTokenFile, errorHandler, getToken } = require("../utils");
 
 exports.command = 'Admin'
@@ -30,7 +32,7 @@ exports.builder = {
   {
     describe: "User's Activity"
   },
-  sessionsupd:
+  sessionupd:
   {
     describe: "Add new sessions from a csv file\n --sessionupd --source <Filename.csv>"
   },
@@ -53,56 +55,43 @@ exports.handler = function(argv)
   var args = process.argv.slice(3);
   //console.log(args[0]);
   const token = getToken();
-  switch(args[0])
+  if(tokenFileExists())
   {
-    case '--usermod':
-      {
-        if(args[1] != '--username' || args[3] != '--passw' || args[5] != '--email' || args[7] != '--driverName')
-        {
-          console.log('Wrong input, please type Admin --help')
-        }
-        else
-        {
-          axios.post('/admin/usermod/'+argv.username+'/'+argv.passw,{
-            
-              driverName: argv.driverName,
-              email: argv.email
-            },{
-            headers: {
-              'X-OBSERVATORY-AUTH': token.toString()
-            }    
-            
-          })
-          
-          .then(res => {
-            console.log(res.data);
-            console.log(token);
-          })
-          .catch(err => {
-            errorHandler(err);
-          })
-        }
-      }
-    case '--users':
+    
+    switch(args[0])
     {
-      axios.get('/admin/users/'+argv.users,{
-        headers:{
-          'X-OBSERVATORY-AUTH': token.toString()
-        }
-      })
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(err => {
-        errorHandler(err);
-      })
-    }
-    case '--sessionsupd':
-      {
-        axios.post('/admin/system/sessionsupd', {
-          file: argv.source
-        },      
+      case '--usermod':
         {
+          if(args[1] != '--username' || args[3] != '--passw' || args[5] != '--email' || args[7] != '--driverName')
+          {
+            console.log('Wrong input, please type Admin --help')
+          }
+          else
+          {
+            axios.post('/admin/usermod/'+argv.username+'/'+argv.passw,{
+              
+                driverName: argv.driverName,
+                email: argv.email
+              },{
+              headers: {
+                'X-OBSERVATORY-AUTH': token.toString()
+              }    
+              
+            })
+            
+            .then(res => {
+              console.log(res.data);
+              console.log(token);
+            })
+            .catch(err => {
+              errorHandler(err);
+            })
+          }
+          break;
+        }
+      case '--users':
+      {
+        axios.get('/admin/users/'+argv.users,{
           headers:{
             'X-OBSERVATORY-AUTH': token.toString()
           }
@@ -113,35 +102,63 @@ exports.handler = function(argv)
         .catch(err => {
           errorHandler(err);
         })
+        break;
       }
-    case '--healthcheck':
-    {
-        axios.get('/admin/healthcheck',{
-          headers: {
-            'X-OBSERVATORY-AUTH': token.toString()
+      case '--sessionupd':
+        {
+          const form = new FormData();
+          
+          axios.post('/admin/system/sessionupd',form, {
+            file: argv.source
+          },      
+          {
+            headers:{
+              'X-OBSERVATORY-AUTH': token.toString(),
+              'Content-Type': 'multipart/form-data'
+            },
+            data: form_data
+          })
+          .then(res => {
+            console.log(res.data);
+          })
+          .catch(err => {
+            errorHandler(err);
+          })
+          break;
         }
-        })
-      .then(res => {
-          console.log(res.data);
-      })
-      .catch(err => {
-          errorHandler(err);
-      })
-    }
-    case '--resetsessions':
-    {
-        axios.post('/admin/resetsessions', {
-          headers: {
+      case '--healthcheck':
+      {
+          axios.get('/admin/healthcheck',{
+            headers: {
               'X-OBSERVATORY-AUTH': token.toString()
           }
-      })
-      .then(res => {
-          console.log(res.data);
-      })
-      .catch(err => {
-          errorHandler(err);
-      })
+          })
+        .then(res => {
+            console.log(res.data);
+        })
+        .catch(err => {
+            errorHandler(err);
+        })
+        break;
+      }
+      case '--resetsessions':
+      {
+          axios.get('/admin/resetsessions', {
+            headers: {
+                'X-OBSERVATORY-AUTH': token.toString()
+            }
+        })
+        .then(res => {
+            console.log(res.data);
+        })
+        .catch(err => {
+            errorHandler(err);
+        })
+        break;
+      }
     }
+  }else{
+    console.log("Please login first");
   }
 
 }
