@@ -53,7 +53,7 @@ class EditUserInfo extends React.Component {
           "cardId": this.state.CardId,
           "walletId": this.state.walletID
         }
-        updateDriverInfo(this.state.driverKey,300,obj).then(res => {
+        updateDriverInfo(this.state.driverKey,this.state.driverID,obj).then(res => {
           console.log(res)
         })
         .catch(error => {
