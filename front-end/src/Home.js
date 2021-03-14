@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import "./Home.css";
-import L from 'leaflet';
 import 'leaflet/dist/leaflet.css'
-import M, { Autocomplete } from 'materialize-css';
-import { AiOutlineSend } from "react-icons/ai";
-import { getStations } from './API';
-import Map from './Map.js';
 import image from './icons/image4.jpg'
 
 class Home extends React.Component{

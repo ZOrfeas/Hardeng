@@ -55,123 +55,124 @@ exports.handler = function(argv)
 {
   var args = process.argv.slice(3);
   //console.log(args[0]);
-  const token = getToken();
   if(tokenFileExists())
   {
+    const token = getToken();
     switch(args[0])
     {
-    case '--usermod':
-      if(args[1] != '--username' || args[3] != '--passw' || args[5] != '--email' || args[7] != '--driverName')
-      {
-        console.log('Wrong input, please type Admin --help')
-      }
-      else
-      {
-        axios.post('/admin/usermod/'+argv.username+'/'+argv.passw,{
+      case '--usermod':
+        if(args[1] != '--username' || args[3] != '--passw' || args[5] != '--email' || args[7] != '--driverName')
+        {
+          console.log('Wrong input, please type Admin --help')
+        }
+        else
+        {
+          axios.post('/admin/usermod/'+argv.username+'/'+argv.passw,{
+            
+              driverName: argv.driverName,
+              email: argv.email
+            },{
+            headers: {
+              'X-OBSERVATORY-AUTH': token.toString()
+            }    
+            
+          })
           
-            driverName: argv.driverName,
-            email: argv.email
-          },{
-          headers: {
+          .then(res => {
+            console.log(res.data);
+            console.log(token);
+          })
+          .catch(err => {
+            errorHandler(err);
+          })
+        }
+        break;
+
+      case '--users':
+        axios.get('/admin/users/'+argv.users,{
+          headers:{
             'X-OBSERVATORY-AUTH': token.toString()
-          }    
-          
+          }
         })
-        
         .then(res => {
           console.log(res.data);
-          console.log(token);
         })
         .catch(err => {
           errorHandler(err);
         })
-      }
-      break;
+        break;
 
-    case '--users':
-      axios.get('/admin/users/'+argv.users,{
-        headers:{
-          'X-OBSERVATORY-AUTH': token.toString()
-        }
-      })
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(err => {
-        errorHandler(err);
-      })
-      break;
-
-    case '--sessionsupd':
-      const form = new FormData();
-      form.append('file',  fs.createReadStream(argv.source));
-      axios.post('/admin/system/sessionsupd', form,      
-      {
-        headers:{
-          'X-OBSERVATORY-AUTH': token.toString(),
-          'Content-Type': `multipart/form-data; boundary=${form._boundary}`
-        }
-      })
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(err => {
-        errorHandler(err);
-      })
-      break;
-
-    case '--healthcheck':
-      axios.get('/admin/healthcheck',{
-        headers: {
-          'X-OBSERVATORY-AUTH': token.toString()
-      }
-      })
-      .then(res => {
+      case '--sessionsupd':
+        const form = new FormData();
+        form.append('file',  fs.createReadStream(argv.source));
+        axios.post('/admin/system/sessionsupd', form,      
+        {
+          headers:{
+            'X-OBSERVATORY-AUTH': token.toString(),
+            'Content-Type': `multipart/form-data; boundary=${form._boundary}`
+          }
+        })
+        .then(res => {
           console.log(res.data);
-      })
-      .catch(err => {
+        })
+        .catch(err => {
           errorHandler(err);
-      })
-      break;
+        })
+        break;
 
-    case '--resetsessions':
-      axios.post('/admin/resetsessions', {
-        headers: {
+      case '--healthcheck':
+        axios.get('/admin/healthcheck',{
+          headers: {
             'X-OBSERVATORY-AUTH': token.toString()
         }
-      })
-      .then(res => {
-          console.log(res.data);
-      })
-      .catch(err => {
-          errorHandler(err);
-      })
-      break;
-    
+        })
+        .then(res => {
+            console.log(res.data);
+        })
+        .catch(err => {
+            errorHandler(err);
+        })
+        break;
 
-    default: 
-    const helpMessage = `index.js Admin
-    \r
-    \rSystem Administration
-    \r
-    \rOptions:
-    \r  --version   Show version number                                      [boolean]
-    \r  --help      Show help                                                [boolean]
-    \r  --usermod        Create user or change user's password
-    \r                     '--usermod --username <username> --passw <Password>
-    \r                      --email<Email> --name<User's name>'
-    \r  --username       Username
-    \r  --passw          Password
-    \r  --email          User's email
-    \r  --driverName     User's name
-    \r  --users          User's Activity
-    \r  --sessionsupd    Add new sessions from a csv file
-    \r                    --sessionupd --source <Filename.csv>
-    \r  --source         File to upload
-    \r  --healthcheck    Check user-database connection
-    \r  --resetsessions  Initialize charging events & default admin account`;
-    console.log(helpMessage);
+      case '--resetsessions':
+        axios.post('/admin/resetsessions', {
+          headers: {
+              'X-OBSERVATORY-AUTH': token.toString()
+          }
+        })
+        .then(res => {
+            console.log(res.data);
+        })
+        .catch(err => {
+            errorHandler(err);
+        })
+        break;
+      
+      default: 
+      const helpMessage = `index.js Admin
+      \r
+      \rSystem Administration
+      \r
+      \rOptions:
+      \r  --version   Show version number                                      [boolean]
+      \r  --help      Show help                                                [boolean]
+      \r  --usermod        Create user or change user's password
+      \r                     '--usermod --username <username> --passw <Password>
+      \r                      --email<Email> --name<User's name>'
+      \r  --username       Username
+      \r  --passw          Password
+      \r  --email          User's email
+      \r  --driverName     User's name
+      \r  --users          User's Activity
+      \r  --sessionsupd    Add new sessions from a csv file
+      \r                    --sessionupd --source <Filename.csv>
+      \r  --source         File to upload
+      \r  --healthcheck    Check user-database connection
+      \r  --resetsessions  Initialize charging events & default admin account`;
+      console.log(helpMessage);
+    }
   }
-}
-
+  else {
+    console.log('You are not logged in. Please log in first')
+  }
 }
