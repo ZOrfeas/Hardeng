@@ -24,10 +24,10 @@ jobs:
       - name: Fetch master branch on runner
         uses: actions/checkout@v2
       
-      - name: Build the app
-        uses: borales/actions-yarn@v2.0.0
+      - uses: actions/setup-node@v2
         with:
-          cmd: build
+          node-version: '14'
+      - run: npm run build
       
       - name: Stop the app
         uses: appleboy/ssh-action@master
