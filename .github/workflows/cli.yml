@@ -36,6 +36,7 @@ jobs:
           username: hardeng
           password: 12345
           script: |
+            cd cli
             npm install
           
           
