@@ -154,6 +154,7 @@ public class PricePolicyServiceImpl implements PricePolicyService {
     public DriverPolicyObject getAllPricePolicyDriver(Integer driverId) throws NoDataException {
         Driver driver = driverRepo.findById(driverId)
          .orElseThrow(()-> new DriverNotFoundException(driverId));
+        if (driver.getPricePolicies().isEmpty()) throw new NoDataException();
         return new DriverPolicyObject(driver, driver.getPricePolicies());
     }
 

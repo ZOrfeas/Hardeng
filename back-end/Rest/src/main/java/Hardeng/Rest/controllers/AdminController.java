@@ -48,7 +48,7 @@ public class AdminController {
         return adminService.isHealthy();
     }
 
-    @GetMapping(value = "/resetsessions", produces = {"application/json", "text/csv"})
+    @PostMapping(value = "/resetsessions", produces = {"application/json", "text/csv"})
     public StatusObject resetSessions() {
         log.info("Session reset requested...");
         return adminService.resetSessions();
