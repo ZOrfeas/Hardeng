@@ -1,8 +1,5 @@
 import React from "react";
 import Popup from "reactjs-popup";
-import { userPay } from './API';
-import { BsCreditCard as Card } from "react-icons/bs";
-import { FaPaypal as Ewallet } from "react-icons/fa";
 import { MdPayment } from "react-icons/md";
 
 import 'reactjs-popup/dist/index.css';

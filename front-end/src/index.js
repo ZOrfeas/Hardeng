@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {BrowserRouter as Router, Link, Route, Redirect} from 'react-router-dom';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 import ChargingExperience from './ChargingExperience';
 import Header from './Header';
 import 'materialize-css/dist/css/materialize.min.css';
