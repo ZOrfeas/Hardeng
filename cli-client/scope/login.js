@@ -29,7 +29,6 @@ exports.handler = function(argv) {
         axios.post('/login/' + argv.role, qs.stringify({
             username: argv.username,
             password: argv.passw
-            //role: argv.role
             }), {
             headers: {
                 'content-type': 'application/x-www-form-urlencoded'

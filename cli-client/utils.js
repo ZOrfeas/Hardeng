@@ -29,7 +29,7 @@ function deleteTokenFile () {
         }
     }
     else {
-        console.log('Successfully logged out');
+        console.log('Successfully logged out. Token file missing');
     }
 }
 
@@ -59,4 +59,5 @@ module.exports = { isValidDate,
                    deleteTokenFile,
                    tokenFileExists,
                    getToken,
+                   getTokenFilePath,
                    errorHandler };
