@@ -1,0 +1,36 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Deploy CLI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: cli-client
+  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - run: npm install
+      
+      - name: Send to server
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: "/home/runner/work/TL20-11/TL20-11/cli-client"
+          remote: "cli"
+          host: "snf-880282.vm.okeanos.grnet.gr"
+          username: "hardeng"
+          password: "12345"
