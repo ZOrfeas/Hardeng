@@ -17,3 +17,17 @@
 ```
 Edit .env file accordingly
 
+# CLI Installation
+
+```sh
+    sudo npm link
+
+```
+
+# CLI Tests
+
+```sh
+    npm run test
+    
+```
+
