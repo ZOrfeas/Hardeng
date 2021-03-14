@@ -30,12 +30,12 @@ exports.handler = function(argv)
     {
         const token = getToken();
         const vehicleid = argv.ev;
-        if(!isValidDate(argv.datefrom))
+        if(!isValidDate(argv.datefrom.toString()))
         {
             console.log('Invalid datefrom format: Use YYYYMMDD format instead');
             return;
         }
-        if(!isValidDate(argv.dateto))
+        if(!isValidDate(argv.dateto.toString()))
         {
             console.log('Invalid dateto format: Use YYYYMMDD format instead');
             return;

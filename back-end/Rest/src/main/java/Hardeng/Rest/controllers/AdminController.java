@@ -48,7 +48,7 @@ public class AdminController {
         return adminService.isHealthy();
     }
 
-    @GetMapping(value = "/resetsessions", produces = {"application/json", "text/csv"})
+    @PostMapping(value = "/resetsessions", produces = {"application/json", "text/csv"})
     public StatusObject resetSessions() {
         log.info("Session reset requested...");
         return adminService.resetSessions();
@@ -91,7 +91,7 @@ public class AdminController {
     }
 
     @PreAuthorize("hasRole('ROLE_" + SecurityConfig.stationAdminRole + "')")
-    @PostMapping(value = "/system/sessionupd", produces = {"application/json"},
+    @PostMapping(value = "/system/sessionupd", produces = {"application/json"}, //changed session to sessions if it's wrong kill me
                  consumes = {"multipart/form-data"})
     public SessionStatsObject sessionUpdate(@RequestParam("file") MultipartFile file) {
         log.info("Session import requested...");

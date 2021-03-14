@@ -1,17 +1,28 @@
 const axios = require("axios");
-const { errorHandler } = require("../utils");
+const { errorHandler, getToken, tokenFileExists } = require("../utils");
 
 exports.command = 'healthcheck'
 
 exports.desc = 'Check user-database connection'
 
 exports.handler = function(argv) {
-
-    axios.get('/admin/healthcheck', null)
-    .then(res => {
-        console.log(res.data);
-    })
-    .catch(err => {
-        errorHandler(err);
-    })
+    if(tokenFileExists())
+    {
+        const token = getToken();
+        axios.get('/admin/healthcheck', {
+            headers:{
+                'X-OBSERVATORY-AUTH': token.toString()
+            }
+        })
+        .then(res => {
+            console.log(res.data);
+        })
+        .catch(err => {
+            console.log("here");
+            errorHandler(err);
+        })
+    }
+    else{
+        console.log('You are not logged in. Please log in first')
+    }
 }
