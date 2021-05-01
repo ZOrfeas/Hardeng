@@ -1,5 +1,5 @@
 # SoftEng 2020-2021 Semester Project
---
+
 ## Hardeng Team
 
 - Βεζάκης Ανδρέας - 03117186 
@@ -8,9 +8,8 @@
 - Παπαϊωάννου Κωνσταντίνος - 03117005
 - Ιάσωνας Χατζηθεοδώρου - 03117089 
 
---
 ## Overview
-
+(pages not up anymore)
 [Project Overview](http://hardeng.ddns.net/)
 
 [Frontend](https://hardeng.ddns.net/)
